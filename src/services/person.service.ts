@@ -20,7 +20,6 @@ function mapPerson(row: Record<string, unknown>): Person {
     professionalTitle: (row.professional_title as string) ?? "",
     subtitle: (row.subtitle as string) ?? "",
     about: (row.about as string) ?? "",
-    availabilityLabel: (row.availability_label as string) ?? "",
     metaTitle: (row.meta_title as string) ?? null,
     metaDescription: (row.meta_description as string) ?? null,
   };

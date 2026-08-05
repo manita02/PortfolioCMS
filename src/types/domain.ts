@@ -17,7 +17,6 @@ export interface Person {
   professionalTitle: string;
   subtitle: string;
   about: string;
-  availabilityLabel: string;
   metaTitle: string | null;
   metaDescription: string | null;
 }

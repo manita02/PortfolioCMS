@@ -22,7 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { availabilityStatuses } from "@/constants/availability";
+import {
+  availabilityStatusItems,
+  type AvailabilityStatus,
+} from "@/constants/availability";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { upsertPersonAction } from "@/features/admin/actions/person";
 import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
@@ -46,7 +49,6 @@ type PersonRow = {
   professional_title?: string | null;
   subtitle?: string | null;
   about?: string | null;
-  availability_label?: string | null;
   meta_title?: string | null;
   meta_description?: string | null;
 } | null;
@@ -65,7 +67,6 @@ function toDefaults(person: PersonRow): PersonInput {
     professionalTitle: person?.professional_title ?? "",
     subtitle: person?.subtitle ?? "",
     about: person?.about ?? "",
-    availabilityLabel: person?.availability_label ?? "",
     metaTitle: person?.meta_title ?? "",
     metaDescription: person?.meta_description ?? "",
   };
@@ -151,16 +152,24 @@ export function PersonForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Disponibilidad</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    if (value != null) {
+                      field.onChange(value as AvailabilityStatus);
+                    }
+                  }}
+                  items={availabilityStatusItems}
+                >
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {availabilityStatuses.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status}
+                    {availabilityStatusItems.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -258,19 +267,6 @@ export function PersonForm({
                 <FormLabel>Acerca de mí</FormLabel>
                 <FormControl>
                   <Textarea rows={6} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="availabilityLabel"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Label disponibilidad</FormLabel>
-                <FormControl>
-                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

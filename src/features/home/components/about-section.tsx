@@ -4,6 +4,7 @@ import { Reveal } from "@/components/shared/reveal";
 import { SectionHeader } from "@/components/shared/section-header";
 import { SocialLinks } from "@/components/shared/social-links";
 import { buttonVariants } from "@/components/ui/button";
+import { availabilityStatusLabels } from "@/constants/availability";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import { cn } from "@/lib/utils";
@@ -51,17 +52,15 @@ export async function AboutSection({
               {person.about}
             </p>
 
-            {person.availabilityLabel ? (
-              <div className="max-w-sm rounded-2xl border border-border/60 px-4 py-3">
-                <p className="text-muted-foreground flex items-center gap-2 text-xs uppercase tracking-wide">
-                  <Sparkles className="size-3.5" aria-hidden />
-                  Disponibilidad
-                </p>
-                <p className="mt-1 text-sm font-medium">
-                  {person.availabilityLabel}
-                </p>
-              </div>
-            ) : null}
+            <div className="max-w-sm rounded-2xl border border-border/60 px-4 py-3">
+              <p className="text-muted-foreground flex items-center gap-2 text-xs uppercase tracking-wide">
+                <Sparkles className="size-3.5" aria-hidden />
+                Disponibilidad
+              </p>
+              <p className="mt-1 text-sm font-medium">
+                {availabilityStatusLabels[person.availabilityStatus]}
+              </p>
+            </div>
 
             <div className="flex flex-wrap items-center gap-4">
               <SocialLinks links={socialLinks} />

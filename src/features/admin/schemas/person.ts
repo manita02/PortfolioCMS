@@ -12,7 +12,6 @@ export const personSchema = z.object({
   professionalTitle: z.string().min(1),
   subtitle: z.string(),
   about: z.string(),
-  availabilityLabel: z.string(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
 });

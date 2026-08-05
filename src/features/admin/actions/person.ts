@@ -31,7 +31,6 @@ export async function upsertPersonAction(input: PersonInput) {
     professional_title: data.professionalTitle,
     subtitle: data.subtitle,
     about: data.about,
-    availability_label: data.availabilityLabel,
     meta_title: data.metaTitle || null,
     meta_description: data.metaDescription || null,
   };
