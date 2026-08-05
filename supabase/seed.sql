@@ -1,0 +1,126 @@
+-- Seed de ejemplo (solo Español).
+-- 1) Crear usuario Auth en Dashboard (email/password).
+-- 2) Insertar admin (ver setup_admin.sql).
+
+insert into public.persons (
+  id, first_name, last_name, email, availability_status,
+  professional_title, subtitle, about, availability_label,
+  meta_title, meta_description
+)
+select
+  '22222222-2222-2222-2222-222222222001',
+  'Nombre',
+  'Apellido',
+  'hola@example.com',
+  'open',
+  'Software Engineer',
+  'Diseño y construyo productos digitales con foco en calidad.',
+  'Profesional orientado a producto, con experiencia en frontend moderno y sistemas escalables.',
+  'Disponible para nuevos desafíos',
+  'Portfolio profesional',
+  'Portfolio profesional con proyectos, experiencia y formación.'
+where not exists (select 1 from public.persons);
+
+insert into public.organizations (id, name, type, website_url, location, description) values
+  ('33333333-3333-3333-3333-333333333001', 'Globant', 'company', 'https://www.globant.com', 'Buenos Aires', 'Consultora tecnológica global.'),
+  ('33333333-3333-3333-3333-333333333002', 'Universidad Nacional', 'university', null, 'Mar del Plata', 'Institución universitaria.'),
+  ('33333333-3333-3333-3333-333333333003', 'AWS', 'company', 'https://aws.amazon.com', 'Estados Unidos', 'Proveedor cloud.'),
+  ('33333333-3333-3333-3333-333333333004', 'Proyecto Personal', 'other', null, null, 'Proyectos independientes.')
+on conflict do nothing;
+
+insert into public.skills (id, name, type, sort_order, label) values
+  ('44444444-4444-4444-4444-444444444001', 'TypeScript', 'language', 1, 'TypeScript'),
+  ('44444444-4444-4444-4444-444444444002', 'React', 'framework', 2, 'React'),
+  ('44444444-4444-4444-4444-444444444003', 'Next.js', 'framework', 3, 'Next.js'),
+  ('44444444-4444-4444-4444-444444444004', 'PostgreSQL', 'tool', 4, 'PostgreSQL'),
+  ('44444444-4444-4444-4444-444444444005', 'Supabase', 'tool', 5, 'Supabase'),
+  ('44444444-4444-4444-4444-444444444006', 'Tailwind CSS', 'framework', 6, 'Tailwind CSS'),
+  ('44444444-4444-4444-4444-444444444007', 'Liderazgo', 'soft', 7, 'Liderazgo')
+on conflict (name) do nothing;
+
+insert into public.experiences (
+  id, organization_id, type, start_month, start_year,
+  end_month, end_year, is_current, sort_order, title, description
+) values (
+  '55555555-5555-5555-5555-555555555001',
+  '33333333-3333-3333-3333-333333333001',
+  'hybrid', 3, 2022, null, null, true, 1,
+  'Frontend Developer',
+  'Desarrollo de interfaces con React y TypeScript.'
+) on conflict do nothing;
+
+insert into public.experience_skills (experience_id, skill_id) values
+  ('55555555-5555-5555-5555-555555555001', '44444444-4444-4444-4444-444444444001'),
+  ('55555555-5555-5555-5555-555555555001', '44444444-4444-4444-4444-444444444002'),
+  ('55555555-5555-5555-5555-555555555001', '44444444-4444-4444-4444-444444444003')
+on conflict do nothing;
+
+insert into public.educations (
+  id, organization_id, type, start_month, start_year,
+  end_month, end_year, is_current, sort_order, title, description
+) values (
+  '66666666-6666-6666-6666-666666666001',
+  '33333333-3333-3333-3333-333333333002',
+  'degree', 3, 2018, 12, 2022, false, 1,
+  'Licenciatura en Sistemas',
+  'Formación en ingeniería de software y bases de datos.'
+) on conflict do nothing;
+
+insert into public.education_skills (education_id, skill_id) values
+  ('66666666-6666-6666-6666-666666666001', '44444444-4444-4444-4444-444444444004')
+on conflict do nothing;
+
+insert into public.projects (
+  id, organization_id, slug, start_month, start_year,
+  image_path, github_url, live_url, is_featured, sort_order,
+  name, summary, description
+) values
+  (
+    '77777777-7777-7777-7777-777777777001',
+    '33333333-3333-3333-3333-333333333004',
+    'erp-webservices', 1, 2023,
+    null, 'https://github.com/example/erp-webservices', null, true, 1,
+    'ERP Web Services', 'API e integración para ERP.',
+    'Sistema de servicios web para integración con ERP.'
+  ),
+  (
+    '77777777-7777-7777-7777-777777777002',
+    '33333333-3333-3333-3333-333333333004',
+    'portfolio-next', 6, 2024,
+    null, 'https://github.com/example/portfolio-next', null, true, 2,
+    'Portfolio Next', 'Portfolio con CMS en Supabase.',
+    'Portfolio profesional con panel de administración.'
+  ),
+  (
+    '77777777-7777-7777-7777-777777777003',
+    null, 'music-tab', 2, 2024,
+    null, 'https://github.com/example/music-tab', null, false, 3,
+    'Music Tab', 'App de tablaturas.',
+    'Aplicación para gestionar tablaturas musicales.'
+  )
+on conflict (slug) do nothing;
+
+insert into public.project_skills (project_id, skill_id) values
+  ('77777777-7777-7777-7777-777777777001', '44444444-4444-4444-4444-444444444001'),
+  ('77777777-7777-7777-7777-777777777001', '44444444-4444-4444-4444-444444444004'),
+  ('77777777-7777-7777-7777-777777777002', '44444444-4444-4444-4444-444444444003'),
+  ('77777777-7777-7777-7777-777777777002', '44444444-4444-4444-4444-444444444005'),
+  ('77777777-7777-7777-7777-777777777003', '44444444-4444-4444-4444-444444444002')
+on conflict do nothing;
+
+insert into public.certificates (
+  id, organization_id, issued_month, issued_year, is_featured, sort_order,
+  name, description
+) values (
+  '88888888-8888-8888-8888-888888888001',
+  '33333333-3333-3333-3333-333333333003',
+  8, 2023, true, 1,
+  'AWS Cloud Practitioner',
+  'Fundamentos de la nube AWS.'
+) on conflict do nothing;
+
+insert into public.social_links (id, name, type, icon_key, url, sort_order, is_visible) values
+  ('99999999-9999-9999-9999-999999999001', 'GitHub', 'professional', 'github', 'https://github.com/example', 1, true),
+  ('99999999-9999-9999-9999-999999999002', 'LinkedIn', 'professional', 'linkedin', 'https://linkedin.com/in/example', 2, true),
+  ('99999999-9999-9999-9999-999999999003', 'Email', 'contact', 'mail', 'mailto:hola@example.com', 3, true)
+on conflict do nothing;
