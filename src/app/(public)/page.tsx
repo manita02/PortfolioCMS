@@ -8,6 +8,7 @@ import { EducationSection } from "@/features/education/components/education-sect
 import { ExperienceSection } from "@/features/experiences/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
 import { SkillsSection } from "@/features/skills/components/skills-section";
+import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { buildMetadata } from "@/lib/seo";
 import { getPublicStorageUrl } from "@/lib/storage-url";
@@ -62,7 +63,11 @@ export default async function HomePage() {
     : siteConfig.name;
 
   const highlightSkills = skills
-    .filter((s) => s.type === "language" || s.type === "framework")
+    .filter(
+      (s) =>
+        s.typeId === skillTypeIds.language ||
+        s.typeId === skillTypeIds.framework,
+    )
     .slice(0, 6);
 
   const githubUrl =

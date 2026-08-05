@@ -10,6 +10,7 @@ import { EducationSection } from "@/features/education/components/education-sect
 import { ExperienceSection } from "@/features/experiences/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
 import { SkillsSection } from "@/features/skills/components/skills-section";
+import { skillTypeIds } from "@/constants/catalog-ids";
 import { cn } from "@/lib/utils";
 import { getCertificates } from "@/services/certificate.service";
 import { getEducations } from "@/services/education.service";
@@ -46,7 +47,11 @@ export default async function AdminPreviewPage() {
     null;
 
   const highlightSkills = skills
-    .filter((s) => s.type === "language" || s.type === "framework")
+    .filter(
+      (s) =>
+        s.typeId === skillTypeIds.language ||
+        s.typeId === skillTypeIds.framework,
+    )
     .slice(0, 6);
 
   return (
