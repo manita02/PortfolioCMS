@@ -246,7 +246,6 @@ create table public.projects (
   github_url text,
   live_url text,
   is_featured boolean not null default false,
-  sort_order int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint projects_slug_format check (

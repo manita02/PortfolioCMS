@@ -26,7 +26,14 @@ create index educations_chrono_idx on public.educations (
   id desc
 );
 
-create index projects_featured_idx on public.projects (is_featured, sort_order);
+create index projects_featured_chrono_idx on public.projects (
+  is_featured desc,
+  end_year desc nulls last,
+  end_month desc nulls last,
+  start_year desc nulls last,
+  start_month desc nulls last,
+  id desc
+);
 create unique index projects_slug_uidx on public.projects (slug);
 create index projects_org_idx on public.projects (organization_id);
 

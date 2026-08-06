@@ -74,30 +74,30 @@ insert into public.education_skills (education_id, skill_id) values
 on conflict do nothing;
 
 insert into public.projects (
-  id, organization_id, slug, start_month, start_year,
-  image_path, github_url, live_url, is_featured, sort_order,
+  id, organization_id, slug, start_month, start_year, end_month, end_year,
+  image_path, github_url, live_url, is_featured,
   name, summary, description
 ) values
   (
     '77777777-7777-7777-7777-777777777001',
     '33333333-3333-3333-3333-333333333004',
-    'erp-webservices', 1, 2023,
-    null, 'https://github.com/example/erp-webservices', null, true, 1,
+    'erp-webservices', 1, 2023, 8, 2024,
+    null, 'https://github.com/example/erp-webservices', null, true,
     'ERP Web Services', 'API e integración para ERP.',
     'Sistema de servicios web para integración con ERP.'
   ),
   (
     '77777777-7777-7777-7777-777777777002',
     '33333333-3333-3333-3333-333333333004',
-    'portfolio-next', 6, 2024,
-    null, 'https://github.com/example/portfolio-next', null, true, 2,
+    'portfolio-next', 6, 2024, 12, 2024,
+    null, 'https://github.com/example/portfolio-next', null, true,
     'Portfolio Next', 'Portfolio con CMS en Supabase.',
     'Portfolio profesional con panel de administración.'
   ),
   (
     '77777777-7777-7777-7777-777777777003',
-    null, 'music-tab', 2, 2024,
-    null, 'https://github.com/example/music-tab', null, false, 3,
+    null, 'music-tab', 2, 2024, 6, 2024,
+    null, 'https://github.com/example/music-tab', null, false,
     'Music Tab', 'App de tablaturas.',
     'Aplicación para gestionar tablaturas musicales.'
   )
