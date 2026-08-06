@@ -10,7 +10,6 @@ export const experienceSchema = z.object({
   endMonth: z.coerce.number().int().min(1).max(12).nullish(),
   endYear: z.coerce.number().int().min(1950).max(2100).nullish(),
   isCurrent: z.boolean(),
-  sortOrder: z.coerce.number().int(),
   skillIds: z.array(z.string().uuid()),
   title: z.string().min(1, "Requerido"),
   description: z.string(),
