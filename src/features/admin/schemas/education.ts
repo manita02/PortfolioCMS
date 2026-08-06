@@ -10,7 +10,6 @@ export const educationSchema = z.object({
   endYear: z.coerce.number().int().min(1950).max(2100).nullish(),
   isCurrent: z.boolean(),
   sortOrder: z.coerce.number().int(),
-  institutionImagePath: z.string().nullable().optional(),
   diplomaImagePath: z.string().nullable().optional(),
   diplomaPdfPath: z.string().nullable().optional(),
   skillIds: z.array(z.string().uuid()),

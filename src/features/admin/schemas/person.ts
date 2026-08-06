@@ -7,7 +7,6 @@ export const personSchema = z.object({
   availabilityStatusId: z.string().uuid({ message: "Selecciona disponibilidad" }),
   profileImagePath: z.string().nullable().optional(),
   bannerImagePath: z.string().nullable().optional(),
-  cvPdfPath: z.string().nullable().optional(),
   professionalTitle: z.string().min(1),
   subtitle: z.string(),
   about: z.string(),
