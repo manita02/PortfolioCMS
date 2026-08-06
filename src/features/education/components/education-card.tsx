@@ -6,19 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { OrgLogo } from "@/components/shared/org-logo";
 import { storageBuckets } from "@/constants/storage-buckets";
-import type { EducationType } from "@/constants/education-types";
 import { formatDateRange } from "@/lib/dates";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import { cn } from "@/lib/utils";
 import type { Education } from "@/types/domain";
-
-const educationTypeLabels: Record<EducationType, string> = {
-  degree: "Título",
-  course: "Curso",
-  bootcamp: "Bootcamp",
-  certification_program: "Programa de certificación",
-  other: "Otro",
-};
 
 export function EducationCard({
   item,
@@ -39,8 +30,7 @@ export function EducationCard({
     storageBuckets.educations,
     item.institutionImagePath,
   );
-  const typeLabel =
-    educationTypeLabels[item.type as EducationType] ?? item.type;
+  const typeLabel = item.typeName;
 
   return (
     <article className="group flex gap-4">

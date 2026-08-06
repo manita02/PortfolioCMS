@@ -4,7 +4,6 @@ import { Reveal } from "@/components/shared/reveal";
 import { SectionHeader } from "@/components/shared/section-header";
 import { SocialLinks } from "@/components/shared/social-links";
 import { buttonVariants } from "@/components/ui/button";
-import { availabilityStatusLabels } from "@/constants/availability";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import { cn } from "@/lib/utils";
@@ -58,7 +57,7 @@ export async function AboutSection({
                 Disponibilidad
               </p>
               <p className="mt-1 text-sm font-medium">
-                {availabilityStatusLabels[person.availabilityStatus]}
+                {person.availabilityStatusName}
               </p>
             </div>
 

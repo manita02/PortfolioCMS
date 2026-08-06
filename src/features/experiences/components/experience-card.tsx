@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { OrgLogo } from "@/components/shared/org-logo";
-import { experienceTypeLabels } from "@/constants/experience-types";
 import { formatDateRange } from "@/lib/dates";
 import type { Experience } from "@/types/domain";
 
@@ -11,8 +10,7 @@ export function ExperienceCard({
   item: Experience;
   presentLabel: string;
 }) {
-  const modality =
-    experienceTypeLabels[item.type]?.es ?? item.type;
+  const modality = item.typeName;
 
   return (
     <article className="group flex gap-4">

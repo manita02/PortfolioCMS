@@ -1,30 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { Code2, Layers, Sparkles, Wrench, Boxes } from "lucide-react";
+import { Boxes, Code2, Layers, Sparkles, Wrench } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Reveal } from "@/components/shared/reveal";
 import { SectionHeader } from "@/components/shared/section-header";
-import { skillTypes, type SkillType } from "@/constants/skill-types";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { Skill } from "@/types/domain";
 
-const typeIcons: Record<SkillType, typeof Code2> = {
-  language: Code2,
-  framework: Layers,
-  tool: Wrench,
-  soft: Sparkles,
-  other: Boxes,
-};
+const fallbackIcons = [Code2, Layers, Wrench, Sparkles, Boxes] as const;
 
-const typeLabels: Record<SkillType, string> = {
-  language: "Lenguajes",
-  framework: "Frameworks",
-  tool: "Herramientas",
-  soft: "Soft skills",
-  other: "Otras",
-};
+function iconForGroup(index: number) {
+  return fallbackIcons[index % fallbackIcons.length];
+}
 
 export function SkillsSection({
   title,
@@ -35,12 +24,28 @@ export function SkillsSection({
   skills: Skill[];
   emptyLabel: string;
 }) {
-  const groups = skillTypes
-    .map((type) => ({
-      type,
-      items: skills.filter((s) => s.type === type),
-    }))
-    .filter((g) => g.items.length > 0);
+  const byType = new Map<
+    string,
+    { typeId: string; typeName: string; typeSortOrder: number; items: Skill[] }
+  >();
+
+  for (const skill of skills) {
+    const existing = byType.get(skill.typeId);
+    if (existing) {
+      existing.items.push(skill);
+    } else {
+      byType.set(skill.typeId, {
+        typeId: skill.typeId,
+        typeName: skill.typeName,
+        typeSortOrder: skill.typeSortOrder,
+        items: [skill],
+      });
+    }
+  }
+
+  const groups = [...byType.values()].sort(
+    (a, b) => a.typeSortOrder - b.typeSortOrder || a.typeName.localeCompare(b.typeName),
+  );
 
   return (
     <section
@@ -54,14 +59,20 @@ export function SkillsSection({
         ) : (
           <div className="space-y-10">
             {groups.map((group, groupIndex) => {
-              const Icon = typeIcons[group.type];
+              const Icon = iconForGroup(groupIndex);
               return (
-                <Reveal key={group.type} delay={Math.min(groupIndex * 0.05, 0.2)}>
+                <Reveal
+                  key={group.typeId}
+                  delay={Math.min(groupIndex * 0.05, 0.2)}
+                >
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <Icon className="text-muted-foreground size-4" aria-hidden />
+                      <Icon
+                        className="text-muted-foreground size-4"
+                        aria-hidden
+                      />
                       <h3 className="font-heading text-lg tracking-tight">
-                        {typeLabels[group.type]}
+                        {group.typeName}
                       </h3>
                     </div>
                     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
