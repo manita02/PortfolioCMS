@@ -30,7 +30,6 @@ export async function upsertProjectAction(input: ProjectInput) {
     github_url: data.githubUrl || null,
     live_url: data.liveUrl || null,
     is_featured: data.isFeatured,
-    sort_order: data.sortOrder,
   };
 
   let id = data.id;
