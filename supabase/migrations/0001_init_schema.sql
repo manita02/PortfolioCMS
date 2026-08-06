@@ -23,6 +23,12 @@ create table public.experience_types (
   sort_order int not null default 0
 );
 
+create table public.experience_modalities (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
+);
+
 create table public.education_types (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
@@ -54,9 +60,19 @@ insert into public.availability_statuses (id, name, sort_order) values
   ('a2222222-2222-2222-2222-222222222003', 'No disponible', 3);
 
 insert into public.experience_types (id, name, sort_order) values
-  ('a3333333-3333-3333-3333-333333333001', 'Presencial', 1),
-  ('a3333333-3333-3333-3333-333333333002', 'Híbrido', 2),
-  ('a3333333-3333-3333-3333-333333333003', 'Remoto', 3);
+  ('a3333333-3333-3333-3333-333333333001', 'Jornada completa', 1),
+  ('a3333333-3333-3333-3333-333333333002', 'Jornada parcial', 2),
+  ('a3333333-3333-3333-3333-333333333003', 'Por cuenta propia', 3),
+  ('a3333333-3333-3333-3333-333333333004', 'Autónomo', 4),
+  ('a3333333-3333-3333-3333-333333333005', 'Contrato por servicio', 5),
+  ('a3333333-3333-3333-3333-333333333006', 'Prácticas', 6),
+  ('a3333333-3333-3333-3333-333333333007', 'Prácticas laborales', 7),
+  ('a3333333-3333-3333-3333-333333333008', 'Trabajo de temporada', 8);
+
+insert into public.experience_modalities (id, name, sort_order) values
+  ('a7777777-7777-7777-7777-777777777001', 'Presencial', 1),
+  ('a7777777-7777-7777-7777-777777777002', 'Híbrido', 2),
+  ('a7777777-7777-7777-7777-777777777003', 'Remoto', 3);
 
 insert into public.education_types (id, name, sort_order) values
   ('a4444444-4444-4444-4444-444444444001', 'Carrera', 1),
@@ -154,7 +170,10 @@ create table public.experiences (
   organization_id uuid not null references public.organizations (id) on delete restrict,
   type_id uuid not null
     references public.experience_types (id) on delete restrict
-    default 'a3333333-3333-3333-3333-333333333003',
+    default 'a3333333-3333-3333-3333-333333333001',
+  modality_id uuid not null
+    references public.experience_modalities (id) on delete restrict
+    default 'a7777777-7777-7777-7777-777777777003',
   title text not null default '',
   description text not null default '',
   start_month smallint not null check (start_month between 1 and 12),

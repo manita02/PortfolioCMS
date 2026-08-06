@@ -5,7 +5,8 @@ create index organizations_location_idx on public.organizations (location);
 
 create index experiences_org_idx on public.experiences (organization_id);
 create index experiences_sort_idx on public.experiences (sort_order, start_year desc, start_month desc);
-create index experiences_type_idx on public.experiences (type);
+create index experiences_type_idx on public.experiences (type_id);
+create index experiences_modality_idx on public.experiences (modality_id);
 
 create index educations_org_idx on public.educations (organization_id);
 create index educations_sort_idx on public.educations (sort_order, start_year desc, start_month desc);
@@ -25,4 +26,4 @@ create index education_skills_skill_idx on public.education_skills (skill_id);
 create index project_skills_skill_idx on public.project_skills (skill_id);
 
 create index social_links_sort_idx on public.social_links (sort_order);
-create index social_links_type_idx on public.social_links (type);
+create index social_links_type_idx on public.social_links (type_id);

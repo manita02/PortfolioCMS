@@ -20,6 +20,7 @@ alter table public.admins enable row level security;
 alter table public.organization_types enable row level security;
 alter table public.availability_statuses enable row level security;
 alter table public.experience_types enable row level security;
+alter table public.experience_modalities enable row level security;
 alter table public.education_types enable row level security;
 alter table public.skill_types enable row level security;
 alter table public.social_link_types enable row level security;
@@ -43,6 +44,7 @@ create policy admins_select on public.admins
 create policy organization_types_select on public.organization_types for select using (true);
 create policy availability_statuses_select on public.availability_statuses for select using (true);
 create policy experience_types_select on public.experience_types for select using (true);
+create policy experience_modalities_select on public.experience_modalities for select using (true);
 create policy education_types_select on public.education_types for select using (true);
 create policy skill_types_select on public.skill_types for select using (true);
 create policy social_link_types_select on public.social_link_types for select using (true);
