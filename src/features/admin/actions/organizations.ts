@@ -15,7 +15,7 @@ export async function upsertOrganizationAction(input: OrganizationInput) {
   const supabase = await createClient();
   const payload = {
     name: data.name,
-    type: data.type,
+    type_id: data.typeId,
     website_url: data.websiteUrl || null,
     logo_path: data.logoPath ?? null,
     location: data.location?.trim() || null,

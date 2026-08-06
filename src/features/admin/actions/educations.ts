@@ -16,7 +16,7 @@ export async function upsertEducationAction(input: EducationInput) {
 
   const payload = {
     organization_id: data.organizationId,
-    type: data.type,
+    type_id: data.typeId,
     start_month: data.startMonth,
     start_year: data.startYear,
     end_month: data.isCurrent ? null : (data.endMonth ?? null),

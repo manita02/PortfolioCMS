@@ -15,7 +15,7 @@ export async function upsertSkillAction(input: SkillInput) {
   const supabase = await createClient();
   const payload = {
     name: data.name,
-    type: data.type,
+    type_id: data.typeId,
     icon_path: data.iconPath ?? null,
     sort_order: data.sortOrder,
     label: data.label || data.name,

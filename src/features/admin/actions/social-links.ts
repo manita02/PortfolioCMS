@@ -15,7 +15,7 @@ export async function upsertSocialLinkAction(input: SocialLinkInput) {
   const supabase = await createClient();
   const payload = {
     name: data.name,
-    type: data.type,
+    type_id: data.typeId,
     icon_key: data.iconKey,
     url: data.url,
     sort_order: data.sortOrder,
