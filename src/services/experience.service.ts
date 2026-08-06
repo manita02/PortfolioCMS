@@ -10,10 +10,17 @@ import { mapExperience } from "@/services/mappers";
 
 const select = `
   *,
-  organizations(*),
-  experience_skills(
+  experience_types ( id, name, sort_order ),
+  organizations (
+    *,
+    organization_types ( id, name, sort_order )
+  ),
+  experience_skills (
     skill_id,
-    skills(*)
+    skills (
+      *,
+      skill_types ( id, name, sort_order )
+    )
   )
 `;
 

@@ -10,7 +10,10 @@ import { mapCertificate } from "@/services/mappers";
 
 const select = `
   *,
-  organizations(*)
+  organizations (
+    *,
+    organization_types ( id, name, sort_order )
+  )
 `;
 
 async function fetchCertificates(options?: {

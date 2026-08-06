@@ -10,10 +10,16 @@ import { mapProject } from "@/services/mappers";
 
 const select = `
   *,
-  organizations(*),
-  project_skills(
+  organizations (
+    *,
+    organization_types ( id, name, sort_order )
+  ),
+  project_skills (
     skill_id,
-    skills(*)
+    skills (
+      *,
+      skill_types ( id, name, sort_order )
+    )
   )
 `;
 

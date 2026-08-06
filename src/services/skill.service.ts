@@ -6,24 +6,19 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabase/server";
 import type { Skill } from "@/types/domain";
+import { mapSkill } from "@/services/mappers";
 
-function mapSkill(row: Record<string, unknown>): Skill {
-  return {
-    id: row.id as string,
-    name: row.name as string,
-    type: row.type as Skill["type"],
-    iconPath: (row.icon_path as string) ?? null,
-    sortOrder: row.sort_order as number,
-    label: (row.label as string) || (row.name as string),
-  };
-}
+const skillSelect = `
+  *,
+  skill_types ( id, name, sort_order )
+`;
 
 async function fetchSkills(): Promise<Skill[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("skills")
-    .select("*")
+    .select(skillSelect)
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
 
@@ -42,7 +37,7 @@ export async function getSkillsRaw() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("skills")
-    .select("*")
+    .select(skillSelect)
     .order("sort_order", { ascending: true });
   return (data ?? []) as import("@/features/admin/types/rows").SkillAdminRow[];
 }

@@ -7,15 +7,31 @@ import type {
   Skill,
 } from "@/types/domain";
 
+function nestedCatalog(
+  row: Record<string, unknown>,
+  relationKey: string,
+  idKey = "type_id",
+): { id: string; name: string; sortOrder: number } {
+  const catalog = row[relationKey] as Record<string, unknown> | null | undefined;
+  return {
+    id: (row[idKey] as string) ?? (catalog?.id as string) ?? "",
+    name: (catalog?.name as string) ?? "",
+    sortOrder: (catalog?.sort_order as number) ?? 0,
+  };
+}
+
 export function mapOrganization(
   row: Record<string, unknown> | null | undefined,
 ): Organization | undefined {
   if (!row) return undefined;
 
+  const type = nestedCatalog(row, "organization_types");
+
   return {
     id: row.id as string,
     name: row.name as string,
-    type: row.type as Organization["type"],
+    typeId: type.id,
+    typeName: type.name,
     websiteUrl: (row.website_url as string) ?? null,
     logoPath: (row.logo_path as string) ?? null,
     location: (row.location as string) ?? null,
@@ -23,21 +39,28 @@ export function mapOrganization(
   };
 }
 
+export function mapSkill(row: Record<string, unknown>): Skill {
+  const type = nestedCatalog(row, "skill_types");
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    typeId: type.id,
+    typeName: type.name,
+    typeSortOrder: type.sortOrder,
+    iconPath: (row.icon_path as string) ?? null,
+    sortOrder: (row.sort_order as number) ?? 0,
+    label: (row.label as string) || (row.name as string),
+  };
+}
+
 export function mapSkillFromJoin(row: Record<string, unknown>): Skill {
   const skill = row.skills as Record<string, unknown> | undefined;
-  const base = skill ?? row;
-  return {
-    id: base.id as string,
-    name: base.name as string,
-    type: base.type as Skill["type"],
-    iconPath: (base.icon_path as string) ?? null,
-    sortOrder: (base.sort_order as number) ?? 0,
-    label: (base.label as string) || (base.name as string),
-  };
+  return mapSkill(skill ?? row);
 }
 
 export function mapExperience(row: Record<string, unknown>): Experience {
   const skillJoins = (row.experience_skills as Record<string, unknown>[]) ?? [];
+  const type = nestedCatalog(row, "experience_types");
 
   return {
     id: row.id as string,
@@ -45,7 +68,8 @@ export function mapExperience(row: Record<string, unknown>): Experience {
     organization: mapOrganization(
       row.organizations as Record<string, unknown>,
     ),
-    type: row.type as Experience["type"],
+    typeId: type.id,
+    typeName: type.name,
     startMonth: row.start_month as number,
     startYear: row.start_year as number,
     endMonth: (row.end_month as number) ?? null,
@@ -60,6 +84,7 @@ export function mapExperience(row: Record<string, unknown>): Experience {
 
 export function mapEducation(row: Record<string, unknown>): Education {
   const skillJoins = (row.education_skills as Record<string, unknown>[]) ?? [];
+  const type = nestedCatalog(row, "education_types");
 
   return {
     id: row.id as string,
@@ -67,7 +92,8 @@ export function mapEducation(row: Record<string, unknown>): Education {
     organization: mapOrganization(
       row.organizations as Record<string, unknown>,
     ),
-    type: row.type as Education["type"],
+    typeId: type.id,
+    typeName: type.name,
     startMonth: row.start_month as number,
     startYear: row.start_year as number,
     endMonth: (row.end_month as number) ?? null,

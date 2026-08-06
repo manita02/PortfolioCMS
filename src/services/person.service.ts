@@ -7,7 +7,17 @@ import {
 } from "@/lib/supabase/server";
 import type { Person } from "@/types/domain";
 
+const personSelect = `
+  *,
+  availability_statuses ( id, name, sort_order )
+`;
+
 function mapPerson(row: Record<string, unknown>): Person {
+  const status = row.availability_statuses as
+    | Record<string, unknown>
+    | null
+    | undefined;
+
   return {
     id: row.id as string,
     firstName: row.first_name as string,
@@ -16,7 +26,9 @@ function mapPerson(row: Record<string, unknown>): Person {
     profileImagePath: (row.profile_image_path as string) ?? null,
     bannerImagePath: (row.banner_image_path as string) ?? null,
     cvPdfPath: (row.cv_pdf_path as string) ?? null,
-    availabilityStatus: row.availability_status as Person["availabilityStatus"],
+    availabilityStatusId:
+      (row.availability_status_id as string) ?? (status?.id as string) ?? "",
+    availabilityStatusName: (status?.name as string) ?? "",
     professionalTitle: (row.professional_title as string) ?? "",
     subtitle: (row.subtitle as string) ?? "",
     about: (row.about as string) ?? "",
@@ -30,7 +42,7 @@ async function fetchPerson(): Promise<Person | null> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("persons")
-    .select("*")
+    .select(personSelect)
     .limit(1)
     .maybeSingle();
 
@@ -49,7 +61,7 @@ export async function getPersonRaw() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("persons")
-    .select("*")
+    .select(personSelect)
     .limit(1)
     .maybeSingle();
   return data;

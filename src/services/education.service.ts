@@ -10,10 +10,17 @@ import { mapEducation } from "@/services/mappers";
 
 const select = `
   *,
-  organizations(*),
-  education_skills(
+  education_types ( id, name, sort_order ),
+  organizations (
+    *,
+    organization_types ( id, name, sort_order )
+  ),
+  education_skills (
     skill_id,
-    skills(*)
+    skills (
+      *,
+      skill_types ( id, name, sort_order )
+    )
   )
 `;
 
