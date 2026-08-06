@@ -8,7 +8,8 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { siteConfig } from "@/config/site";
 import { ProjectCard } from "@/features/projects/components/project-card";
-import { formatDateRange } from "@/lib/dates";
+import { formatProjectDateRange } from "@/lib/dates";
+import { formatProjectDuration } from "@/lib/duration";
 import { buildMetadata } from "@/lib/seo";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import { cn } from "@/lib/utils";
@@ -39,15 +40,14 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   const related = await getRelatedProjects(project, 3);
   const image = getPublicStorageUrl(storageBuckets.projects, project.imagePath);
-  const dateLabel =
+  const dateLabel = formatProjectDateRange(project);
+  const duration =
     project.startMonth && project.startYear
-      ? formatDateRange({
+      ? formatProjectDuration({
           startMonth: project.startMonth,
           startYear: project.startYear,
           endMonth: project.endMonth,
           endYear: project.endYear,
-          isCurrent: false,
-          presentLabel: "Actualidad",
         })
       : "";
 
@@ -75,10 +75,17 @@ export default async function ProjectDetailPage({ params }: Props) {
       <h1 className="font-heading text-3xl tracking-tight sm:text-5xl">
         {project.name}
       </h1>
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <OrganizationBadge organization={project.organization} />
         {dateLabel ? (
-          <p className="text-muted-foreground shrink-0 text-sm">{dateLabel}</p>
+          <div className="text-muted-foreground shrink-0 sm:text-right">
+            <p className="text-xs sm:text-sm">{dateLabel}</p>
+            {duration ? (
+              <p className="text-muted-foreground/80 text-[11px] tracking-wide sm:text-xs">
+                {duration}
+              </p>
+            ) : null}
+          </div>
         ) : null}
       </div>
 
