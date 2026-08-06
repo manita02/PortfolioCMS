@@ -22,7 +22,6 @@ export async function upsertEducationAction(input: EducationInput) {
     end_month: data.isCurrent ? null : (data.endMonth ?? null),
     end_year: data.isCurrent ? null : (data.endYear ?? null),
     is_current: data.isCurrent,
-    sort_order: data.sortOrder,
     diploma_image_path: data.diplomaImagePath ?? null,
     diploma_pdf_path: data.diplomaPdfPath ?? null,
     title: data.title,
