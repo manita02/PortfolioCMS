@@ -3,7 +3,6 @@ export const storageBuckets = {
   projects: "projects",
   organizations: "organizations",
   educations: "educations",
-  certificates: "certificates",
   icons: "icons",
 } as const;
 
