@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Award,
   Briefcase,
   Building2,
   Eye,
@@ -26,7 +25,6 @@ const icons = {
   Briefcase,
   GraduationCap,
   FolderKanban,
-  Award,
   Share2,
   Eye,
 } as const;
@@ -38,7 +36,6 @@ const descriptions: Record<string, string> = {
   "/admin/experiencias": "Roles y trayectoria laboral.",
   "/admin/educacion": "Formación académica y cursos.",
   "/admin/proyectos": "Portfolio de proyectos.",
-  "/admin/certificados": "Credenciales y certificados.",
   "/admin/redes-sociales": "Enlaces a redes y perfiles.",
   "/admin/preview": "Vista previa del sitio público.",
 };

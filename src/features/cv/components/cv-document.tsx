@@ -1,4 +1,4 @@
-import { formatDateRange, formatMonthYear } from "@/lib/dates";
+import { formatDateRange } from "@/lib/dates";
 import type { CvData } from "@/types/domain";
 
 export function CvDocument({
@@ -15,7 +15,6 @@ export function CvDocument({
     education: string;
     skills: string;
     projects: string;
-    certificates: string;
   };
 }) {
   const person = data.person;
@@ -143,24 +142,6 @@ export function CvDocument({
               </div>
             ))}
           </div>
-        </section>
-      ) : null}
-
-      {data.certificates.length > 0 ? (
-        <section className="mt-8">
-          <h2 className="font-heading text-sm tracking-[0.14em] uppercase">
-            {labels.certificates}
-          </h2>
-          <ul className="mt-4 space-y-2">
-            {data.certificates.map((item) => (
-              <li key={item.id}>
-                {item.name}
-                {item.organization?.name ? ` — ${item.organization.name}` : ""}
-                {" · "}
-                {formatMonthYear(item.issuedMonth, item.issuedYear, "")}
-              </li>
-            ))}
-          </ul>
         </section>
       ) : null}
     </div>

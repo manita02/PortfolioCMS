@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Award,
   Briefcase,
   Building2,
   ChevronLeft,
@@ -33,7 +32,6 @@ const icons = {
   Briefcase,
   GraduationCap,
   FolderKanban,
-  Award,
   Share2,
   Eye,
 } as const;

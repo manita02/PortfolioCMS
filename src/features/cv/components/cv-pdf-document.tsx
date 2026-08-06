@@ -53,7 +53,6 @@ export function CvPdfDocument({
     education: string;
     skills: string;
     projects: string;
-    certificates: string;
   };
 }) {
   const person = data.person;
@@ -143,21 +142,6 @@ export function CvPdfDocument({
                   {item.summary || item.description}
                 </Text>
               </View>
-            ))}
-          </View>
-        ) : null}
-
-        {data.certificates.length > 0 ? (
-          <View style={styles.section}>
-            <Text style={styles.heading}>{labels.certificates}</Text>
-            {data.certificates.map((item) => (
-              <Text key={item.id} style={styles.text}>
-                {item.name}
-                {item.organization?.name
-                  ? ` — ${item.organization.name}`
-                  : ""}{" "}
-                ({mmYyyy(item.issuedMonth, item.issuedYear)})
-              </Text>
             ))}
           </View>
         ) : null}
