@@ -8,7 +8,6 @@ values
   ('organizations', 'organizations', true),
   ('educations', 'educations', true),
   ('certificates', 'certificates', true),
-  ('cv', 'cv', true),
   ('icons', 'icons', true)
 on conflict (id) do nothing;
 
@@ -16,7 +15,7 @@ create policy storage_public_read on storage.objects
   for select
   using (bucket_id in (
     'person', 'projects', 'organizations', 'educations',
-    'certificates', 'cv', 'icons'
+    'certificates', 'icons'
   ));
 
 create policy storage_admin_insert on storage.objects
@@ -24,7 +23,7 @@ create policy storage_admin_insert on storage.objects
   with check (
     bucket_id in (
       'person', 'projects', 'organizations', 'educations',
-      'certificates', 'cv', 'icons'
+      'certificates', 'icons'
     )
     and public.is_admin()
   );
@@ -34,14 +33,14 @@ create policy storage_admin_update on storage.objects
   using (
     bucket_id in (
       'person', 'projects', 'organizations', 'educations',
-      'certificates', 'cv', 'icons'
+      'certificates', 'icons'
     )
     and public.is_admin()
   )
   with check (
     bucket_id in (
       'person', 'projects', 'organizations', 'educations',
-      'certificates', 'cv', 'icons'
+      'certificates', 'icons'
     )
     and public.is_admin()
   );
@@ -51,7 +50,7 @@ create policy storage_admin_delete on storage.objects
   using (
     bucket_id in (
       'person', 'projects', 'organizations', 'educations',
-      'certificates', 'cv', 'icons'
+      'certificates', 'icons'
     )
     and public.is_admin()
   );

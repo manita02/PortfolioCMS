@@ -97,7 +97,6 @@ create table public.persons (
   email text,
   profile_image_path text,
   banner_image_path text,
-  cv_pdf_path text,
   availability_status_id uuid not null
     references public.availability_statuses (id) on delete restrict
     default 'a2222222-2222-2222-2222-222222222001',
@@ -190,7 +189,6 @@ create table public.educations (
   end_month smallint check (end_month between 1 and 12),
   end_year smallint check (end_year between 1950 and 2100),
   is_current boolean not null default false,
-  institution_image_path text,
   diploma_image_path text,
   diploma_pdf_path text,
   sort_order int not null default 0,
