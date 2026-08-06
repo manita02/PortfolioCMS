@@ -78,7 +78,6 @@ export function mapExperience(row: Record<string, unknown>): Experience {
     endMonth: (row.end_month as number) ?? null,
     endYear: (row.end_year as number) ?? null,
     isCurrent: row.is_current as boolean,
-    sortOrder: row.sort_order as number,
     title: (row.title as string) ?? "",
     description: (row.description as string) ?? "",
     skills: skillJoins.map((s) => mapSkillFromJoin(s)),
