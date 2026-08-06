@@ -95,7 +95,8 @@ No uses `SUPABASE_SERVICE_ROLE_KEY` en esta app.
 
 - Textos de contenido en la entidad (sin tablas de traducción)
 - Skills — catálogo + N:M
-- `experience_type` — `onsite` | `hybrid` | `remote`
+- `experience_types` — tipo de empleo (Jornada completa, Jornada parcial, Por cuenta propia, Autónomo, Contrato por servicio, Prácticas, Prácticas laborales, Trabajo de temporada)
+- `experience_modalities` — modalidad (Presencial, Híbrido, Remoto)
 - Fechas — `start_month/year` + `end_month/year`
 - Proyectos — slug único; sin draft/status
 
