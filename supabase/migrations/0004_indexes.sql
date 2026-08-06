@@ -16,8 +16,8 @@ create index experiences_type_idx on public.experiences (type_id);
 create index experiences_modality_idx on public.experiences (modality_id);
 
 create index educations_org_idx on public.educations (organization_id);
+create index educations_type_idx on public.educations (type_id);
 create index educations_chrono_idx on public.educations (
-  is_carrera desc,
   is_current desc,
   end_year desc nulls last,
   end_month desc nulls last,

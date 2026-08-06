@@ -214,10 +214,6 @@ create table public.educations (
   is_current boolean not null default false,
   diploma_image_path text,
   diploma_pdf_path text,
-  -- Prioriza tipo "Carrera" en el listado público/admin (UUID fijo del catálogo).
-  is_carrera boolean generated always as (
-    type_id = 'a4444444-4444-4444-4444-444444444001'::uuid
-  ) stored,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint educations_current_end_null check (
