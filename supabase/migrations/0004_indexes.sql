@@ -4,7 +4,14 @@ create index organizations_name_idx on public.organizations (name);
 create index organizations_location_idx on public.organizations (location);
 
 create index experiences_org_idx on public.experiences (organization_id);
-create index experiences_sort_idx on public.experiences (sort_order, start_year desc, start_month desc);
+create index experiences_chrono_idx on public.experiences (
+  is_current desc,
+  end_year desc nulls last,
+  end_month desc nulls last,
+  start_year desc,
+  start_month desc,
+  id desc
+);
 create index experiences_type_idx on public.experiences (type_id);
 create index experiences_modality_idx on public.experiences (modality_id);
 

@@ -181,7 +181,6 @@ create table public.experiences (
   end_month smallint check (end_month between 1 and 12),
   end_year smallint check (end_year between 1950 and 2100),
   is_current boolean not null default false,
-  sort_order int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint experiences_current_end_null check (

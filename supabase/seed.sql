@@ -40,13 +40,13 @@ on conflict (name) do nothing;
 
 insert into public.experiences (
   id, organization_id, type_id, modality_id, start_month, start_year,
-  end_month, end_year, is_current, sort_order, title, description
+  end_month, end_year, is_current, title, description
 ) values (
   '55555555-5555-5555-5555-555555555001',
   '33333333-3333-3333-3333-333333333001',
   'a3333333-3333-3333-3333-333333333001', -- Jornada completa
   'a7777777-7777-7777-7777-777777777002', -- Híbrido
-  3, 2022, null, null, true, 1,
+  3, 2022, null, null, true,
   'Frontend Developer',
   'Desarrollo de interfaces con React y TypeScript.'
 ) on conflict do nothing;
