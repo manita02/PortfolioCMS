@@ -30,8 +30,13 @@ async function fetchEducations(limit?: number): Promise<Education[]> {
   let query = supabase
     .from("educations")
     .select(select)
-    .order("sort_order", { ascending: true })
-    .order("start_year", { ascending: false });
+    .order("is_carrera", { ascending: false })
+    .order("is_current", { ascending: false })
+    .order("end_year", { ascending: false, nullsFirst: false })
+    .order("end_month", { ascending: false, nullsFirst: false })
+    .order("start_year", { ascending: false })
+    .order("start_month", { ascending: false })
+    .order("id", { ascending: false });
 
   if (limit) query = query.limit(limit);
 
@@ -54,6 +59,12 @@ export async function getEducationsRaw() {
   const { data } = await supabase
     .from("educations")
     .select(select)
-    .order("sort_order", { ascending: true });
+    .order("is_carrera", { ascending: false })
+    .order("is_current", { ascending: false })
+    .order("end_year", { ascending: false, nullsFirst: false })
+    .order("end_month", { ascending: false, nullsFirst: false })
+    .order("start_year", { ascending: false })
+    .order("start_month", { ascending: false })
+    .order("id", { ascending: false });
   return (data ?? []) as import("@/features/admin/types/rows").EducationAdminRow[];
 }

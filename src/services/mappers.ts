@@ -103,7 +103,6 @@ export function mapEducation(row: Record<string, unknown>): Education {
     isCurrent: row.is_current as boolean,
     diplomaImagePath: (row.diploma_image_path as string) ?? null,
     diplomaPdfPath: (row.diploma_pdf_path as string) ?? null,
-    sortOrder: row.sort_order as number,
     title: (row.title as string) ?? "",
     description: (row.description as string) ?? "",
     skills: skillJoins.map((s) => mapSkillFromJoin(s)),
