@@ -5,14 +5,12 @@ import { siteConfig } from "@/config/site";
 import { AboutSection } from "@/features/home/components/about-section";
 import { FinalCtaSection } from "@/features/home/components/final-cta-section";
 import { HeroSection } from "@/features/home/components/hero-section";
-import { CertificatesSection } from "@/features/certificates/components/certificates-section";
 import { EducationSection } from "@/features/education/components/education-section";
 import { ExperienceSection } from "@/features/experiences/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
 import { SkillsSection } from "@/features/skills/components/skills-section";
 import { skillTypeIds } from "@/constants/catalog-ids";
 import { cn } from "@/lib/utils";
-import { getCertificates } from "@/services/certificate.service";
 import { getEducations } from "@/services/education.service";
 import { getExperiences } from "@/services/experience.service";
 import { getPerson } from "@/services/person.service";
@@ -23,23 +21,15 @@ import { getSocialLinks } from "@/services/social-link.service";
 export default async function AdminPreviewPage() {
   const portfolioUrl = siteConfig.getUrl();
 
-  const [
-    person,
-    skills,
-    experiences,
-    educations,
-    projects,
-    certificates,
-    socialLinks,
-  ] = await Promise.all([
-    getPerson(),
-    getSkills(),
-    getExperiences(3),
-    getEducations(2),
-    getProjects({ featuredOnly: true, limit: 3 }),
-    getCertificates({ featuredOnly: true, limit: 3 }),
-    getSocialLinks(),
-  ]);
+  const [person, skills, experiences, educations, projects, socialLinks] =
+    await Promise.all([
+      getPerson(),
+      getSkills(),
+      getExperiences(3),
+      getEducations(2),
+      getProjects({ featuredOnly: true, limit: 3 }),
+      getSocialLinks(),
+    ]);
 
   const githubUrl =
     socialLinks.find((l) => l.iconKey.toLowerCase() === "github")?.url ??
@@ -104,13 +94,6 @@ export default async function AdminPreviewPage() {
           items={projects}
           seeAllLabel="Ver todos"
           seeLabel="Ver proyecto"
-          emptyLabel="Aún no hay contenido."
-          summary
-        />
-        <CertificatesSection
-          title="Certificados"
-          items={certificates}
-          seeAllLabel="Ver todos"
           emptyLabel="Aún no hay contenido."
           summary
         />

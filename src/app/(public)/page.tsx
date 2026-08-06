@@ -3,7 +3,6 @@ import { siteConfig } from "@/config/site";
 import { AboutSection } from "@/features/home/components/about-section";
 import { FinalCtaSection } from "@/features/home/components/final-cta-section";
 import { HeroSection } from "@/features/home/components/hero-section";
-import { CertificatesSection } from "@/features/certificates/components/certificates-section";
 import { EducationSection } from "@/features/education/components/education-section";
 import { ExperienceSection } from "@/features/experiences/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
@@ -12,7 +11,6 @@ import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { buildMetadata } from "@/lib/seo";
 import { getPublicStorageUrl } from "@/lib/storage-url";
-import { getCertificates } from "@/services/certificate.service";
 import { getEducations } from "@/services/education.service";
 import { getExperiences } from "@/services/experience.service";
 import { getPerson } from "@/services/person.service";
@@ -40,23 +38,15 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [
-    person,
-    skills,
-    experiences,
-    educations,
-    projects,
-    certificates,
-    socialLinks,
-  ] = await Promise.all([
-    getPerson(),
-    getSkills(),
-    getExperiences(3),
-    getEducations(2),
-    getProjects({ featuredOnly: true, limit: 3 }),
-    getCertificates({ featuredOnly: true, limit: 3 }),
-    getSocialLinks(),
-  ]);
+  const [person, skills, experiences, educations, projects, socialLinks] =
+    await Promise.all([
+      getPerson(),
+      getSkills(),
+      getExperiences(3),
+      getEducations(2),
+      getProjects({ featuredOnly: true, limit: 3 }),
+      getSocialLinks(),
+    ]);
 
   const fullName = person
     ? `${person.firstName} ${person.lastName}`
@@ -125,13 +115,6 @@ export default async function HomePage() {
         items={projects}
         seeAllLabel="Ver todos"
         seeLabel="Ver proyecto"
-        emptyLabel="Aún no hay contenido."
-        summary
-      />
-      <CertificatesSection
-        title="Certificados"
-        items={certificates}
-        seeAllLabel="Ver todos"
         emptyLabel="Aún no hay contenido."
         summary
       />

@@ -7,7 +7,6 @@ const staticPaths = [
   "/proyectos",
   "/experiencia",
   "/educacion",
-  "/certificados",
   "/cv",
 ];
 

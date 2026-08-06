@@ -15,7 +15,6 @@ export async function GET(request: Request) {
         education: "Educación",
         skills: "Habilidades",
         projects: "Proyectos",
-        certificates: "Certificados",
       },
     }),
   );
