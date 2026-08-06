@@ -15,7 +15,6 @@ export const projectSchema = z.object({
   githubUrl: z.string().url().optional().or(z.literal("")),
   liveUrl: z.string().url().optional().or(z.literal("")),
   isFeatured: z.boolean(),
-  sortOrder: z.coerce.number().int(),
   skillIds: z.array(z.string().uuid()),
 });
 
