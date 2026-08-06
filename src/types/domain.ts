@@ -73,7 +73,6 @@ export interface Education {
   isCurrent: boolean;
   diplomaImagePath: string | null;
   diplomaPdfPath: string | null;
-  sortOrder: number;
   title: string;
   description: string;
   skills: Skill[];
