@@ -5,6 +5,7 @@ import { FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { OrganizationBadge } from "@/components/shared/organization-badge";
+import { useMediaViewer } from "@/components/shared/media-viewer";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { formatDateRange } from "@/lib/dates";
 import { getPublicStorageUrl } from "@/lib/storage-url";
@@ -18,6 +19,8 @@ export function EducationCard({
   item: Education;
   presentLabel: string;
 }) {
+  const { openMedia, viewer } = useMediaViewer();
+
   const diplomaImage = getPublicStorageUrl(
     storageBuckets.educations,
     item.diplomaImagePath,
@@ -55,7 +58,22 @@ export function EducationCard({
       ) : null}
 
       {diplomaImage ? (
-        <div className="bg-muted relative aspect-[16/10] max-w-sm overflow-hidden rounded-xl border border-border/60">
+        <button
+          type="button"
+          onClick={() =>
+            openMedia(diplomaImage, {
+              type: "image",
+              title: `Diploma: ${item.title}`,
+            })
+          }
+          className={cn(
+            "bg-muted relative block aspect-[16/10] w-full max-w-sm overflow-hidden rounded-xl border border-border/60",
+            "cursor-pointer transition-all duration-200",
+            "hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-md",
+            "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none",
+          )}
+          aria-label={`Ver imagen del diploma: ${item.title}`}
+        >
           <Image
             src={diplomaImage}
             alt={`Diploma: ${item.title}`}
@@ -63,19 +81,24 @@ export function EducationCard({
             className="object-cover"
             sizes="(max-width:768px) 100vw, 384px"
           />
-        </div>
+        </button>
       ) : null}
 
       {diplomaPdf ? (
-        <a
-          href={diplomaPdf}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() =>
+            openMedia(diplomaPdf, {
+              type: "pdf",
+              title: `Diploma: ${item.title}`,
+            })
+          }
           className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          aria-label={`Ver PDF del diploma: ${item.title}`}
         >
           <FileText className="size-3.5" />
-          Abrir diploma
-        </a>
+          Ver diploma
+        </button>
       ) : null}
 
       {item.skills.length > 0 ? (
@@ -87,6 +110,8 @@ export function EducationCard({
           ))}
         </ul>
       ) : null}
+
+      {viewer}
     </article>
   );
 }
