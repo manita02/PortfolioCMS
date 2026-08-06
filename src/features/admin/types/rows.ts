@@ -58,7 +58,6 @@ export type ProjectAdminRow = {
   github_url?: string | null;
   live_url?: string | null;
   is_featured: boolean;
-  sort_order: number;
   name: string;
   summary: string;
   description: string;
