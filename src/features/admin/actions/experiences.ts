@@ -23,7 +23,6 @@ export async function upsertExperienceAction(input: ExperienceInput) {
     end_month: data.isCurrent ? null : (data.endMonth ?? null),
     end_year: data.isCurrent ? null : (data.endYear ?? null),
     is_current: data.isCurrent,
-    sort_order: data.sortOrder,
     title: data.title,
     description: data.description,
   };
