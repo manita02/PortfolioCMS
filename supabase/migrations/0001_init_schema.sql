@@ -260,25 +260,6 @@ create table public.project_skills (
 );
 
 -- ---------------------------------------------------------------------------
--- Certificates
--- ---------------------------------------------------------------------------
-create table public.certificates (
-  id uuid primary key default gen_random_uuid(),
-  organization_id uuid not null references public.organizations (id) on delete restrict,
-  name text not null default '',
-  description text not null default '',
-  issued_month smallint not null check (issued_month between 1 and 12),
-  issued_year smallint not null check (issued_year between 1950 and 2100),
-  image_path text,
-  pdf_path text,
-  credential_url text,
-  is_featured boolean not null default false,
-  sort_order int not null default 0,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
--- ---------------------------------------------------------------------------
 -- Social links
 -- ---------------------------------------------------------------------------
 create table public.social_links (
@@ -338,8 +319,6 @@ for each row execute function public.set_updated_at();
 create trigger educations_updated_at before update on public.educations
 for each row execute function public.set_updated_at();
 create trigger projects_updated_at before update on public.projects
-for each row execute function public.set_updated_at();
-create trigger certificates_updated_at before update on public.certificates
 for each row execute function public.set_updated_at();
 create trigger social_links_updated_at before update on public.social_links
 for each row execute function public.set_updated_at();

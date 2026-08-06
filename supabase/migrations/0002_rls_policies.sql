@@ -33,7 +33,6 @@ alter table public.educations enable row level security;
 alter table public.education_skills enable row level security;
 alter table public.projects enable row level security;
 alter table public.project_skills enable row level security;
-alter table public.certificates enable row level security;
 alter table public.social_links enable row level security;
 
 -- admins: solo el admin puede leer su fila (gestión insert vía SQL Dashboard)
@@ -58,7 +57,6 @@ create policy educations_select on public.educations for select using (true);
 create policy education_skills_select on public.education_skills for select using (true);
 create policy projects_select on public.projects for select using (true);
 create policy project_skills_select on public.project_skills for select using (true);
-create policy certificates_select on public.certificates for select using (true);
 create policy social_links_select on public.social_links for select using (true);
 
 -- Escritura solo admin
@@ -71,5 +69,4 @@ create policy educations_write on public.educations for all using (public.is_adm
 create policy education_skills_write on public.education_skills for all using (public.is_admin()) with check (public.is_admin());
 create policy projects_write on public.projects for all using (public.is_admin()) with check (public.is_admin());
 create policy project_skills_write on public.project_skills for all using (public.is_admin()) with check (public.is_admin());
-create policy certificates_write on public.certificates for all using (public.is_admin()) with check (public.is_admin());
 create policy social_links_write on public.social_links for all using (public.is_admin()) with check (public.is_admin());

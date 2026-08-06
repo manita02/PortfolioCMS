@@ -37,9 +37,6 @@ create index projects_featured_chrono_idx on public.projects (
 create unique index projects_slug_uidx on public.projects (slug);
 create index projects_org_idx on public.projects (organization_id);
 
-create index certificates_featured_idx on public.certificates (is_featured, sort_order);
-create index certificates_org_idx on public.certificates (organization_id);
-
 create index skills_sort_idx on public.skills (sort_order, name);
 create unique index skills_name_uidx on public.skills (name);
 

@@ -111,17 +111,6 @@ insert into public.project_skills (project_id, skill_id) values
   ('77777777-7777-7777-7777-777777777003', '44444444-4444-4444-4444-444444444002')
 on conflict do nothing;
 
-insert into public.certificates (
-  id, organization_id, issued_month, issued_year, is_featured, sort_order,
-  name, description
-) values (
-  '88888888-8888-8888-8888-888888888001',
-  '33333333-3333-3333-3333-333333333003',
-  8, 2023, true, 1,
-  'AWS Cloud Practitioner',
-  'Fundamentos de la nube AWS.'
-) on conflict do nothing;
-
 insert into public.social_links (id, name, type_id, icon_key, url, sort_order, is_visible) values
   ('99999999-9999-9999-9999-999999999001', 'GitHub', 'a6666666-6666-6666-6666-666666666001', 'github', 'https://github.com/example', 1, true),
   ('99999999-9999-9999-9999-999999999002', 'LinkedIn', 'a6666666-6666-6666-6666-666666666001', 'linkedin', 'https://linkedin.com/in/example', 2, true),
