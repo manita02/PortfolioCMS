@@ -97,21 +97,6 @@ export interface Project {
   skills: Skill[];
 }
 
-export interface Certificate {
-  id: string;
-  organizationId: string;
-  organization?: Organization;
-  issuedMonth: number;
-  issuedYear: number;
-  imagePath: string | null;
-  pdfPath: string | null;
-  credentialUrl: string | null;
-  isFeatured: boolean;
-  sortOrder: number;
-  name: string;
-  description: string;
-}
-
 export interface SocialLink {
   id: string;
   name: string;
@@ -129,6 +114,5 @@ export interface CvData {
   educations: Education[];
   projects: Project[];
   skills: Skill[];
-  certificates: Certificate[];
   socialLinks: SocialLink[];
 }
