@@ -7,7 +7,6 @@ export const cacheTags = {
   projects: "projects",
   project: (slug: string) => `project:${slug}`,
   skills: "skills",
-  certificates: "certificates",
   socialLinks: "social-links",
   cv: "cv",
 } as const;
