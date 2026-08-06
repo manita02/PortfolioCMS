@@ -3,16 +3,17 @@
 export type SkillAdminRow = {
   id: string;
   name: string;
-  type: string;
+  type_id: string;
   sort_order: number;
   icon_path?: string | null;
   label: string;
+  skill_types?: { id?: string; name?: string; sort_order?: number } | null;
 };
 
 export type ExperienceAdminRow = {
   id: string;
   organization_id: string;
-  type: string;
+  type_id: string;
   start_month: number;
   start_year: number;
   end_month?: number | null;
@@ -22,13 +23,14 @@ export type ExperienceAdminRow = {
   title: string;
   description: string;
   organizations?: { name?: string };
+  experience_types?: { id?: string; name?: string } | null;
   experience_skills?: { skill_id: string }[];
 };
 
 export type EducationAdminRow = {
   id: string;
   organization_id: string;
-  type: string;
+  type_id: string;
   start_month: number;
   start_year: number;
   end_month?: number | null;
@@ -41,6 +43,7 @@ export type EducationAdminRow = {
   diploma_image_path?: string | null;
   diploma_pdf_path?: string | null;
   organizations?: { name?: string };
+  education_types?: { id?: string; name?: string } | null;
   education_skills?: { skill_id: string }[];
 };
 
