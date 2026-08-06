@@ -11,7 +11,6 @@ export interface Person {
   email: string | null;
   profileImagePath: string | null;
   bannerImagePath: string | null;
-  cvPdfPath: string | null;
   availabilityStatusId: string;
   availabilityStatusName: string;
   professionalTitle: string;
@@ -71,7 +70,6 @@ export interface Education {
   endMonth: number | null;
   endYear: number | null;
   isCurrent: boolean;
-  institutionImagePath: string | null;
   diplomaImagePath: string | null;
   diplomaPdfPath: string | null;
   sortOrder: number;

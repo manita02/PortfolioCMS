@@ -39,7 +39,6 @@ export type EducationAdminRow = {
   sort_order: number;
   title: string;
   description: string;
-  institution_image_path?: string | null;
   diploma_image_path?: string | null;
   diploma_pdf_path?: string | null;
   organizations?: { name?: string };
