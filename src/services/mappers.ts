@@ -126,7 +126,6 @@ export function mapProject(row: Record<string, unknown>): Project {
     githubUrl: (row.github_url as string) ?? null,
     liveUrl: (row.live_url as string) ?? null,
     isFeatured: row.is_featured as boolean,
-    sortOrder: row.sort_order as number,
     name: (row.name as string) ?? "",
     description: (row.description as string) ?? "",
     summary: (row.summary as string) ?? "",

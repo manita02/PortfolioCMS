@@ -32,8 +32,12 @@ async function fetchProjects(options?: {
   let query = supabase
     .from("projects")
     .select(select)
-    .order("sort_order", { ascending: true })
-    .order("start_year", { ascending: false });
+    .order("is_featured", { ascending: false })
+    .order("end_year", { ascending: false, nullsFirst: false })
+    .order("end_month", { ascending: false, nullsFirst: false })
+    .order("start_year", { ascending: false, nullsFirst: false })
+    .order("start_month", { ascending: false, nullsFirst: false })
+    .order("id", { ascending: false });
 
   if (options?.featuredOnly) query = query.eq("is_featured", true);
   if (options?.limit) query = query.limit(options.limit);
@@ -96,7 +100,7 @@ export async function getRelatedProjects(
       ),
     }))
     .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score || a.project.sortOrder - b.project.sortOrder)
+    .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map((x) => x.project);
 }
@@ -107,6 +111,11 @@ export async function getProjectsRaw() {
   const { data } = await supabase
     .from("projects")
     .select(select)
-    .order("sort_order", { ascending: true });
+    .order("is_featured", { ascending: false })
+    .order("end_year", { ascending: false, nullsFirst: false })
+    .order("end_month", { ascending: false, nullsFirst: false })
+    .order("start_year", { ascending: false, nullsFirst: false })
+    .order("start_month", { ascending: false, nullsFirst: false })
+    .order("id", { ascending: false });
   return (data ?? []) as import("@/features/admin/types/rows").ProjectAdminRow[];
 }
