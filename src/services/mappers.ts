@@ -61,6 +61,7 @@ export function mapSkillFromJoin(row: Record<string, unknown>): Skill {
 export function mapExperience(row: Record<string, unknown>): Experience {
   const skillJoins = (row.experience_skills as Record<string, unknown>[]) ?? [];
   const type = nestedCatalog(row, "experience_types");
+  const modality = nestedCatalog(row, "experience_modalities", "modality_id");
 
   return {
     id: row.id as string,
@@ -70,6 +71,8 @@ export function mapExperience(row: Record<string, unknown>): Experience {
     ),
     typeId: type.id,
     typeName: type.name,
+    modalityId: modality.id,
+    modalityName: modality.name,
     startMonth: row.start_month as number,
     startYear: row.start_year as number,
     endMonth: (row.end_month as number) ?? null,

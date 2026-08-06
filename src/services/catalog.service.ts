@@ -45,6 +45,10 @@ export function getExperienceTypes() {
   return cachedCatalog("experience_types", "experience-types");
 }
 
+export function getExperienceModalities() {
+  return cachedCatalog("experience_modalities", "experience-modalities");
+}
+
 export function getEducationTypes() {
   return cachedCatalog("education_types", "education-types");
 }

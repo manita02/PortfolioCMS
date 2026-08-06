@@ -11,6 +11,7 @@ import { mapExperience } from "@/services/mappers";
 const select = `
   *,
   experience_types ( id, name, sort_order ),
+  experience_modalities ( id, name, sort_order ),
   organizations (
     *,
     organization_types ( id, name, sort_order )
