@@ -25,7 +25,6 @@ function mapPerson(row: Record<string, unknown>): Person {
     email: (row.email as string) ?? null,
     profileImagePath: (row.profile_image_path as string) ?? null,
     bannerImagePath: (row.banner_image_path as string) ?? null,
-    cvPdfPath: (row.cv_pdf_path as string) ?? null,
     availabilityStatusId:
       (row.availability_status_id as string) ?? (status?.id as string) ?? "",
     availabilityStatusName: (status?.name as string) ?? "",

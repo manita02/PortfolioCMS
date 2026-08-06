@@ -99,7 +99,6 @@ export function mapEducation(row: Record<string, unknown>): Education {
     endMonth: (row.end_month as number) ?? null,
     endYear: (row.end_year as number) ?? null,
     isCurrent: row.is_current as boolean,
-    institutionImagePath: (row.institution_image_path as string) ?? null,
     diplomaImagePath: (row.diploma_image_path as string) ?? null,
     diplomaPdfPath: (row.diploma_pdf_path as string) ?? null,
     sortOrder: row.sort_order as number,
