@@ -68,9 +68,13 @@ insert into public.education_types (id, name, sort_order) values
 insert into public.skill_types (id, name, sort_order) values
   ('a5555555-5555-5555-5555-555555555001', 'Lenguaje', 1),
   ('a5555555-5555-5555-5555-555555555002', 'Framework', 2),
-  ('a5555555-5555-5555-5555-555555555003', 'Herramienta', 3),
-  ('a5555555-5555-5555-5555-555555555004', 'Soft skill', 4),
-  ('a5555555-5555-5555-5555-555555555005', 'Otro', 5);
+  ('a5555555-5555-5555-5555-555555555006', 'Base de datos', 3),
+  ('a5555555-5555-5555-5555-555555555003', 'Herramienta', 4),
+  ('a5555555-5555-5555-5555-555555555008', 'Cloud / DevOps', 5),
+  ('a5555555-5555-5555-5555-555555555007', 'Metodología', 6),
+  ('a5555555-5555-5555-5555-555555555004', 'Soft skill', 7),
+  ('a5555555-5555-5555-5555-555555555009', 'Idioma', 8),
+  ('a5555555-5555-5555-5555-555555555005', 'Otro', 9);
 
 insert into public.social_link_types (id, name, sort_order) values
   ('a6666666-6666-6666-6666-666666666001', 'Profesional', 1),
