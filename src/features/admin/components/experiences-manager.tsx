@@ -162,12 +162,12 @@ export function ExperiencesManager({
   const columns: AdminColumn<ExperienceAdminRow>[] = [
     {
       key: "title",
-      header: "Title",
+      header: "Título",
       cell: (row) => row.title || "—",
     },
     {
       key: "org",
-      header: "Organization",
+      header: "Organización",
       cell: (row) => row.organizations?.name ?? "—",
     },
     {
@@ -208,7 +208,7 @@ export function ExperiencesManager({
             name="organizationId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Organization</FormLabel>
+                <FormLabel>Organización</FormLabel>
                 <OrganizationCombobox
                   organizations={organizations}
                   value={field.value}
@@ -240,7 +240,7 @@ export function ExperiencesManager({
             name="startMonth"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Start month</FormLabel>
+                <FormLabel>Mes inicio</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -265,7 +265,7 @@ export function ExperiencesManager({
             name="startYear"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Start year</FormLabel>
+                <FormLabel>Año inicio</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -288,7 +288,7 @@ export function ExperiencesManager({
             name="endMonth"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>End month</FormLabel>
+                <FormLabel>Mes fin</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -310,7 +310,7 @@ export function ExperiencesManager({
             name="endYear"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>End year</FormLabel>
+                <FormLabel>Año fin</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -330,7 +330,7 @@ export function ExperiencesManager({
             name="sortOrder"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sort</FormLabel>
+                <FormLabel>Orden</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -393,7 +393,7 @@ export function ExperiencesManager({
             name="skillIds"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel>Skills</FormLabel>
+                <FormLabel>Habilidades</FormLabel>
                 <SkillMultiSelect
                   skills={skills}
                   value={field.value ?? []}
