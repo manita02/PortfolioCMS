@@ -1,9 +1,8 @@
-import type { AvailabilityStatus } from "@/constants/availability";
-import type { EducationType } from "@/constants/education-types";
-import type { ExperienceType } from "@/constants/experience-types";
-import type { OrganizationType } from "@/constants/organization-types";
-import type { SkillType } from "@/constants/skill-types";
-import type { SocialLinkType } from "@/constants/social-link-types";
+export interface CatalogItem {
+  id: string;
+  name: string;
+  sortOrder: number;
+}
 
 export interface Person {
   id: string;
@@ -13,7 +12,8 @@ export interface Person {
   profileImagePath: string | null;
   bannerImagePath: string | null;
   cvPdfPath: string | null;
-  availabilityStatus: AvailabilityStatus;
+  availabilityStatusId: string;
+  availabilityStatusName: string;
   professionalTitle: string;
   subtitle: string;
   about: string;
@@ -24,7 +24,8 @@ export interface Person {
 export interface Organization {
   id: string;
   name: string;
-  type: OrganizationType;
+  typeId: string;
+  typeName: string;
   websiteUrl: string | null;
   logoPath: string | null;
   location: string | null;
@@ -34,7 +35,9 @@ export interface Organization {
 export interface Skill {
   id: string;
   name: string;
-  type: SkillType;
+  typeId: string;
+  typeName: string;
+  typeSortOrder: number;
   iconPath: string | null;
   sortOrder: number;
   label: string;
@@ -44,7 +47,8 @@ export interface Experience {
   id: string;
   organizationId: string;
   organization?: Organization;
-  type: ExperienceType;
+  typeId: string;
+  typeName: string;
   startMonth: number;
   startYear: number;
   endMonth: number | null;
@@ -60,7 +64,8 @@ export interface Education {
   id: string;
   organizationId: string;
   organization?: Organization;
-  type: EducationType;
+  typeId: string;
+  typeName: string;
   startMonth: number;
   startYear: number;
   endMonth: number | null;
@@ -113,7 +118,8 @@ export interface Certificate {
 export interface SocialLink {
   id: string;
   name: string;
-  type: SocialLinkType;
+  typeId: string;
+  typeName: string;
   iconKey: string;
   url: string;
   sortOrder: number;
