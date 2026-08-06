@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, type Control } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,7 +52,6 @@ function emptyValues(
     endMonth: null,
     endYear: null,
     isCurrent: false,
-    sortOrder: 0,
     skillIds: [],
     title: "",
     description: "",
@@ -70,7 +69,6 @@ function toFormValues(item: ExperienceAdminRow): ExperienceInput {
     endMonth: item.end_month ?? null,
     endYear: item.end_year ?? null,
     isCurrent: item.is_current,
-    sortOrder: item.sort_order,
     skillIds: item.experience_skills?.map((s) => s.skill_id) ?? [],
     title: item.title ?? "",
     description: item.description ?? "",
@@ -81,6 +79,87 @@ function numberOrNull(value: string): number | null {
   if (value === "") return null;
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
+}
+
+function MonthYearFields({
+  monthName,
+  yearName,
+  monthLabel,
+  yearLabel,
+  disabled,
+  control,
+}: {
+  monthName: "startMonth" | "endMonth";
+  yearName: "startYear" | "endYear";
+  monthLabel: string;
+  yearLabel: string;
+  disabled?: boolean;
+  control: Control<ExperienceInput>;
+}) {
+  return (
+    <div className="grid grid-cols-[minmax(0,4.5rem)_minmax(0,1fr)] gap-2">
+      <FormField
+        control={control}
+        name={monthName}
+        render={({ field }) => (
+          <FormItem className="min-w-0">
+            <FormLabel className="text-muted-foreground text-xs font-normal">
+              {monthLabel}
+            </FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                min={1}
+                max={12}
+                inputMode="numeric"
+                disabled={disabled}
+                className="min-w-0 px-2 tabular-nums"
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (monthName === "endMonth") {
+                    field.onChange(numberOrNull(raw));
+                    return;
+                  }
+                  field.onChange(raw === "" ? undefined : Number(raw));
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name={yearName}
+        render={({ field }) => (
+          <FormItem className="min-w-0">
+            <FormLabel className="text-muted-foreground text-xs font-normal">
+              {yearLabel}
+            </FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                inputMode="numeric"
+                disabled={disabled}
+                className="min-w-0 px-2 tabular-nums"
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (yearName === "endYear") {
+                    field.onChange(numberOrNull(raw));
+                    return;
+                  }
+                  field.onChange(raw === "" ? undefined : Number(raw));
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
 }
 
 export function ExperiencesManager({
@@ -259,7 +338,7 @@ export function ExperiencesManager({
             control={form.control}
             name="modalityId"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="sm:col-span-2">
                 <FormLabel>Modalidad</FormLabel>
                 <FormControl>
                   <CatalogSelect
@@ -273,133 +352,49 @@ export function ExperiencesManager({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="startMonth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mes inicio</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={12}
-                    value={field.value ?? ""}
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === ""
-                          ? undefined
-                          : Number(e.target.value),
-                      )
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="startYear"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Año inicio</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    value={field.value ?? ""}
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === ""
-                          ? undefined
-                          : Number(e.target.value),
-                      )
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="endMonth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mes fin</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={12}
-                    disabled={Boolean(isCurrent)}
-                    value={field.value ?? ""}
-                    onChange={(e) =>
-                      field.onChange(numberOrNull(e.target.value))
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="endYear"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Año fin</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    disabled={Boolean(isCurrent)}
-                    value={field.value ?? ""}
-                    onChange={(e) =>
-                      field.onChange(numberOrNull(e.target.value))
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="sortOrder"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Orden</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    value={field.value ?? 0}
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === "" ? 0 : Number(e.target.value),
-                      )
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="isCurrent"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 self-end pb-2 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(v) => field.onChange(Boolean(v))}
-                  />
-                </FormControl>
-                <FormLabel>{"Actual"}</FormLabel>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
+          <div className="grid gap-4 sm:col-span-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+            <div className="min-w-0 space-y-2">
+              <p className="text-sm leading-none font-medium">Fecha inicio</p>
+              <MonthYearFields
+                control={form.control}
+                monthName="startMonth"
+                yearName="startYear"
+                monthLabel="Mes"
+                yearLabel="Año"
+              />
+            </div>
+
+            <div className="min-w-0 space-y-2">
+              <p className="text-sm leading-none font-medium">Fecha fin</p>
+              <MonthYearFields
+                control={form.control}
+                monthName="endMonth"
+                yearName="endYear"
+                monthLabel="Mes"
+                yearLabel="Año"
+                disabled={Boolean(isCurrent)}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="isCurrent"
+              render={({ field }) => (
+                <FormItem className="flex min-h-9 items-center gap-2 space-y-0 sm:pb-0.5">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(v) => field.onChange(Boolean(v))}
+                    />
+                  </FormControl>
+                  <FormLabel className="whitespace-nowrap">Actual</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="title"
