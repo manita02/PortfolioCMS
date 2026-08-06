@@ -27,7 +27,6 @@ export async function upsertPersonAction(input: PersonInput) {
     availability_status_id: data.availabilityStatusId,
     profile_image_path: data.profileImagePath ?? null,
     banner_image_path: data.bannerImagePath ?? null,
-    cv_pdf_path: data.cvPdfPath ?? null,
     professional_title: data.professionalTitle,
     subtitle: data.subtitle,
     about: data.about,
