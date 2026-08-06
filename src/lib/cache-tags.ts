@@ -1,4 +1,5 @@
 export const cacheTags = {
+  catalogs: "catalogs",
   person: "person",
   organizations: "organizations",
   experiences: "experiences",
