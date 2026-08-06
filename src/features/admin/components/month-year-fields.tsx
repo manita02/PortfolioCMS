@@ -10,13 +10,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 type DateRangeFormValues = {
-  startMonth: number;
-  startYear: number;
+  startMonth?: number | null;
+  startYear?: number | null;
   endMonth?: number | null;
   endYear?: number | null;
-  isCurrent: boolean;
+  isCurrent?: boolean;
 };
 
 function numberOrNull(value: string): number | null {
@@ -32,6 +33,7 @@ function MonthYearPair<T extends FieldValues & DateRangeFormValues>({
   yearLabel,
   disabled,
   control,
+  allowEmpty,
 }: {
   monthName: "startMonth" | "endMonth";
   yearName: "startYear" | "endYear";
@@ -39,9 +41,9 @@ function MonthYearPair<T extends FieldValues & DateRangeFormValues>({
   yearLabel: string;
   disabled?: boolean;
   control: Control<T>;
+  /** Si true, vacío → null (fin o rangos opcionales). Si false, vacío → undefined. */
+  allowEmpty: boolean;
 }) {
-  const isEnd = monthName === "endMonth";
-
   return (
     <div className="grid grid-cols-[minmax(0,4.5rem)_minmax(0,1fr)] gap-2">
       <FormField
@@ -63,7 +65,7 @@ function MonthYearPair<T extends FieldValues & DateRangeFormValues>({
                 value={field.value ?? ""}
                 onChange={(e) => {
                   const raw = e.target.value;
-                  if (isEnd) {
+                  if (allowEmpty) {
                     field.onChange(numberOrNull(raw));
                     return;
                   }
@@ -92,7 +94,7 @@ function MonthYearPair<T extends FieldValues & DateRangeFormValues>({
                 value={field.value ?? ""}
                 onChange={(e) => {
                   const raw = e.target.value;
-                  if (isEnd) {
+                  if (allowEmpty) {
                     field.onChange(numberOrNull(raw));
                     return;
                   }
@@ -108,16 +110,32 @@ function MonthYearPair<T extends FieldValues & DateRangeFormValues>({
   );
 }
 
-/** Fecha inicio | Fecha fin | Actual — mismo layout para Experiencia y Educación. */
+/**
+ * Fecha inicio | Fecha fin | (opcional) Actual.
+ * Misma distribución para Experiencia, Educación y Proyectos.
+ */
 export function AdminDateRangeFields<T extends FieldValues & DateRangeFormValues>({
   control,
-  isCurrent,
+  isCurrent = false,
+  showCurrent = true,
+  optionalStart = false,
 }: {
   control: Control<T>;
-  isCurrent: boolean;
+  isCurrent?: boolean;
+  /** Experiencia/Educación: true. Proyectos: false (sin concepto “Actual”). */
+  showCurrent?: boolean;
+  /** Proyectos: fechas de inicio opcionales. */
+  optionalStart?: boolean;
 }) {
   return (
-    <div className="grid gap-4 sm:col-span-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+    <div
+      className={cn(
+        "grid gap-4 sm:col-span-2 sm:items-end",
+        showCurrent
+          ? "sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+          : "sm:grid-cols-2",
+      )}
+    >
       <div className="min-w-0 space-y-2">
         <p className="text-sm leading-none font-medium">Fecha inicio</p>
         <MonthYearPair
@@ -126,6 +144,7 @@ export function AdminDateRangeFields<T extends FieldValues & DateRangeFormValues
           yearName="startYear"
           monthLabel="Mes"
           yearLabel="Año"
+          allowEmpty={optionalStart}
         />
       </div>
 
@@ -137,26 +156,29 @@ export function AdminDateRangeFields<T extends FieldValues & DateRangeFormValues
           yearName="endYear"
           monthLabel="Mes"
           yearLabel="Año"
-          disabled={isCurrent}
+          disabled={showCurrent && isCurrent}
+          allowEmpty
         />
       </div>
 
-      <FormField
-        control={control}
-        name={"isCurrent" as Path<T>}
-        render={({ field }) => (
-          <FormItem className="flex min-h-9 items-center gap-2 space-y-0 sm:pb-0.5">
-            <FormControl>
-              <Checkbox
-                checked={Boolean(field.value)}
-                onCheckedChange={(v) => field.onChange(Boolean(v))}
-              />
-            </FormControl>
-            <FormLabel className="whitespace-nowrap">Actual</FormLabel>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {showCurrent ? (
+        <FormField
+          control={control}
+          name={"isCurrent" as Path<T>}
+          render={({ field }) => (
+            <FormItem className="flex min-h-9 items-center gap-2 space-y-0 sm:pb-0.5">
+              <FormControl>
+                <Checkbox
+                  checked={Boolean(field.value)}
+                  onCheckedChange={(v) => field.onChange(Boolean(v))}
+                />
+              </FormControl>
+              <FormLabel className="whitespace-nowrap">Actual</FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      ) : null}
     </div>
   );
 }

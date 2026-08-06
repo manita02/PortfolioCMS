@@ -26,6 +26,7 @@ import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
 import { AdminDataTable } from "@/features/admin/components/admin-data-table";
 import { ConfirmDeleteButton } from "@/features/admin/components/confirm-delete-button";
 import { MediaUploader } from "@/components/shared/media-uploader";
+import { AdminDateRangeFields } from "@/features/admin/components/month-year-fields";
 import { OrganizationCombobox } from "@/features/admin/components/organization-combobox";
 import { SkillMultiSelect } from "@/features/admin/components/skill-multi-select";
 import { toAdminErrorMessage } from "@/features/admin/lib/errors";
@@ -56,7 +57,6 @@ function defaults(item?: ProjectAdminRow | null): FormValues {
     githubUrl: item?.github_url ?? "",
     liveUrl: item?.live_url ?? "",
     isFeatured: item?.is_featured ?? false,
-    sortOrder: item?.sort_order ?? 0,
     skillIds: item?.project_skills?.map((s) => s.skill_id) ?? [],
   };
 }
@@ -206,7 +206,7 @@ export function ProjectsManager({
                 control={form.control}
                 name="organizationId"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="sm:col-span-2">
                     <FormLabel>Organización</FormLabel>
                     <OrganizationCombobox
                       organizations={organizations}
@@ -218,111 +218,13 @@ export function ProjectsManager({
                   </FormItem>
                 )}
               />
-              <FormField
+
+              <AdminDateRangeFields
                 control={form.control}
-                name="sortOrder"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Orden</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        value={field.value}
-                        onChange={(e) => field.onChange(e.target.value)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                showCurrent={false}
+                optionalStart
               />
-              <FormField
-                control={form.control}
-                name="startMonth"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mes inicio</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={1}
-                        max={12}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : e.target.value,
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="startYear"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Año inicio</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : e.target.value,
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endMonth"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mes fin</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={1}
-                        max={12}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : e.target.value,
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endYear"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Año fin</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : e.target.value,
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name="githubUrl"
@@ -353,7 +255,7 @@ export function ProjectsManager({
                 control={form.control}
                 name="isFeatured"
                 render={({ field }) => (
-                  <FormItem className="flex items-center gap-2 space-y-0 self-end pb-2">
+                  <FormItem className="flex items-center gap-2 space-y-0 self-end pb-2 sm:col-span-2">
                     <FormControl>
                       <Checkbox
                         checked={field.value}

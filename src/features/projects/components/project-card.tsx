@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Code2 } from "lucide-react";
+import { Code2, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { OrganizationBadge } from "@/components/shared/organization-badge";
 import { storageBuckets } from "@/constants/storage-buckets";
+import { formatProjectDateRange } from "@/lib/dates";
+import { formatProjectDuration } from "@/lib/duration";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { Project } from "@/types/domain";
 
@@ -18,6 +20,16 @@ export function ProjectCard({
 }) {
   const image = getPublicStorageUrl(storageBuckets.projects, project.imagePath);
   const href = `/proyectos/${project.slug}`;
+  const dateLabel = formatProjectDateRange(project);
+  const duration =
+    project.startMonth && project.startYear
+      ? formatProjectDuration({
+          startMonth: project.startMonth,
+          startYear: project.startYear,
+          endMonth: project.endMonth,
+          endYear: project.endYear,
+        })
+      : "";
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-border/70 bg-card/40 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-foreground/15 hover:shadow-md">
@@ -36,6 +48,7 @@ export function ProjectCard({
           )}
           {project.isFeatured ? (
             <Badge className="absolute top-3 left-3" variant="secondary">
+              <Star className="size-3" aria-hidden />
               Destacado
             </Badge>
           ) : null}
@@ -43,8 +56,18 @@ export function ProjectCard({
       </Link>
 
       <div className="space-y-3 p-5">
-        <Link href={href} className="block">
+        <Link href={href} className="block space-y-1">
           <h3 className="font-heading text-lg tracking-tight">{project.name}</h3>
+          {dateLabel ? (
+            <div className="text-muted-foreground">
+              <p className="text-xs sm:text-sm">{dateLabel}</p>
+              {duration ? (
+                <p className="text-muted-foreground/80 text-[11px] tracking-wide sm:text-xs">
+                  {duration}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
         </Link>
 
         <OrganizationBadge organization={project.organization} size={36} />
