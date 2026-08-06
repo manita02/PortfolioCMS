@@ -14,23 +14,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { organizationTypes } from "@/constants/organization-types";
 import { storageBuckets } from "@/constants/storage-buckets";
 import {
   deleteOrganizationAction,
   upsertOrganizationAction,
 } from "@/features/admin/actions/organizations";
-import {
-  AdminCrudShell,
-} from "@/features/admin/components/admin-crud-shell";
+import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
+import { CatalogSelect } from "@/features/admin/components/catalog-select";
 import {
   AdminDataTable,
   type AdminColumn,
@@ -43,22 +34,24 @@ import {
   organizationSchema,
   type OrganizationInput,
 } from "@/features/admin/schemas/organization";
-import type { Organization } from "@/types/domain";
+import type { CatalogItem, Organization } from "@/types/domain";
 
-const emptyValues: OrganizationInput = {
-  name: "",
-  type: "company",
-  websiteUrl: "",
-  logoPath: null,
-  location: "",
-  description: "",
-};
+function emptyValues(defaultTypeId: string): OrganizationInput {
+  return {
+    name: "",
+    typeId: defaultTypeId,
+    websiteUrl: "",
+    logoPath: null,
+    location: "",
+    description: "",
+  };
+}
 
 function toFormValues(item: Organization): OrganizationInput {
   return {
     id: item.id,
     name: item.name,
-    type: item.type,
+    typeId: item.typeId,
     websiteUrl: item.websiteUrl ?? "",
     logoPath: item.logoPath ?? null,
     location: item.location ?? "",
@@ -68,10 +61,12 @@ function toFormValues(item: Organization): OrganizationInput {
 
 export function OrganizationsManager({
   items,
+  types,
   title,
   description,
 }: {
   items: Organization[];
+  types: CatalogItem[];
   title: string;
   description?: string;
 }) {
@@ -80,10 +75,11 @@ export function OrganizationsManager({
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
+  const defaultTypeId = types[0]?.id ?? "";
 
   const form = useForm<OrganizationInput>({
     resolver: adminResolver(organizationSchema),
-    defaultValues: emptyValues,
+    defaultValues: emptyValues(defaultTypeId),
     mode: "onChange",
   });
 
@@ -93,14 +89,14 @@ export function OrganizationsManager({
     return items.filter(
       (item) =>
         item.name.toLowerCase().includes(q) ||
-        item.type.toLowerCase().includes(q) ||
+        item.typeName.toLowerCase().includes(q) ||
         (item.location ?? "").toLowerCase().includes(q),
     );
   }, [items, search]);
 
   function openCreate() {
     setEditingId(undefined);
-    form.reset(emptyValues);
+    form.reset(emptyValues(defaultTypeId));
     setFormOpen(true);
   }
 
@@ -113,7 +109,7 @@ export function OrganizationsManager({
   function closeForm() {
     setFormOpen(false);
     setEditingId(undefined);
-    form.reset(emptyValues);
+    form.reset(emptyValues(defaultTypeId));
   }
 
   function onSubmit(values: OrganizationInput) {
@@ -135,13 +131,13 @@ export function OrganizationsManager({
   const columns: AdminColumn<Organization>[] = [
     {
       key: "name",
-      header: "Name",
+      header: "Nombre",
       cell: (row) => row.name,
     },
     {
       key: "type",
-      header: "Type",
-      cell: (row) => row.type,
+      header: "Tipo",
+      cell: (row) => row.typeName || "—",
     },
     {
       key: "location",
@@ -154,11 +150,11 @@ export function OrganizationsManager({
       cell: (row) => (
         <div className="flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-            {"Editar"}
+            Editar
           </Button>
           <ConfirmDeleteButton
-            label={"Eliminar"}
-            confirmLabel={"¿Eliminar este elemento?"}
+            label="Eliminar"
+            confirmLabel="¿Eliminar este elemento?"
             onDelete={async () => {
               try {
                 await deleteOrganizationAction(row.id);
@@ -186,7 +182,7 @@ export function OrganizationsManager({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Nombre</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -196,24 +192,17 @@ export function OrganizationsManager({
           />
           <FormField
             control={form.control}
-            name="type"
+            name="typeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {organizationTypes.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Tipo</FormLabel>
+                <FormControl>
+                  <CatalogSelect
+                    items={types}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -236,7 +225,7 @@ export function OrganizationsManager({
             name="websiteUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website</FormLabel>
+                <FormLabel>Sitio web</FormLabel>
                 <FormControl>
                   <Input type="url" {...field} value={field.value ?? ""} />
                 </FormControl>
@@ -276,10 +265,10 @@ export function OrganizationsManager({
         />
         <div className="flex gap-2">
           <Button type="submit" disabled={pending}>
-            {"Guardar"}
+            Guardar
           </Button>
           <Button type="button" variant="outline" onClick={closeForm}>
-            {"Cancelar"}
+            Cancelar
           </Button>
         </div>
       </form>
@@ -293,7 +282,7 @@ export function OrganizationsManager({
       search={search}
       onSearchChange={setSearch}
       onNew={openCreate}
-      newLabel={"Nuevo"}
+      newLabel="Nuevo"
       formOpen={formOpen}
       form={formNode}
       empty={filtered.length === 0}

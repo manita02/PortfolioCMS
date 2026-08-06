@@ -15,21 +15,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { educationTypes } from "@/constants/education-types";
 import { storageBuckets } from "@/constants/storage-buckets";
 import {
   deleteEducationAction,
   upsertEducationAction,
 } from "@/features/admin/actions/educations";
 import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
+import { CatalogSelect } from "@/features/admin/components/catalog-select";
 import { AdminDataTable } from "@/features/admin/components/admin-data-table";
 import { ConfirmDeleteButton } from "@/features/admin/components/confirm-delete-button";
 import { MediaUploader } from "@/components/shared/media-uploader";
@@ -42,13 +35,17 @@ import {
   type EducationInput,
 } from "@/features/admin/schemas/education";
 import type { EducationAdminRow } from "@/features/admin/types/rows";
-import type { Organization } from "@/types/domain";
+import type { CatalogItem, Organization } from "@/types/domain";
 
-function defaults(item?: EducationAdminRow | null, orgId = ""): EducationInput {
+function defaults(
+  item: EducationAdminRow | null | undefined,
+  orgId: string,
+  defaultTypeId: string,
+): EducationInput {
   return {
     id: item?.id,
     organizationId: item?.organization_id ?? orgId,
-    type: (item?.type as EducationInput["type"]) ?? "degree",
+    typeId: item?.type_id ?? defaultTypeId,
     startMonth: item?.start_month ?? 1,
     startYear: item?.start_year ?? new Date().getFullYear(),
     endMonth: item?.end_month ?? null,
@@ -68,12 +65,14 @@ export function EducationsManager({
   items,
   organizations,
   skills,
+  types,
   title,
   description,
 }: {
   items: EducationAdminRow[];
   organizations: Organization[];
   skills: { id: string; name: string }[];
+  types: CatalogItem[];
   title: string;
   description?: string;
 }) {
@@ -83,11 +82,12 @@ export function EducationsManager({
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
   const defaultOrg = organizations[0]?.id ?? "";
+  const defaultTypeId = types[0]?.id ?? "";
 
   const form = useForm<EducationInput>({
     resolver: adminResolver(educationSchema),
     mode: "onChange",
-    defaultValues: defaults(null, defaultOrg),
+    defaultValues: defaults(null, defaultOrg, defaultTypeId),
   });
 
   const isCurrent = useWatch({ control: form.control, name: "isCurrent" });
@@ -105,20 +105,20 @@ export function EducationsManager({
 
   function openCreate() {
     setEditingId(undefined);
-    form.reset(defaults(null, defaultOrg));
+    form.reset(defaults(null, defaultOrg, defaultTypeId));
     setFormOpen(true);
   }
 
   function openEdit(item: EducationAdminRow) {
     setEditingId(item.id);
-    form.reset(defaults(item, defaultOrg));
+    form.reset(defaults(item, defaultOrg, defaultTypeId));
     setFormOpen(true);
   }
 
   function closeForm() {
     setFormOpen(false);
     setEditingId(undefined);
-    form.reset(defaults(null, defaultOrg));
+    form.reset(defaults(null, defaultOrg, defaultTypeId));
   }
 
   function onSubmit(values: EducationInput) {
@@ -168,24 +168,17 @@ export function EducationsManager({
               />
               <FormField
                 control={form.control}
-                name="type"
+                name="typeId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tipo</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {educationTypes.map((item) => (
-                          <SelectItem key={item} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <CatalogSelect
+                        items={types}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -16,18 +16,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { socialLinkTypes } from "@/constants/social-link-types";
-import {
   deleteSocialLinkAction,
   upsertSocialLinkAction,
 } from "@/features/admin/actions/social-links";
 import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
+import { CatalogSelect } from "@/features/admin/components/catalog-select";
 import {
   AdminDataTable,
   type AdminColumn,
@@ -39,22 +32,24 @@ import {
   socialLinkSchema,
   type SocialLinkInput,
 } from "@/features/admin/schemas/social-link";
-import type { SocialLink } from "@/types/domain";
+import type { CatalogItem, SocialLink } from "@/types/domain";
 
-const emptyValues: SocialLinkInput = {
-  name: "",
-  type: "professional",
-  iconKey: "link",
-  url: "",
-  sortOrder: 0,
-  isVisible: true,
-};
+function emptyValues(defaultTypeId: string): SocialLinkInput {
+  return {
+    name: "",
+    typeId: defaultTypeId,
+    iconKey: "link",
+    url: "",
+    sortOrder: 0,
+    isVisible: true,
+  };
+}
 
 function toFormValues(item: SocialLink): SocialLinkInput {
   return {
     id: item.id,
     name: item.name,
-    type: item.type,
+    typeId: item.typeId,
     iconKey: item.iconKey,
     url: item.url,
     sortOrder: item.sortOrder,
@@ -64,10 +59,12 @@ function toFormValues(item: SocialLink): SocialLinkInput {
 
 export function SocialLinksManager({
   items,
+  types,
   title,
   description,
 }: {
   items: SocialLink[];
+  types: CatalogItem[];
   title: string;
   description?: string;
 }) {
@@ -76,10 +73,11 @@ export function SocialLinksManager({
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
+  const defaultTypeId = types[0]?.id ?? "";
 
   const form = useForm<SocialLinkInput>({
     resolver: adminResolver(socialLinkSchema),
-    defaultValues: emptyValues,
+    defaultValues: emptyValues(defaultTypeId),
     mode: "onChange",
   });
 
@@ -89,7 +87,7 @@ export function SocialLinksManager({
     return items.filter(
       (item) =>
         item.name.toLowerCase().includes(q) ||
-        item.type.toLowerCase().includes(q) ||
+        item.typeName.toLowerCase().includes(q) ||
         item.url.toLowerCase().includes(q) ||
         item.iconKey.toLowerCase().includes(q),
     );
@@ -97,7 +95,7 @@ export function SocialLinksManager({
 
   function openCreate() {
     setEditingId(undefined);
-    form.reset(emptyValues);
+    form.reset(emptyValues(defaultTypeId));
     setFormOpen(true);
   }
 
@@ -110,7 +108,7 @@ export function SocialLinksManager({
   function closeForm() {
     setFormOpen(false);
     setEditingId(undefined);
-    form.reset(emptyValues);
+    form.reset(emptyValues(defaultTypeId));
   }
 
   function onSubmit(values: SocialLinkInput) {
@@ -132,13 +130,13 @@ export function SocialLinksManager({
   const columns: AdminColumn<SocialLink>[] = [
     {
       key: "name",
-      header: "Name",
+      header: "Nombre",
       cell: (row) => row.name,
     },
     {
       key: "type",
-      header: "Type",
-      cell: (row) => row.type,
+      header: "Tipo",
+      cell: (row) => row.typeName || "—",
     },
     {
       key: "url",
@@ -184,7 +182,7 @@ export function SocialLinksManager({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Nombre</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -194,24 +192,17 @@ export function SocialLinksManager({
           />
           <FormField
             control={form.control}
-            name="type"
+            name="typeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {socialLinkTypes.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Tipo</FormLabel>
+                <FormControl>
+                  <CatalogSelect
+                    items={types}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

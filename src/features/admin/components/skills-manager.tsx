@@ -14,20 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { skillTypes } from "@/constants/skill-types";
 import { storageBuckets } from "@/constants/storage-buckets";
 import {
   deleteSkillAction,
   upsertSkillAction,
 } from "@/features/admin/actions/skills";
 import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
+import { CatalogSelect } from "@/features/admin/components/catalog-select";
 import {
   AdminDataTable,
   type AdminColumn,
@@ -38,20 +31,23 @@ import { toAdminErrorMessage } from "@/features/admin/lib/errors";
 import { adminResolver } from "@/features/admin/lib/form-resolver";
 import { skillSchema, type SkillInput } from "@/features/admin/schemas/skill";
 import type { SkillAdminRow } from "@/features/admin/types/rows";
+import type { CatalogItem } from "@/types/domain";
 
-const emptyValues: SkillInput = {
-  name: "",
-  type: "other",
-  iconPath: null,
-  sortOrder: 0,
-  label: "",
-};
+function emptyValues(defaultTypeId: string): SkillInput {
+  return {
+    name: "",
+    typeId: defaultTypeId,
+    iconPath: null,
+    sortOrder: 0,
+    label: "",
+  };
+}
 
 function toFormValues(item: SkillAdminRow): SkillInput {
   return {
     id: item.id,
     name: item.name,
-    type: item.type as SkillInput["type"],
+    typeId: item.type_id,
     iconPath: item.icon_path ?? null,
     sortOrder: item.sort_order,
     label: item.label ?? "",
@@ -60,10 +56,12 @@ function toFormValues(item: SkillAdminRow): SkillInput {
 
 export function SkillsManager({
   items,
+  types,
   title,
   description,
 }: {
   items: SkillAdminRow[];
+  types: CatalogItem[];
   title: string;
   description?: string;
 }) {
@@ -72,27 +70,30 @@ export function SkillsManager({
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
+  const defaultTypeId = types[0]?.id ?? "";
 
   const form = useForm<SkillInput>({
     resolver: adminResolver(skillSchema),
-    defaultValues: emptyValues,
+    defaultValues: emptyValues(defaultTypeId),
     mode: "onChange",
   });
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return items;
-    return items.filter(
-      (item) =>
+    return items.filter((item) => {
+      const typeName = item.skill_types?.name?.toLowerCase() ?? "";
+      return (
         item.name.toLowerCase().includes(q) ||
-        item.type.toLowerCase().includes(q) ||
-        (item.label ?? "").toLowerCase().includes(q),
-    );
+        typeName.includes(q) ||
+        (item.label ?? "").toLowerCase().includes(q)
+      );
+    });
   }, [items, search]);
 
   function openCreate() {
     setEditingId(undefined);
-    form.reset(emptyValues);
+    form.reset(emptyValues(defaultTypeId));
     setFormOpen(true);
   }
 
@@ -105,7 +106,7 @@ export function SkillsManager({
   function closeForm() {
     setFormOpen(false);
     setEditingId(undefined);
-    form.reset(emptyValues);
+    form.reset(emptyValues(defaultTypeId));
   }
 
   function onSubmit(values: SkillInput) {
@@ -137,13 +138,13 @@ export function SkillsManager({
   const columns: AdminColumn<SkillAdminRow>[] = [
     {
       key: "name",
-      header: "Name",
+      header: "Nombre",
       cell: (row) => row.name,
     },
     {
       key: "type",
-      header: "Type",
-      cell: (row) => row.type,
+      header: "Tipo",
+      cell: (row) => row.skill_types?.name ?? "—",
     },
     {
       key: "actions",
@@ -183,7 +184,7 @@ export function SkillsManager({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Nombre</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -193,24 +194,17 @@ export function SkillsManager({
           />
           <FormField
             control={form.control}
-            name="type"
+            name="typeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {skillTypes.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Tipo</FormLabel>
+                <FormControl>
+                  <CatalogSelect
+                    items={types}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -220,7 +214,7 @@ export function SkillsManager({
             name="label"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Label</FormLabel>
+                <FormLabel>Etiqueta</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

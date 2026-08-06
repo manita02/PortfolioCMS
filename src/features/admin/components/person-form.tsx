@@ -14,21 +14,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  availabilityStatusItems,
-  type AvailabilityStatus,
-} from "@/constants/availability";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { upsertPersonAction } from "@/features/admin/actions/person";
 import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
+import { CatalogSelect } from "@/features/admin/components/catalog-select";
 import { MediaUploader } from "@/components/shared/media-uploader";
 import { toAdminErrorMessage } from "@/features/admin/lib/errors";
 import { adminResolver } from "@/features/admin/lib/form-resolver";
@@ -36,13 +26,14 @@ import {
   personSchema,
   type PersonInput,
 } from "@/features/admin/schemas/person";
+import type { CatalogItem } from "@/types/domain";
 
 type PersonRow = {
   id?: string;
   first_name?: string;
   last_name?: string;
   email?: string | null;
-  availability_status?: string;
+  availability_status_id?: string;
   profile_image_path?: string | null;
   banner_image_path?: string | null;
   cv_pdf_path?: string | null;
@@ -53,14 +44,16 @@ type PersonRow = {
   meta_description?: string | null;
 } | null;
 
-function toDefaults(person: PersonRow): PersonInput {
+function toDefaults(
+  person: PersonRow,
+  defaultStatusId: string,
+): PersonInput {
   return {
     firstName: person?.first_name ?? "",
     lastName: person?.last_name ?? "",
     email: person?.email ?? "",
-    availabilityStatus:
-      (person?.availability_status as PersonInput["availabilityStatus"]) ??
-      "open",
+    availabilityStatusId:
+      person?.availability_status_id ?? defaultStatusId,
     profileImagePath: person?.profile_image_path ?? null,
     bannerImagePath: person?.banner_image_path ?? null,
     cvPdfPath: person?.cv_pdf_path ?? null,
@@ -74,19 +67,22 @@ function toDefaults(person: PersonRow): PersonInput {
 
 export function PersonForm({
   person,
+  availabilityStatuses,
   title,
   description,
 }: {
   person: PersonRow;
+  availabilityStatuses: CatalogItem[];
   title: string;
   description?: string;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const defaultStatusId = availabilityStatuses[0]?.id ?? "";
 
   const form = useForm<PersonInput>({
     resolver: adminResolver(personSchema),
-    defaultValues: toDefaults(person),
+    defaultValues: toDefaults(person, defaultStatusId),
     mode: "onChange",
   });
 
@@ -148,32 +144,17 @@ export function PersonForm({
           />
           <FormField
             control={form.control}
-            name="availabilityStatus"
+            name="availabilityStatusId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Disponibilidad</FormLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={(value) => {
-                    if (value != null) {
-                      field.onChange(value as AvailabilityStatus);
-                    }
-                  }}
-                  items={availabilityStatusItems}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {availabilityStatusItems.map((item) => (
-                      <SelectItem key={item.value} value={item.value}>
-                        {item.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <CatalogSelect
+                    items={availabilityStatuses}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -301,7 +282,7 @@ export function PersonForm({
         </div>
 
         <Button type="submit" disabled={pending}>
-          {"Guardar"}
+          Guardar
         </Button>
       </form>
     </Form>

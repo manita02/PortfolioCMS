@@ -15,23 +15,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  experienceTypeLabels,
-  experienceTypes,
-} from "@/constants/experience-types";
 import {
   deleteExperienceAction,
   upsertExperienceAction,
 } from "@/features/admin/actions/experiences";
 import { AdminCrudShell } from "@/features/admin/components/admin-crud-shell";
+import { CatalogSelect } from "@/features/admin/components/catalog-select";
 import {
   AdminDataTable,
   type AdminColumn,
@@ -46,12 +36,15 @@ import {
   type ExperienceInput,
 } from "@/features/admin/schemas/experience";
 import type { ExperienceAdminRow } from "@/features/admin/types/rows";
-import type { Organization } from "@/types/domain";
+import type { CatalogItem, Organization } from "@/types/domain";
 
-function emptyValues(organizations: Organization[]): ExperienceInput {
+function emptyValues(
+  organizations: Organization[],
+  defaultTypeId: string,
+): ExperienceInput {
   return {
     organizationId: organizations[0]?.id ?? "",
-    type: "remote",
+    typeId: defaultTypeId,
     startMonth: 1,
     startYear: new Date().getFullYear(),
     endMonth: null,
@@ -68,7 +61,7 @@ function toFormValues(item: ExperienceAdminRow): ExperienceInput {
   return {
     id: item.id,
     organizationId: item.organization_id,
-    type: item.type as ExperienceInput["type"],
+    typeId: item.type_id,
     startMonth: item.start_month,
     startYear: item.start_year,
     endMonth: item.end_month ?? null,
@@ -91,12 +84,14 @@ export function ExperiencesManager({
   items,
   organizations,
   skills,
+  types,
   title,
   description,
 }: {
   items: ExperienceAdminRow[];
   organizations: Organization[];
   skills: { id: string; name: string }[];
+  types: CatalogItem[];
   title: string;
   description?: string;
 }) {
@@ -105,10 +100,11 @@ export function ExperiencesManager({
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
+  const defaultTypeId = types[0]?.id ?? "";
 
   const form = useForm<ExperienceInput>({
     resolver: adminResolver(experienceSchema),
-    defaultValues: emptyValues(organizations),
+    defaultValues: emptyValues(organizations, defaultTypeId),
     mode: "onChange",
   });
 
@@ -118,17 +114,18 @@ export function ExperiencesManager({
     const q = search.trim().toLowerCase();
     if (!q) return items;
     return items.filter((item) => {
+      const typeName = item.experience_types?.name?.toLowerCase() ?? "";
       return (
         (item.title ?? "").toLowerCase().includes(q) ||
         (item.organizations?.name ?? "").toLowerCase().includes(q) ||
-        item.type.toLowerCase().includes(q)
+        typeName.includes(q)
       );
     });
   }, [items, search]);
 
   function openCreate() {
     setEditingId(undefined);
-    form.reset(emptyValues(organizations));
+    form.reset(emptyValues(organizations, defaultTypeId));
     setFormOpen(true);
   }
 
@@ -141,7 +138,7 @@ export function ExperiencesManager({
   function closeForm() {
     setFormOpen(false);
     setEditingId(undefined);
-    form.reset(emptyValues(organizations));
+    form.reset(emptyValues(organizations, defaultTypeId));
   }
 
   function onSubmit(values: ExperienceInput) {
@@ -223,24 +220,17 @@ export function ExperiencesManager({
           />
           <FormField
             control={form.control}
-            name="type"
+            name="typeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {experienceTypes.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {experienceTypeLabels[item].es}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Modalidad</FormLabel>
+                <FormControl>
+                  <CatalogSelect
+                    items={types}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
