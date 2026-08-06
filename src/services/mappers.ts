@@ -1,5 +1,4 @@
 import type {
-  Certificate,
   Education,
   Experience,
   Organization,
@@ -130,24 +129,5 @@ export function mapProject(row: Record<string, unknown>): Project {
     description: (row.description as string) ?? "",
     summary: (row.summary as string) ?? "",
     skills: skillJoins.map((s) => mapSkillFromJoin(s)),
-  };
-}
-
-export function mapCertificate(row: Record<string, unknown>): Certificate {
-  return {
-    id: row.id as string,
-    organizationId: row.organization_id as string,
-    organization: mapOrganization(
-      row.organizations as Record<string, unknown>,
-    ),
-    issuedMonth: row.issued_month as number,
-    issuedYear: row.issued_year as number,
-    imagePath: (row.image_path as string) ?? null,
-    pdfPath: (row.pdf_path as string) ?? null,
-    credentialUrl: (row.credential_url as string) ?? null,
-    isFeatured: row.is_featured as boolean,
-    sortOrder: row.sort_order as number,
-    name: (row.name as string) ?? "",
-    description: (row.description as string) ?? "",
   };
 }
