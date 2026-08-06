@@ -6,7 +6,7 @@ Portfolio público en **Español** con panel de administración para **un único
 
 Sitio profesional con:
 
-- Portfolio público (hero, about, skills, experiencia, educación, proyectos, certificados, CV)
+- Portfolio público (hero, about, skills, experiencia, educación, proyectos, CV)
 - Panel `/admin` con Welcome Hub y CRUD tipado (RHF + Zod)
 - Preview del sitio sin iframe (reutiliza componentes públicos)
 - Auth Supabase + tabla `admins` + email admin en variables de entorno
@@ -53,7 +53,7 @@ Guía completa: **[docs/LOCAL_SETUP.md](./docs/LOCAL_SETUP.md)**
 ```bash
 npm install
 npm run setup
-# Completar .env.local + migraciones Supabase (0001 → 0004)
+# Completar .env.local + migraciones Supabase (0001 → 0005)
 npm run dev
 ```
 
@@ -75,7 +75,7 @@ No uses `SUPABASE_SERVICE_ROLE_KEY` en esta app.
 ## Supabase
 
 1. Crear proyecto en Supabase.
-2. Ejecutar migraciones en orden: `0001` → `0004`.
+2. Ejecutar migraciones en orden: `0001` → `0005`.
 3. Ejecutar `supabase/seed.sql` (opcional / demo).
 4. Auth → desactivar signups públicos.
 5. Crear usuario admin y registrarlo con `supabase/setup_admin.sql`.
@@ -88,7 +88,6 @@ No uses `SUPABASE_SERVICE_ROLE_KEY` en esta app.
 | `projects` | covers |
 | `organizations` | logos |
 | `educations` | imagen / PDF de título |
-| `certificates` | imágenes |
 | `icons` | iconos de skills |
 
 ### Dominio clave
