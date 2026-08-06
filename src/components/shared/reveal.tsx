@@ -23,7 +23,7 @@ export function Reveal({
       className={className}
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-48px", amount: 0.15 }}
+      viewport={{ once: true, margin: "0px 0px -10% 0px", amount: "some" }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay }}
     >
       {children}
