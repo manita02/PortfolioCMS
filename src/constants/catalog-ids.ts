@@ -1,7 +1,11 @@
 /**
- * UUIDs fijos de catálogos (coinciden con seed / migraciones 0001 y 0006).
+ * UUIDs fijos de catálogos (coinciden con seed / migraciones).
  * Usar para lógica de máquina; los nombres visibles vienen de la BD.
  */
+export const educationTypeIds = {
+  career: "a4444444-4444-4444-4444-444444444001",
+} as const;
+
 export const skillTypeIds = {
   language: "a5555555-5555-5555-5555-555555555001",
   framework: "a5555555-5555-5555-5555-555555555002",
