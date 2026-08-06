@@ -87,9 +87,8 @@ No uses `SUPABASE_SERVICE_ROLE_KEY` en esta app.
 | `person` | avatar, banner |
 | `projects` | covers |
 | `organizations` | logos |
-| `educations` | institución / diploma |
+| `educations` | imagen / PDF de título |
 | `certificates` | imágenes |
-| `cv` | PDFs |
 | `icons` | iconos de skills |
 
 ### Dominio clave
