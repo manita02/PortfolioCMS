@@ -16,7 +16,15 @@ create index experiences_type_idx on public.experiences (type_id);
 create index experiences_modality_idx on public.experiences (modality_id);
 
 create index educations_org_idx on public.educations (organization_id);
-create index educations_sort_idx on public.educations (sort_order, start_year desc, start_month desc);
+create index educations_chrono_idx on public.educations (
+  is_carrera desc,
+  is_current desc,
+  end_year desc nulls last,
+  end_month desc nulls last,
+  start_year desc,
+  start_month desc,
+  id desc
+);
 
 create index projects_featured_idx on public.projects (is_featured, sort_order);
 create unique index projects_slug_uidx on public.projects (slug);

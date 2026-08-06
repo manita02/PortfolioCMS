@@ -75,6 +75,7 @@ insert into public.experience_modalities (id, name, sort_order) values
   ('a7777777-7777-7777-7777-777777777003', 'Remoto', 3);
 
 insert into public.education_types (id, name, sort_order) values
+  ('a4444444-4444-4444-4444-444444444006', 'Formación académica', 0),
   ('a4444444-4444-4444-4444-444444444001', 'Carrera', 1),
   ('a4444444-4444-4444-4444-444444444002', 'Curso', 2),
   ('a4444444-4444-4444-4444-444444444003', 'Bootcamp', 3),
@@ -213,7 +214,10 @@ create table public.educations (
   is_current boolean not null default false,
   diploma_image_path text,
   diploma_pdf_path text,
-  sort_order int not null default 0,
+  -- Prioriza tipo "Carrera" en el listado público/admin (UUID fijo del catálogo).
+  is_carrera boolean generated always as (
+    type_id = 'a4444444-4444-4444-4444-444444444001'::uuid
+  ) stored,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint educations_current_end_null check (

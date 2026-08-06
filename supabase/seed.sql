@@ -59,12 +59,12 @@ on conflict do nothing;
 
 insert into public.educations (
   id, organization_id, type_id, start_month, start_year,
-  end_month, end_year, is_current, sort_order, title, description
+  end_month, end_year, is_current, title, description
 ) values (
   '66666666-6666-6666-6666-666666666001',
   '33333333-3333-3333-3333-333333333002',
-  'a4444444-4444-4444-4444-444444444001', -- Carrera
-  3, 2018, 12, 2022, false, 1,
+  'a4444444-4444-4444-4444-444444444006', -- Formación académica
+  3, 2018, 12, 2022, false,
   'Licenciatura en Sistemas',
   'Formación en ingeniería de software y bases de datos.'
 ) on conflict do nothing;
