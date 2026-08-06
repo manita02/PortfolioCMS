@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FileText, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { OrganizationBadge } from "@/components/shared/organization-badge";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { formatMonthYear } from "@/lib/dates";
 import { getPublicStorageUrl } from "@/lib/storage-url";
@@ -38,11 +39,9 @@ export function CertificateCard({ item }: { item: Certificate }) {
         ) : null}
       </div>
       <div className="space-y-3 p-5">
-        <div className="space-y-1">
+        <div className="space-y-2">
           <h3 className="font-heading text-lg tracking-tight">{item.name}</h3>
-          <p className="text-muted-foreground text-sm">
-            {item.organization?.name}
-          </p>
+          <OrganizationBadge organization={item.organization} size={36} />
           <p className="text-muted-foreground text-xs">
             {formatMonthYear(item.issuedMonth, item.issuedYear, "")}
           </p>

@@ -36,7 +36,6 @@ type PersonRow = {
   availability_status_id?: string;
   profile_image_path?: string | null;
   banner_image_path?: string | null;
-  cv_pdf_path?: string | null;
   professional_title?: string | null;
   subtitle?: string | null;
   about?: string | null;
@@ -56,7 +55,6 @@ function toDefaults(
       person?.availability_status_id ?? defaultStatusId,
     profileImagePath: person?.profile_image_path ?? null,
     bannerImagePath: person?.banner_image_path ?? null,
-    cvPdfPath: person?.cv_pdf_path ?? null,
     professionalTitle: person?.professional_title ?? "",
     subtitle: person?.subtitle ?? "",
     about: person?.about ?? "",
@@ -161,7 +159,7 @@ export function PersonForm({
           />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="profileImagePath"
@@ -189,23 +187,6 @@ export function PersonForm({
                   value={field.value}
                   onChange={field.onChange}
                   folder="banner"
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="cvPdfPath"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>CV PDF (archivo)</FormLabel>
-                <MediaUploader
-                  bucket={storageBuckets.cv}
-                  value={field.value}
-                  onChange={field.onChange}
-                  folder="person"
-                  accept="application/pdf"
                 />
                 <FormMessage />
               </FormItem>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Code2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { OrganizationBadge } from "@/components/shared/organization-badge";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { Project } from "@/types/domain";
@@ -16,10 +17,11 @@ export function ProjectCard({
   seeLabel: string;
 }) {
   const image = getPublicStorageUrl(storageBuckets.projects, project.imagePath);
+  const href = `/proyectos/${project.slug}`;
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-border/70 bg-card/40 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-foreground/15 hover:shadow-md">
-      <Link href={`/proyectos/${project.slug}`} className="block">
+      <Link href={href} className="block">
         <div className="bg-muted relative aspect-[16/10] overflow-hidden">
           {image ? (
             <Image
@@ -38,8 +40,16 @@ export function ProjectCard({
             </Badge>
           ) : null}
         </div>
-        <div className="space-y-3 p-5">
+      </Link>
+
+      <div className="space-y-3 p-5">
+        <Link href={href} className="block">
           <h3 className="font-heading text-lg tracking-tight">{project.name}</h3>
+        </Link>
+
+        <OrganizationBadge organization={project.organization} size={36} />
+
+        <Link href={href} className="block space-y-3">
           <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
             {project.summary || project.description}
           </p>
@@ -55,8 +65,9 @@ export function ProjectCard({
           <p className="text-sm font-medium underline-offset-4 group-hover:underline">
             {seeLabel}
           </p>
-        </div>
-      </Link>
+        </Link>
+      </div>
+
       {project.githubUrl ? (
         <div className="border-t border-border/60 px-5 py-3">
           <a
@@ -64,7 +75,6 @@ export function ProjectCard({
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
-            onClick={(e) => e.stopPropagation()}
           >
             <Code2 className="size-3.5" aria-hidden />
             GitHub

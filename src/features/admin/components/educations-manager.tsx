@@ -52,7 +52,6 @@ function defaults(
     endYear: item?.end_year ?? null,
     isCurrent: item?.is_current ?? false,
     sortOrder: item?.sort_order ?? 0,
-    institutionImagePath: item?.institution_image_path ?? null,
     diplomaImagePath: item?.diploma_image_path ?? null,
     diplomaPdfPath: item?.diploma_pdf_path ?? null,
     skillIds: item?.education_skills?.map((s) => s.skill_id) ?? [],
@@ -339,22 +338,7 @@ export function EducationsManager({
                 )}
               />
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="institutionImagePath"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Imagen institución</FormLabel>
-                    <MediaUploader
-                      bucket={storageBuckets.educations}
-                      value={field.value}
-                      onChange={field.onChange}
-                      folder="institution"
-                    />
-                  </FormItem>
-                )}
-              />
+            <div className="grid gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="diplomaImagePath"
