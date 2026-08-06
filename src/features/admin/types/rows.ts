@@ -63,18 +63,3 @@ export type ProjectAdminRow = {
   description: string;
   project_skills?: { skill_id: string }[];
 };
-
-export type CertificateAdminRow = {
-  id: string;
-  organization_id: string;
-  issued_month: number;
-  issued_year: number;
-  image_path?: string | null;
-  pdf_path?: string | null;
-  credential_url?: string | null;
-  is_featured: boolean;
-  sort_order: number;
-  name: string;
-  description: string;
-  organizations?: { name?: string };
-};
