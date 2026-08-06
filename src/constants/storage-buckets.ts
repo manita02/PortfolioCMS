@@ -4,7 +4,6 @@ export const storageBuckets = {
   organizations: "organizations",
   educations: "educations",
   certificates: "certificates",
-  cv: "cv",
   icons: "icons",
 } as const;
 
