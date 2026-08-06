@@ -91,7 +91,6 @@ export interface Project {
   githubUrl: string | null;
   liveUrl: string | null;
   isFeatured: boolean;
-  sortOrder: number;
   name: string;
   description: string;
   summary: string;
