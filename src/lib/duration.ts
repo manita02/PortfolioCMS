@@ -72,3 +72,8 @@ export function formatDuration(parts: DurationParts): string {
 export function formatExperienceDuration(input: DurationInput): string {
   return formatDuration(calculateExperienceDuration(input));
 }
+
+/** Alias semántico para educación (misma lógica reutilizable). */
+export function formatEducationDuration(input: DurationInput): string {
+  return formatDuration(calculateDuration(input));
+}
