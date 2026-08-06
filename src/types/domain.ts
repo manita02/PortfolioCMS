@@ -55,7 +55,6 @@ export interface Experience {
   endMonth: number | null;
   endYear: number | null;
   isCurrent: boolean;
-  sortOrder: number;
   title: string;
   description: string;
   skills: Skill[];

@@ -20,7 +20,6 @@ export type ExperienceAdminRow = {
   end_month?: number | null;
   end_year?: number | null;
   is_current: boolean;
-  sort_order: number;
   title: string;
   description: string;
   organizations?: { name?: string };
