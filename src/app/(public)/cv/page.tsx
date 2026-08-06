@@ -1,9 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
-import { storageBuckets } from "@/constants/storage-buckets";
 import { buildMetadata } from "@/lib/seo";
-import { getPublicStorageUrl } from "@/lib/storage-url";
 import { cn } from "@/lib/utils";
-import { getCvData } from "@/services/cv.service";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -14,15 +11,8 @@ export async function generateMetadata() {
 }
 
 export default async function CvPage() {
-  const data = await getCvData();
-
-  const uploadedPdf = getPublicStorageUrl(
-    storageBuckets.cv,
-    data.person?.cvPdfPath,
-  );
   const generatedPdf = "/cv/pdf";
-  const viewerSrc = uploadedPdf ?? generatedPdf;
-  const downloadSrc = uploadedPdf ?? `${generatedPdf}?download=1`;
+  const downloadSrc = `${generatedPdf}?download=1`;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 pt-24 pb-16 sm:px-6 sm:pb-20">
@@ -44,7 +34,7 @@ export default async function CvPage() {
         </div>
         <iframe
           title="Visor de CV"
-          src={viewerSrc}
+          src={generatedPdf}
           className="h-[min(80vh,900px)] w-full bg-background"
         />
       </div>

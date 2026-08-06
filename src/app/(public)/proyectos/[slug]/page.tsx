@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
+import { OrganizationBadge } from "@/components/shared/organization-badge";
 import { JsonLd } from "@/components/seo/json-ld";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { siteConfig } from "@/config/site";
@@ -74,14 +75,12 @@ export default async function ProjectDetailPage({ params }: Props) {
       <h1 className="font-heading text-3xl tracking-tight sm:text-5xl">
         {project.name}
       </h1>
-      {project.organization?.name ? (
-        <p className="text-muted-foreground mt-2 text-sm">
-          {project.organization.name}
-          {dateLabel ? ` · ${dateLabel}` : ""}
-        </p>
-      ) : dateLabel ? (
-        <p className="text-muted-foreground mt-2 text-sm">{dateLabel}</p>
-      ) : null}
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <OrganizationBadge organization={project.organization} />
+        {dateLabel ? (
+          <p className="text-muted-foreground shrink-0 text-sm">{dateLabel}</p>
+        ) : null}
+      </div>
 
       {image ? (
         <div className="bg-muted relative mt-8 aspect-[16/9] overflow-hidden rounded-2xl">
