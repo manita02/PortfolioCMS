@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { educationTypeIds } from "@/constants/catalog-ids";
 import { cacheTags } from "@/lib/cache-tags";
 import {
   createClient,
@@ -27,10 +28,10 @@ const select = `
 async function fetchEducations(limit?: number): Promise<Education[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = createPublicClient();
-  let query = supabase
+
+  const { data, error } = await supabase
     .from("educations")
     .select(select)
-    .order("is_carrera", { ascending: false })
     .order("is_current", { ascending: false })
     .order("end_year", { ascending: false, nullsFirst: false })
     .order("end_month", { ascending: false, nullsFirst: false })
@@ -38,17 +39,27 @@ async function fetchEducations(limit?: number): Promise<Education[]> {
     .order("start_month", { ascending: false })
     .order("id", { ascending: false });
 
-  if (limit) query = query.limit(limit);
-
-  const { data, error } = await query;
   if (error || !data) return [];
-  return data.map((row) => mapEducation(row as Record<string, unknown>));
+
+  // Carrera primero; se conserva el orden cronológico dentro de cada grupo.
+  const careerId = educationTypeIds.career;
+  const career: typeof data = [];
+  const other: typeof data = [];
+  for (const row of data) {
+    if (row.type_id === careerId) career.push(row);
+    else other.push(row);
+  }
+
+  const ordered = [...career, ...other];
+  const sliced = limit ? ordered.slice(0, limit) : ordered;
+  return sliced.map((row) => mapEducation(row as Record<string, unknown>));
 }
 
 export function getEducations(limit?: number) {
   return unstable_cache(
     () => fetchEducations(limit),
-    ["educations", String(limit ?? "all")],
+    // v3: invalida caché vacía residual de consultas rotas (is_carrera / all)
+    ["educations-v3", String(limit ?? "all")],
     { tags: [cacheTags.education] },
   )();
 }
@@ -56,15 +67,25 @@ export function getEducations(limit?: number) {
 export async function getEducationsRaw() {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("educations")
     .select(select)
-    .order("is_carrera", { ascending: false })
     .order("is_current", { ascending: false })
     .order("end_year", { ascending: false, nullsFirst: false })
     .order("end_month", { ascending: false, nullsFirst: false })
     .order("start_year", { ascending: false })
     .order("start_month", { ascending: false })
     .order("id", { ascending: false });
-  return (data ?? []) as import("@/features/admin/types/rows").EducationAdminRow[];
+
+  if (error || !data) return [];
+
+  const careerId = educationTypeIds.career;
+  const career: typeof data = [];
+  const other: typeof data = [];
+  for (const row of data) {
+    if (row.type_id === careerId) career.push(row);
+    else other.push(row);
+  }
+
+  return [...career, ...other] as import("@/features/admin/types/rows").EducationAdminRow[];
 }
