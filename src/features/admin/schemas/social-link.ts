@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { socialLinkTypes } from "@/constants/social-link-types";
 
 export const socialLinkSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Requerido"),
-  type: z.enum(socialLinkTypes),
+  typeId: z.string().uuid({ message: "Selecciona un tipo" }),
   iconKey: z.string().min(1, "Requerido"),
   url: z.string().url().or(z.string().startsWith("mailto:")),
   sortOrder: z.coerce.number().int(),

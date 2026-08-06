@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { skillTypes } from "@/constants/skill-types";
 
 export const skillSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Requerido"),
-  type: z.enum(skillTypes),
+  typeId: z.string().uuid({ message: "Selecciona un tipo" }),
   iconPath: z.string().nullable().optional(),
   sortOrder: z.coerce.number().int(),
   label: z.string(),

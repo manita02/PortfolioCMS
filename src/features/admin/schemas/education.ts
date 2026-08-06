@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { educationTypes } from "@/constants/education-types";
 
 export const educationSchema = z.object({
   id: z.string().uuid().optional(),
   organizationId: z.string().uuid({ message: "Selecciona una organización" }),
-  type: z.enum(educationTypes),
+  typeId: z.string().uuid({ message: "Selecciona un tipo" }),
   startMonth: z.coerce.number().int().min(1).max(12),
   startYear: z.coerce.number().int().min(1950).max(2100),
   endMonth: z.coerce.number().int().min(1).max(12).nullish(),

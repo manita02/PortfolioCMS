@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { organizationTypes } from "@/constants/organization-types";
 
 export const organizationSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Requerido"),
-  type: z.enum(organizationTypes),
+  typeId: z.string().uuid({ message: "Selecciona un tipo" }),
   websiteUrl: z.string().url().optional().or(z.literal("")),
   logoPath: z.string().nullable().optional(),
   location: z.string(),
