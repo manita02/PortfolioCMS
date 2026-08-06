@@ -43,3 +43,19 @@ export function formatDateRange(params: {
 export function toMmYyyy(month: number, year: number): string {
   return `${String(month).padStart(2, "0")}/${year}`;
 }
+
+/** Rango de fechas de proyecto (sin concepto “Actual”). */
+export function formatProjectDateRange(params: {
+  startMonth: number | null | undefined;
+  startYear: number | null | undefined;
+  endMonth?: number | null;
+  endYear?: number | null;
+}): string {
+  if (!params.startMonth || !params.startYear) return "";
+  const start = formatMonthYear(params.startMonth, params.startYear, "");
+  if (params.endMonth && params.endYear) {
+    const end = formatMonthYear(params.endMonth, params.endYear, "");
+    return `${start} — ${end}`;
+  }
+  return start;
+}
