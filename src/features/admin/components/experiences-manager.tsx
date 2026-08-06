@@ -2,10 +2,9 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useWatch, type Control } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -27,6 +26,7 @@ import {
   type AdminColumn,
 } from "@/features/admin/components/admin-data-table";
 import { ConfirmDeleteButton } from "@/features/admin/components/confirm-delete-button";
+import { AdminDateRangeFields } from "@/features/admin/components/month-year-fields";
 import { OrganizationCombobox } from "@/features/admin/components/organization-combobox";
 import { SkillMultiSelect } from "@/features/admin/components/skill-multi-select";
 import { toAdminErrorMessage } from "@/features/admin/lib/errors";
@@ -73,93 +73,6 @@ function toFormValues(item: ExperienceAdminRow): ExperienceInput {
     title: item.title ?? "",
     description: item.description ?? "",
   };
-}
-
-function numberOrNull(value: string): number | null {
-  if (value === "") return null;
-  const n = Number(value);
-  return Number.isFinite(n) ? n : null;
-}
-
-function MonthYearFields({
-  monthName,
-  yearName,
-  monthLabel,
-  yearLabel,
-  disabled,
-  control,
-}: {
-  monthName: "startMonth" | "endMonth";
-  yearName: "startYear" | "endYear";
-  monthLabel: string;
-  yearLabel: string;
-  disabled?: boolean;
-  control: Control<ExperienceInput>;
-}) {
-  return (
-    <div className="grid grid-cols-[minmax(0,4.5rem)_minmax(0,1fr)] gap-2">
-      <FormField
-        control={control}
-        name={monthName}
-        render={({ field }) => (
-          <FormItem className="min-w-0">
-            <FormLabel className="text-muted-foreground text-xs font-normal">
-              {monthLabel}
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min={1}
-                max={12}
-                inputMode="numeric"
-                disabled={disabled}
-                className="min-w-0 px-2 tabular-nums"
-                value={field.value ?? ""}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (monthName === "endMonth") {
-                    field.onChange(numberOrNull(raw));
-                    return;
-                  }
-                  field.onChange(raw === "" ? undefined : Number(raw));
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={control}
-        name={yearName}
-        render={({ field }) => (
-          <FormItem className="min-w-0">
-            <FormLabel className="text-muted-foreground text-xs font-normal">
-              {yearLabel}
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                inputMode="numeric"
-                disabled={disabled}
-                className="min-w-0 px-2 tabular-nums"
-                value={field.value ?? ""}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (yearName === "endYear") {
-                    field.onChange(numberOrNull(raw));
-                    return;
-                  }
-                  field.onChange(raw === "" ? undefined : Number(raw));
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
 }
 
 export function ExperiencesManager({
@@ -353,47 +266,10 @@ export function ExperiencesManager({
             )}
           />
 
-          <div className="grid gap-4 sm:col-span-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
-            <div className="min-w-0 space-y-2">
-              <p className="text-sm leading-none font-medium">Fecha inicio</p>
-              <MonthYearFields
-                control={form.control}
-                monthName="startMonth"
-                yearName="startYear"
-                monthLabel="Mes"
-                yearLabel="Año"
-              />
-            </div>
-
-            <div className="min-w-0 space-y-2">
-              <p className="text-sm leading-none font-medium">Fecha fin</p>
-              <MonthYearFields
-                control={form.control}
-                monthName="endMonth"
-                yearName="endYear"
-                monthLabel="Mes"
-                yearLabel="Año"
-                disabled={Boolean(isCurrent)}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="isCurrent"
-              render={({ field }) => (
-                <FormItem className="flex min-h-9 items-center gap-2 space-y-0 sm:pb-0.5">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(v) => field.onChange(Boolean(v))}
-                    />
-                  </FormControl>
-                  <FormLabel className="whitespace-nowrap">Actual</FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <AdminDateRangeFields
+            control={form.control}
+            isCurrent={Boolean(isCurrent)}
+          />
 
           <FormField
             control={form.control}
