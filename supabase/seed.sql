@@ -1,10 +1,11 @@
 -- Seed de ejemplo (solo Español).
 -- 1) Crear usuario Auth en Dashboard (email/password).
 -- 2) Insertar admin (ver setup_admin.sql).
+-- Los catálogos ya se insertan en 0001 / 0006 (UUIDs fijos).
 
 insert into public.persons (
-  id, first_name, last_name, email, availability_status,
-  professional_title, subtitle, about, availability_label,
+  id, first_name, last_name, email, availability_status_id,
+  professional_title, subtitle, about,
   meta_title, meta_description
 )
 select
@@ -12,39 +13,39 @@ select
   'Nombre',
   'Apellido',
   'hola@example.com',
-  'open',
+  'a2222222-2222-2222-2222-222222222001', -- Disponible
   'Software Engineer',
   'Diseño y construyo productos digitales con foco en calidad.',
   'Profesional orientado a producto, con experiencia en frontend moderno y sistemas escalables.',
-  'Disponible para nuevos desafíos',
   'Portfolio profesional',
   'Portfolio profesional con proyectos, experiencia y formación.'
 where not exists (select 1 from public.persons);
 
-insert into public.organizations (id, name, type, website_url, location, description) values
-  ('33333333-3333-3333-3333-333333333001', 'Globant', 'company', 'https://www.globant.com', 'Buenos Aires', 'Consultora tecnológica global.'),
-  ('33333333-3333-3333-3333-333333333002', 'Universidad Nacional', 'university', null, 'Mar del Plata', 'Institución universitaria.'),
-  ('33333333-3333-3333-3333-333333333003', 'AWS', 'company', 'https://aws.amazon.com', 'Estados Unidos', 'Proveedor cloud.'),
-  ('33333333-3333-3333-3333-333333333004', 'Proyecto Personal', 'other', null, null, 'Proyectos independientes.')
+insert into public.organizations (id, name, type_id, website_url, location, description) values
+  ('33333333-3333-3333-3333-333333333001', 'Globant', 'a1111111-1111-1111-1111-111111111001', 'https://www.globant.com', 'Buenos Aires', 'Consultora tecnológica global.'),
+  ('33333333-3333-3333-3333-333333333002', 'Universidad Nacional', 'a1111111-1111-1111-1111-111111111002', null, 'Mar del Plata', 'Institución universitaria.'),
+  ('33333333-3333-3333-3333-333333333003', 'AWS', 'a1111111-1111-1111-1111-111111111001', 'https://aws.amazon.com', 'Estados Unidos', 'Proveedor cloud.'),
+  ('33333333-3333-3333-3333-333333333004', 'Proyecto Personal', 'a1111111-1111-1111-1111-111111111005', null, null, 'Proyectos independientes.')
 on conflict do nothing;
 
-insert into public.skills (id, name, type, sort_order, label) values
-  ('44444444-4444-4444-4444-444444444001', 'TypeScript', 'language', 1, 'TypeScript'),
-  ('44444444-4444-4444-4444-444444444002', 'React', 'framework', 2, 'React'),
-  ('44444444-4444-4444-4444-444444444003', 'Next.js', 'framework', 3, 'Next.js'),
-  ('44444444-4444-4444-4444-444444444004', 'PostgreSQL', 'tool', 4, 'PostgreSQL'),
-  ('44444444-4444-4444-4444-444444444005', 'Supabase', 'tool', 5, 'Supabase'),
-  ('44444444-4444-4444-4444-444444444006', 'Tailwind CSS', 'framework', 6, 'Tailwind CSS'),
-  ('44444444-4444-4444-4444-444444444007', 'Liderazgo', 'soft', 7, 'Liderazgo')
+insert into public.skills (id, name, type_id, sort_order, label) values
+  ('44444444-4444-4444-4444-444444444001', 'TypeScript', 'a5555555-5555-5555-5555-555555555001', 1, 'TypeScript'),
+  ('44444444-4444-4444-4444-444444444002', 'React', 'a5555555-5555-5555-5555-555555555002', 2, 'React'),
+  ('44444444-4444-4444-4444-444444444003', 'Next.js', 'a5555555-5555-5555-5555-555555555002', 3, 'Next.js'),
+  ('44444444-4444-4444-4444-444444444004', 'PostgreSQL', 'a5555555-5555-5555-5555-555555555003', 4, 'PostgreSQL'),
+  ('44444444-4444-4444-4444-444444444005', 'Supabase', 'a5555555-5555-5555-5555-555555555003', 5, 'Supabase'),
+  ('44444444-4444-4444-4444-444444444006', 'Tailwind CSS', 'a5555555-5555-5555-5555-555555555002', 6, 'Tailwind CSS'),
+  ('44444444-4444-4444-4444-444444444007', 'Liderazgo', 'a5555555-5555-5555-5555-555555555004', 7, 'Liderazgo')
 on conflict (name) do nothing;
 
 insert into public.experiences (
-  id, organization_id, type, start_month, start_year,
+  id, organization_id, type_id, start_month, start_year,
   end_month, end_year, is_current, sort_order, title, description
 ) values (
   '55555555-5555-5555-5555-555555555001',
   '33333333-3333-3333-3333-333333333001',
-  'hybrid', 3, 2022, null, null, true, 1,
+  'a3333333-3333-3333-3333-333333333002', -- Híbrido
+  3, 2022, null, null, true, 1,
   'Frontend Developer',
   'Desarrollo de interfaces con React y TypeScript.'
 ) on conflict do nothing;
@@ -56,12 +57,13 @@ insert into public.experience_skills (experience_id, skill_id) values
 on conflict do nothing;
 
 insert into public.educations (
-  id, organization_id, type, start_month, start_year,
+  id, organization_id, type_id, start_month, start_year,
   end_month, end_year, is_current, sort_order, title, description
 ) values (
   '66666666-6666-6666-6666-666666666001',
   '33333333-3333-3333-3333-333333333002',
-  'degree', 3, 2018, 12, 2022, false, 1,
+  'a4444444-4444-4444-4444-444444444001', -- Carrera
+  3, 2018, 12, 2022, false, 1,
   'Licenciatura en Sistemas',
   'Formación en ingeniería de software y bases de datos.'
 ) on conflict do nothing;
@@ -119,8 +121,8 @@ insert into public.certificates (
   'Fundamentos de la nube AWS.'
 ) on conflict do nothing;
 
-insert into public.social_links (id, name, type, icon_key, url, sort_order, is_visible) values
-  ('99999999-9999-9999-9999-999999999001', 'GitHub', 'professional', 'github', 'https://github.com/example', 1, true),
-  ('99999999-9999-9999-9999-999999999002', 'LinkedIn', 'professional', 'linkedin', 'https://linkedin.com/in/example', 2, true),
-  ('99999999-9999-9999-9999-999999999003', 'Email', 'contact', 'mail', 'mailto:hola@example.com', 3, true)
+insert into public.social_links (id, name, type_id, icon_key, url, sort_order, is_visible) values
+  ('99999999-9999-9999-9999-999999999001', 'GitHub', 'a6666666-6666-6666-6666-666666666001', 'github', 'https://github.com/example', 1, true),
+  ('99999999-9999-9999-9999-999999999002', 'LinkedIn', 'a6666666-6666-6666-6666-666666666001', 'linkedin', 'https://linkedin.com/in/example', 2, true),
+  ('99999999-9999-9999-9999-999999999003', 'Email', 'a6666666-6666-6666-6666-666666666003', 'mail', 'mailto:hola@example.com', 3, true)
 on conflict do nothing;
