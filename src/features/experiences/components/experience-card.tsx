@@ -13,7 +13,17 @@ export function ExperienceCard({
   return (
     <article className="group space-y-3">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-        <h3 className="font-heading text-lg tracking-tight">{item.title}</h3>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <h3 className="font-heading text-lg tracking-tight">{item.title}</h3>
+          {item.typeName ? (
+            <Badge
+              variant="secondary"
+              className="max-w-full shrink-0 truncate font-normal"
+            >
+              {item.typeName}
+            </Badge>
+          ) : null}
+        </div>
         <p className="text-muted-foreground shrink-0 text-xs sm:text-sm">
           {formatDateRange({
             startMonth: item.startMonth,
@@ -28,7 +38,7 @@ export function ExperienceCard({
 
       <OrganizationBadge
         organization={item.organization}
-        meta={item.typeName}
+        meta={item.modalityName}
       />
 
       {item.description ? (

@@ -41,10 +41,12 @@ import type { CatalogItem, Organization } from "@/types/domain";
 function emptyValues(
   organizations: Organization[],
   defaultTypeId: string,
+  defaultModalityId: string,
 ): ExperienceInput {
   return {
     organizationId: organizations[0]?.id ?? "",
     typeId: defaultTypeId,
+    modalityId: defaultModalityId,
     startMonth: 1,
     startYear: new Date().getFullYear(),
     endMonth: null,
@@ -62,6 +64,7 @@ function toFormValues(item: ExperienceAdminRow): ExperienceInput {
     id: item.id,
     organizationId: item.organization_id,
     typeId: item.type_id,
+    modalityId: item.modality_id,
     startMonth: item.start_month,
     startYear: item.start_year,
     endMonth: item.end_month ?? null,
@@ -85,6 +88,7 @@ export function ExperiencesManager({
   organizations,
   skills,
   types,
+  modalities,
   title,
   description,
 }: {
@@ -92,6 +96,7 @@ export function ExperiencesManager({
   organizations: Organization[];
   skills: { id: string; name: string }[];
   types: CatalogItem[];
+  modalities: CatalogItem[];
   title: string;
   description?: string;
 }) {
@@ -101,10 +106,11 @@ export function ExperiencesManager({
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
   const defaultTypeId = types[0]?.id ?? "";
+  const defaultModalityId = modalities[0]?.id ?? "";
 
   const form = useForm<ExperienceInput>({
     resolver: adminResolver(experienceSchema),
-    defaultValues: emptyValues(organizations, defaultTypeId),
+    defaultValues: emptyValues(organizations, defaultTypeId, defaultModalityId),
     mode: "onChange",
   });
 
@@ -115,17 +121,20 @@ export function ExperiencesManager({
     if (!q) return items;
     return items.filter((item) => {
       const typeName = item.experience_types?.name?.toLowerCase() ?? "";
+      const modalityName =
+        item.experience_modalities?.name?.toLowerCase() ?? "";
       return (
         (item.title ?? "").toLowerCase().includes(q) ||
         (item.organizations?.name ?? "").toLowerCase().includes(q) ||
-        typeName.includes(q)
+        typeName.includes(q) ||
+        modalityName.includes(q)
       );
     });
   }, [items, search]);
 
   function openCreate() {
     setEditingId(undefined);
-    form.reset(emptyValues(organizations, defaultTypeId));
+    form.reset(emptyValues(organizations, defaultTypeId, defaultModalityId));
     setFormOpen(true);
   }
 
@@ -138,7 +147,7 @@ export function ExperiencesManager({
   function closeForm() {
     setFormOpen(false);
     setEditingId(undefined);
-    form.reset(emptyValues(organizations, defaultTypeId));
+    form.reset(emptyValues(organizations, defaultTypeId, defaultModalityId));
   }
 
   function onSubmit(values: ExperienceInput) {
@@ -169,6 +178,16 @@ export function ExperiencesManager({
       key: "org",
       header: "Organización",
       cell: (row) => row.organizations?.name ?? "—",
+    },
+    {
+      key: "type",
+      header: "Tipo",
+      cell: (row) => row.experience_types?.name ?? "—",
+    },
+    {
+      key: "modality",
+      header: "Modalidad",
+      cell: (row) => row.experience_modalities?.name ?? "—",
     },
     {
       key: "actions",
@@ -223,12 +242,31 @@ export function ExperiencesManager({
             name="typeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Modalidad</FormLabel>
+                <FormLabel>Tipo de experiencia</FormLabel>
                 <FormControl>
                   <CatalogSelect
                     items={types}
                     value={field.value}
                     onChange={field.onChange}
+                    placeholder="Seleccionar tipo de experiencia…"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="modalityId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Modalidad</FormLabel>
+                <FormControl>
+                  <CatalogSelect
+                    items={modalities}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Seleccionar modalidad…"
                   />
                 </FormControl>
                 <FormMessage />
