@@ -17,6 +17,7 @@ export async function upsertExperienceAction(input: ExperienceInput) {
   const payload = {
     organization_id: data.organizationId,
     type_id: data.typeId,
+    modality_id: data.modalityId,
     start_month: data.startMonth,
     start_year: data.startYear,
     end_month: data.isCurrent ? null : (data.endMonth ?? null),
