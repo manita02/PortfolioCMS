@@ -48,6 +48,8 @@ export interface Experience {
   organization?: Organization;
   typeId: string;
   typeName: string;
+  modalityId: string;
+  modalityName: string;
   startMonth: number;
   startYear: number;
   endMonth: number | null;

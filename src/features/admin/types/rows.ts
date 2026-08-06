@@ -14,6 +14,7 @@ export type ExperienceAdminRow = {
   id: string;
   organization_id: string;
   type_id: string;
+  modality_id: string;
   start_month: number;
   start_year: number;
   end_month?: number | null;
@@ -24,6 +25,7 @@ export type ExperienceAdminRow = {
   description: string;
   organizations?: { name?: string };
   experience_types?: { id?: string; name?: string } | null;
+  experience_modalities?: { id?: string; name?: string } | null;
   experience_skills?: { skill_id: string }[];
 };
 
