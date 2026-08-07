@@ -4,8 +4,8 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { MediaUploader } from "@/components/shared/media-uploader";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { storageBuckets } from "@/constants/storage-buckets";
 import {
   deleteSocialLinkAction,
   upsertSocialLinkAction,
@@ -32,16 +33,16 @@ import {
   socialLinkSchema,
   type SocialLinkInput,
 } from "@/features/admin/schemas/social-link";
+import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { CatalogItem, SocialLink } from "@/types/domain";
 
 function emptyValues(defaultTypeId: string): SocialLinkInput {
   return {
     name: "",
     typeId: defaultTypeId,
-    iconKey: "link",
+    iconImage: null,
     url: "",
     sortOrder: 0,
-    isVisible: true,
   };
 }
 
@@ -50,10 +51,9 @@ function toFormValues(item: SocialLink): SocialLinkInput {
     id: item.id,
     name: item.name,
     typeId: item.typeId,
-    iconKey: item.iconKey,
+    iconImage: item.iconImage ?? null,
     url: item.url,
     sortOrder: item.sortOrder,
-    isVisible: item.isVisible,
   };
 }
 
@@ -88,8 +88,7 @@ export function SocialLinksManager({
       (item) =>
         item.name.toLowerCase().includes(q) ||
         item.typeName.toLowerCase().includes(q) ||
-        item.url.toLowerCase().includes(q) ||
-        item.iconKey.toLowerCase().includes(q),
+        item.url.toLowerCase().includes(q),
     );
   }, [items, search]);
 
@@ -122,12 +121,37 @@ export function SocialLinksManager({
         closeForm();
         router.refresh();
       } catch (error) {
-        toast.error(toAdminErrorMessage(error, "Error"));
+        toast.error(toAdminErrorMessage(error, "Error al guardar"));
       }
     });
   }
 
   const columns: AdminColumn<SocialLink>[] = [
+    {
+      key: "icon",
+      header: "Icono",
+      cell: (row) => {
+        const src = getPublicStorageUrl(storageBuckets.icons, row.iconImage);
+        return (
+          <div className="bg-muted flex size-9 items-center justify-center overflow-hidden rounded-xl border border-border/60">
+            {src ? (
+              // eslint-disable-next-line @next/next/no-img-element -- SVG/PNG/WEBP/JPG desde Storage
+              <img
+                src={src}
+                alt=""
+                width={28}
+                height={28}
+                className="size-7 object-contain p-1"
+              />
+            ) : (
+              <span className="text-muted-foreground text-xs font-medium">
+                {row.name.slice(0, 1).toUpperCase()}
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
     {
       key: "name",
       header: "Nombre",
@@ -145,23 +169,28 @@ export function SocialLinksManager({
       cell: (row) => row.url,
     },
     {
+      key: "sort",
+      header: "Orden",
+      cell: (row) => row.sortOrder,
+    },
+    {
       key: "actions",
       header: "Acciones",
       cell: (row) => (
         <div className="flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
-            {"Editar"}
+            Editar
           </Button>
           <ConfirmDeleteButton
-            label={"Eliminar"}
-            confirmLabel={"¿Eliminar este elemento?"}
+            label="Eliminar"
+            confirmLabel="¿Eliminar esta red social?"
             onDelete={async () => {
               try {
                 await deleteSocialLinkAction(row.id);
-                toast.success("Guardado correctamente");
+                toast.success("Eliminado correctamente");
                 router.refresh();
               } catch (error) {
-                toast.error(toAdminErrorMessage(error, "Error"));
+                toast.error(toAdminErrorMessage(error, "Error al eliminar"));
               }
             }}
           />
@@ -174,7 +203,7 @@ export function SocialLinksManager({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <h3 className="font-heading text-lg">
-          {editingId ? "Editar" : "Crear"}
+          {editingId ? "Editar red social" : "Nueva red social"}
         </h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
@@ -184,7 +213,7 @@ export function SocialLinksManager({
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} placeholder="GitHub" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -209,25 +238,15 @@ export function SocialLinksManager({
           />
           <FormField
             control={form.control}
-            name="iconKey"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Icon key</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="url"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
                 <FormLabel>URL</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input
+                    {...field}
+                    placeholder="https://… o mailto:correo@ejemplo.com"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -238,7 +257,7 @@ export function SocialLinksManager({
             name="sortOrder"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sort</FormLabel>
+                <FormLabel>Orden</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -254,29 +273,30 @@ export function SocialLinksManager({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="isVisible"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 self-end pb-2 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(v) => field.onChange(Boolean(v))}
-                  />
-                </FormControl>
-                <FormLabel>Visible</FormLabel>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
+        <FormField
+          control={form.control}
+          name="iconImage"
+          render={({ field }) => (
+            <FormItem>
+              <MediaUploader
+                bucket={storageBuckets.icons}
+                value={field.value}
+                onChange={field.onChange}
+                folder="social"
+                label="Icono"
+                accept="image/svg+xml,image/png,image/webp,image/jpeg,.svg"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex gap-2">
           <Button type="submit" disabled={pending}>
-            {"Guardar"}
+            Guardar
           </Button>
           <Button type="button" variant="outline" onClick={closeForm}>
-            {"Cancelar"}
+            Cancelar
           </Button>
         </div>
       </form>
@@ -290,7 +310,7 @@ export function SocialLinksManager({
       search={search}
       onSearchChange={setSearch}
       onNew={openCreate}
-      newLabel={"Nuevo"}
+      newLabel="Nuevo"
       formOpen={formOpen}
       form={formNode}
       empty={filtered.length === 0}
