@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { getSafeLoginErrorMessage } from "@/lib/auth/admin-policy";
 import { createClient } from "@/lib/supabase/client";
 
 const loginSchema = z.object({
@@ -47,7 +48,7 @@ export function LoginForm() {
         anonKey === "your-anon-key"
       ) {
         toast.error(
-          "Faltan las claves de Supabase en .env.local. Revisá URL y anon key.",
+          "El acceso administrativo no está configurado en este entorno.",
         );
         return;
       }
@@ -58,19 +59,11 @@ export function LoginForm() {
         password: values.password,
       });
       if (error) {
-        const hint =
-          error.message.toLowerCase().includes("invalid api key") ||
-          error.message.toLowerCase().includes("jwt")
-            ? " La anon key de .env.local parece inválida."
-            : error.message.toLowerCase().includes("email not confirmed")
-              ? " Confirmá el email del usuario en Supabase Auth (o desactivá Confirm email)."
-              : error.message.toLowerCase().includes("invalid login")
-                ? " Email/contraseña incorrectos, o el usuario no está confirmado en Auth."
-                : ` (${error.message})`;
-        toast.error(`No se pudo iniciar sesión.${hint}`);
+        toast.error(getSafeLoginErrorMessage(error));
         return;
       }
 
+      // Chequeo client opcional (UX). La autorización real es server-side.
       const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase();
       if (
         adminEmail &&
@@ -78,7 +71,7 @@ export function LoginForm() {
       ) {
         await supabase.auth.signOut();
         toast.error(
-          "Sesión válida, pero el email no coincide con NEXT_PUBLIC_ADMIN_EMAIL.",
+          "No se pudo iniciar sesión. Revisá tus credenciales e intentá de nuevo.",
         );
         router.push("/");
         return;
@@ -86,10 +79,10 @@ export function LoginForm() {
 
       router.push("/admin");
       router.refresh();
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "No se pudo iniciar sesión.";
-      toast.error(message);
+    } catch {
+      toast.error(
+        "No se pudo iniciar sesión. Revisá tus credenciales e intentá de nuevo.",
+      );
     } finally {
       setLoading(false);
     }
