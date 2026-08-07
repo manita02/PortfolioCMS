@@ -1,7 +1,7 @@
 import { ProjectsBrowser } from "@/features/projects/components/projects-browser";
 import { buildMetadata } from "@/lib/seo";
 import { getProjects } from "@/services/project.service";
-import { getSkills } from "@/services/skill.service";
+import { getSkillsUsedByProjects } from "@/services/skill.service";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -12,7 +12,10 @@ export async function generateMetadata() {
 }
 
 export default async function ProjectsPage() {
-  const [projects, skills] = await Promise.all([getProjects(), getSkills()]);
+  const [projects, skills] = await Promise.all([
+    getProjects(),
+    getSkillsUsedByProjects(),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pt-24 pb-16 sm:px-6 sm:pb-20">

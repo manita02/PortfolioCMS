@@ -1,6 +1,5 @@
-import { buttonVariants } from "@/components/ui/button";
+import { CvDownloadButton } from "@/components/shared/cv-download-button";
 import { buildMetadata } from "@/lib/seo";
-import { cn } from "@/lib/utils";
 
 export async function generateMetadata() {
   return buildMetadata({
@@ -12,7 +11,6 @@ export async function generateMetadata() {
 
 export default async function CvPage() {
   const generatedPdf = "/cv/pdf";
-  const downloadSrc = `${generatedPdf}?download=1`;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 pt-24 pb-16 sm:px-6 sm:pb-20">
@@ -23,9 +21,7 @@ export default async function CvPage() {
             Curriculum vitae en formato PDF.
           </p>
         </div>
-        <a href={downloadSrc} className={cn(buttonVariants())} download>
-          Descargar CV
-        </a>
+        <CvDownloadButton variant="default" size="default" showIcon={false} />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm">
@@ -38,9 +34,6 @@ export default async function CvPage() {
           className="h-[min(80vh,900px)] w-full bg-background"
         />
       </div>
-      <p className="text-muted-foreground mt-4 text-xs">
-        Si el visor no carga, usá el botón de descarga.
-      </p>
     </div>
   );
 }

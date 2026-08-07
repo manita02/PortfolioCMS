@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { PageTransition } from "@/components/shared/page-transition";
+import { PublicRouteLoader } from "@/components/shared/public-route-loader";
 import { getPerson } from "@/services/person.service";
 import { getSocialLinks } from "@/services/social-link.service";
 
@@ -27,6 +28,7 @@ export default async function PublicLayout({
         Saltar al contenido
       </a>
       <div className="flex min-h-screen flex-col">
+        <PublicRouteLoader />
         <SiteHeader brand={brand} />
         <main id="main" className="flex-1">
           <PageTransition>{children}</PageTransition>
