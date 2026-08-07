@@ -22,34 +22,26 @@ function mapSocial(row: Record<string, unknown>): SocialLink {
     name: row.name as string,
     typeId: (row.type_id as string) ?? (type?.id as string) ?? "",
     typeName: (type?.name as string) ?? "",
-    iconKey: row.icon_key as string,
+    iconImage: (row.icon_image as string | null) ?? null,
     url: row.url as string,
     sortOrder: row.sort_order as number,
-    isVisible: row.is_visible as boolean,
   };
 }
 
-async function fetchSocialLinks(visibleOnly = true): Promise<SocialLink[]> {
+async function fetchSocialLinks(): Promise<SocialLink[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = createPublicClient();
-  let query = supabase
+  const { data, error } = await supabase
     .from("social_links")
     .select(socialSelect)
     .order("sort_order", { ascending: true });
 
-  if (visibleOnly) query = query.eq("is_visible", true);
-
-  const { data, error } = await query;
   if (error || !data) return [];
   return data.map((row) => mapSocial(row as Record<string, unknown>));
 }
 
 export function getSocialLinks() {
-  return unstable_cache(() => fetchSocialLinks(true), ["social-links"], {
+  return unstable_cache(() => fetchSocialLinks(), ["social-links"], {
     tags: [cacheTags.socialLinks],
   })();
-}
-
-export async function getSocialLinksRaw() {
-  return fetchSocialLinks(false);
 }

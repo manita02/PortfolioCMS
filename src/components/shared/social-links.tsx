@@ -1,26 +1,7 @@
-import {
-  AtSign,
-  Code2,
-  Globe,
-  Link2,
-  Mail,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { storageBuckets } from "@/constants/storage-buckets";
 import { cn } from "@/lib/utils";
+import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { SocialLink } from "@/types/domain";
-
-const iconMap: Record<string, LucideIcon> = {
-  github: Code2,
-  linkedin: AtSign,
-  twitter: X,
-  x: X,
-  mail: Mail,
-  email: Mail,
-  globe: Globe,
-  link: Link2,
-  website: Globe,
-};
 
 export function SocialLinks({
   links,
@@ -36,7 +17,10 @@ export function SocialLinks({
   return (
     <ul className={cn("flex flex-wrap items-center gap-2", className)}>
       {links.map((link) => {
-        const Icon = iconMap[link.iconKey.toLowerCase()] ?? Link2;
+        const iconSrc = getPublicStorageUrl(
+          storageBuckets.icons,
+          link.iconImage,
+        );
         return (
           <li key={link.id}>
             <a
@@ -45,11 +29,24 @@ export function SocialLinks({
               rel="noopener noreferrer"
               aria-label={link.name}
               className={cn(
-                "text-muted-foreground hover:text-foreground hover:bg-muted inline-flex size-10 items-center justify-center rounded-xl border border-border/60 transition-colors",
+                "text-muted-foreground hover:text-foreground hover:bg-muted inline-flex size-12 items-center justify-center rounded-xl border border-border/60 transition-colors",
                 iconClassName,
               )}
             >
-              <Icon className="size-4" aria-hidden />
+              {iconSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element -- SVG/PNG/WEBP/JPG desde Storage
+                <img
+                  src={iconSrc}
+                  alt=""
+                  width={26}
+                  height={26}
+                  className="size-[26px] object-contain"
+                />
+              ) : (
+                <span className="text-sm font-medium" aria-hidden>
+                  {link.name.slice(0, 1).toUpperCase()}
+                </span>
+              )}
             </a>
           </li>
         );
