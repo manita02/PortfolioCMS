@@ -5,7 +5,8 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import type { CvData } from "@/types/domain";
+import { educationTypeIds } from "@/constants/catalog-ids";
+import type { CvData, Skill } from "@/types/domain";
 
 const styles = StyleSheet.create({
   page: {
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
   itemTitle: { fontFamily: "Helvetica-Bold", marginBottom: 2 },
   itemMeta: { fontSize: 9, color: "#555", marginBottom: 3 },
   text: { marginBottom: 6 },
+  skillLine: { marginBottom: 3 },
 });
 
 function mmYyyy(month?: number | null, year?: number | null, current?: boolean) {
@@ -41,6 +43,57 @@ function mmYyyy(month?: number | null, year?: number | null, current?: boolean) 
   if (!month || !year) return "";
   return `${String(month).padStart(2, "0")}/${year}`;
 }
+
+function dateRange(
+  startMonth?: number | null,
+  startYear?: number | null,
+  endMonth?: number | null,
+  endYear?: number | null,
+  isCurrent?: boolean,
+) {
+  const start = mmYyyy(startMonth, startYear);
+  const end = mmYyyy(endMonth, endYear, isCurrent);
+  if (!start && !end) return "";
+  if (!end) return start;
+  if (!start) return end;
+  return `${start} - ${end}`;
+}
+
+function skillNames(skills: Skill[]) {
+  return skills.map((s) => s.label || s.name).filter(Boolean).join(", ");
+}
+
+function groupSkillsByType(skills: Skill[]) {
+  const byType = new Map<
+    string,
+    { typeName: string; typeSortOrder: number; names: string[] }
+  >();
+
+  for (const skill of skills) {
+    const name = skill.label || skill.name;
+    if (!name) continue;
+    const existing = byType.get(skill.typeId);
+    if (existing) {
+      existing.names.push(name);
+    } else {
+      byType.set(skill.typeId, {
+        typeName: skill.typeName,
+        typeSortOrder: skill.typeSortOrder,
+        names: [name],
+      });
+    }
+  }
+
+  return [...byType.values()].sort(
+    (a, b) =>
+      a.typeSortOrder - b.typeSortOrder || a.typeName.localeCompare(b.typeName),
+  );
+}
+
+const exportableEducationTypeIds = new Set<string>([
+  educationTypeIds.career,
+  educationTypeIds.certificationProgram,
+]);
 
 export function CvPdfDocument({
   data,
@@ -59,6 +112,12 @@ export function CvPdfDocument({
   const name = person
     ? `${person.firstName} ${person.lastName}`
     : "Curriculum Vitae";
+
+  const skillGroups = groupSkillsByType(data.skills);
+  const educations = data.educations.filter((item) =>
+    exportableEducationTypeIds.has(item.typeId),
+  );
+  const projects = data.projects.filter((item) => item.isFeatured);
 
   return (
     <Document>
@@ -80,69 +139,122 @@ export function CvPdfDocument({
           </View>
         ) : null}
 
-        {data.skills.length > 0 ? (
+        {skillGroups.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.heading}>{labels.skills}</Text>
-            <Text style={styles.text}>
-              {data.skills.map((s) => s.name).join(", ")}
-            </Text>
+            {skillGroups.map((group) => (
+              <Text key={group.typeName} style={styles.skillLine}>
+                {group.typeName}: {group.names.join(", ")}
+              </Text>
+            ))}
           </View>
         ) : null}
 
         {data.experiences.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.heading}>{labels.experience}</Text>
-            {data.experiences.map((item) => (
-              <View key={item.id} wrap={false}>
-                <Text style={styles.itemTitle}>
-                  {item.title}
-                  {item.organization?.name
-                    ? ` — ${item.organization.name}`
-                    : ""}
-                </Text>
-                <Text style={styles.itemMeta}>
-                  {mmYyyy(item.startMonth, item.startYear)} -{" "}
-                  {mmYyyy(item.endMonth, item.endYear, item.isCurrent)}
-                </Text>
-                {item.description ? (
-                  <Text style={styles.text}>{item.description}</Text>
-                ) : null}
-              </View>
-            ))}
+            {data.experiences.map((item) => {
+              const dates = dateRange(
+                item.startMonth,
+                item.startYear,
+                item.endMonth,
+                item.endYear,
+                item.isCurrent,
+              );
+              const meta = [item.typeName, item.modalityName, dates]
+                .filter(Boolean)
+                .join(" · ");
+              const technologies = skillNames(item.skills);
+
+              return (
+                <View key={item.id} wrap={false}>
+                  <Text style={styles.itemTitle}>
+                    {item.title}
+                    {item.organization?.name
+                      ? ` — ${item.organization.name}`
+                      : ""}
+                  </Text>
+                  {meta ? <Text style={styles.itemMeta}>{meta}</Text> : null}
+                  {item.description ? (
+                    <Text style={styles.text}>{item.description}</Text>
+                  ) : null}
+                  {technologies ? (
+                    <Text style={styles.itemMeta}>
+                      Tecnologías: {technologies}
+                    </Text>
+                  ) : null}
+                </View>
+              );
+            })}
           </View>
         ) : null}
 
-        {data.educations.length > 0 ? (
+        {educations.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.heading}>{labels.education}</Text>
-            {data.educations.map((item) => (
-              <View key={item.id} wrap={false}>
-                <Text style={styles.itemTitle}>
-                  {item.title}
-                  {item.organization?.name
-                    ? ` — ${item.organization.name}`
-                    : ""}
-                </Text>
-                <Text style={styles.itemMeta}>
-                  {mmYyyy(item.startMonth, item.startYear)} -{" "}
-                  {mmYyyy(item.endMonth, item.endYear, item.isCurrent)}
-                </Text>
-              </View>
-            ))}
+            {educations.map((item) => {
+              const dates = dateRange(
+                item.startMonth,
+                item.startYear,
+                item.endMonth,
+                item.endYear,
+                item.isCurrent,
+              );
+              const meta = [item.typeName, dates].filter(Boolean).join(" · ");
+              const technologies = skillNames(item.skills);
+
+              return (
+                <View key={item.id} wrap={false}>
+                  <Text style={styles.itemTitle}>
+                    {item.title}
+                    {item.organization?.name
+                      ? ` — ${item.organization.name}`
+                      : ""}
+                  </Text>
+                  {meta ? <Text style={styles.itemMeta}>{meta}</Text> : null}
+                  {item.description ? (
+                    <Text style={styles.text}>{item.description}</Text>
+                  ) : null}
+                  {technologies ? (
+                    <Text style={styles.itemMeta}>
+                      Tecnologías: {technologies}
+                    </Text>
+                  ) : null}
+                </View>
+              );
+            })}
           </View>
         ) : null}
 
-        {data.projects.length > 0 ? (
+        {projects.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.heading}>{labels.projects}</Text>
-            {data.projects.map((item) => (
-              <View key={item.id} wrap={false}>
-                <Text style={styles.itemTitle}>{item.name}</Text>
-                <Text style={styles.text}>
-                  {item.summary || item.description}
-                </Text>
-              </View>
-            ))}
+            {projects.map((item) => {
+              const dates = dateRange(
+                item.startMonth,
+                item.startYear,
+                item.endMonth,
+                item.endYear,
+              );
+              const technologies = skillNames(item.skills);
+              const url = item.liveUrl || item.githubUrl;
+
+              return (
+                <View key={item.id} wrap={false}>
+                  <Text style={styles.itemTitle}>{item.name}</Text>
+                  {dates ? <Text style={styles.itemMeta}>{dates}</Text> : null}
+                  {item.description ? (
+                    <Text style={styles.text}>{item.description}</Text>
+                  ) : null}
+                  {technologies ? (
+                    <Text style={styles.itemMeta}>
+                      Tecnologías: {technologies}
+                    </Text>
+                  ) : null}
+                  {url ? <Text style={styles.itemMeta}>{url}</Text> : null}
+                </View>
+              );
+            })}
           </View>
         ) : null}
       </Page>

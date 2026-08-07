@@ -4,6 +4,7 @@
  */
 export const educationTypeIds = {
   career: "a4444444-4444-4444-4444-444444444001",
+  certificationProgram: "a4444444-4444-4444-4444-444444444004",
 } as const;
 
 export const skillTypeIds = {

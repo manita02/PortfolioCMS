@@ -1,5 +1,42 @@
-import { formatDateRange } from "@/lib/dates";
-import type { CvData } from "@/types/domain";
+import { educationTypeIds } from "@/constants/catalog-ids";
+import { formatDateRange, formatProjectDateRange } from "@/lib/dates";
+import type { CvData, Skill } from "@/types/domain";
+
+function skillNames(skills: Skill[]) {
+  return skills.map((s) => s.label || s.name).filter(Boolean).join(", ");
+}
+
+function groupSkillsByType(skills: Skill[]) {
+  const byType = new Map<
+    string,
+    { typeName: string; typeSortOrder: number; names: string[] }
+  >();
+
+  for (const skill of skills) {
+    const name = skill.label || skill.name;
+    if (!name) continue;
+    const existing = byType.get(skill.typeId);
+    if (existing) {
+      existing.names.push(name);
+    } else {
+      byType.set(skill.typeId, {
+        typeName: skill.typeName,
+        typeSortOrder: skill.typeSortOrder,
+        names: [name],
+      });
+    }
+  }
+
+  return [...byType.values()].sort(
+    (a, b) =>
+      a.typeSortOrder - b.typeSortOrder || a.typeName.localeCompare(b.typeName),
+  );
+}
+
+const exportableEducationTypeIds = new Set<string>([
+  educationTypeIds.career,
+  educationTypeIds.certificationProgram,
+]);
 
 export function CvDocument({
   data,
@@ -21,6 +58,12 @@ export function CvDocument({
   const name = person
     ? `${person.firstName} ${person.lastName}`
     : "Curriculum Vitae";
+
+  const skillGroups = groupSkillsByType(data.skills);
+  const educations = data.educations.filter((item) =>
+    exportableEducationTypeIds.has(item.typeId),
+  );
+  const projects = data.projects.filter((item) => item.isFeatured);
 
   return (
     <div className="cv-document mx-auto max-w-3xl bg-background px-4 py-10 text-[15px] leading-relaxed sm:px-8 print:max-w-none print:px-0 print:py-0">
@@ -48,12 +91,18 @@ export function CvDocument({
         </section>
       ) : null}
 
-      {data.skills.length > 0 ? (
+      {skillGroups.length > 0 ? (
         <section className="mt-8">
           <h2 className="font-heading text-sm tracking-[0.14em] uppercase">
             {labels.skills}
           </h2>
-          <p className="mt-3">{data.skills.map((s) => s.label).join(" · ")}</p>
+          <div className="mt-3 space-y-1">
+            {skillGroups.map((group) => (
+              <p key={group.typeName}>
+                {group.typeName}: {group.names.join(", ")}
+              </p>
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -63,84 +112,134 @@ export function CvDocument({
             {labels.experience}
           </h2>
           <div className="mt-4 space-y-5">
-            {data.experiences.map((item) => (
-              <div key={item.id}>
-                <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+            {data.experiences.map((item) => {
+              const technologies = skillNames(item.skills);
+              return (
+                <div key={item.id}>
                   <p className="font-medium">
                     {item.title}
                     {item.organization?.name
                       ? ` — ${item.organization.name}`
                       : ""}
                   </p>
-                  <p className="text-muted-foreground text-sm">
-                    {formatDateRange({
-                      startMonth: item.startMonth,
-                      startYear: item.startYear,
-                      endMonth: item.endMonth,
-                      endYear: item.endYear,
-                      isCurrent: item.isCurrent,
-                      presentLabel,
-                    })}
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {[
+                      item.typeName,
+                      item.modalityName,
+                      formatDateRange({
+                        startMonth: item.startMonth,
+                        startYear: item.startYear,
+                        endMonth: item.endMonth,
+                        endYear: item.endYear,
+                        isCurrent: item.isCurrent,
+                        presentLabel,
+                      }),
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
+                  {item.description ? (
+                    <p className="mt-2 whitespace-pre-line">{item.description}</p>
+                  ) : null}
+                  {technologies ? (
+                    <p className="text-muted-foreground mt-1 text-sm">
+                      Tecnologías: {technologies}
+                    </p>
+                  ) : null}
                 </div>
-                {item.description ? (
-                  <p className="mt-2 whitespace-pre-line">{item.description}</p>
-                ) : null}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       ) : null}
 
-      {data.educations.length > 0 ? (
+      {educations.length > 0 ? (
         <section className="mt-8">
           <h2 className="font-heading text-sm tracking-[0.14em] uppercase">
             {labels.education}
           </h2>
           <div className="mt-4 space-y-5">
-            {data.educations.map((item) => (
-              <div key={item.id}>
-                <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+            {educations.map((item) => {
+              const technologies = skillNames(item.skills);
+              return (
+                <div key={item.id}>
                   <p className="font-medium">
                     {item.title}
                     {item.organization?.name
                       ? ` — ${item.organization.name}`
                       : ""}
                   </p>
-                  <p className="text-muted-foreground text-sm">
-                    {formatDateRange({
-                      startMonth: item.startMonth,
-                      startYear: item.startYear,
-                      endMonth: item.endMonth,
-                      endYear: item.endYear,
-                      isCurrent: item.isCurrent,
-                      presentLabel,
-                    })}
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    {[
+                      item.typeName,
+                      formatDateRange({
+                        startMonth: item.startMonth,
+                        startYear: item.startYear,
+                        endMonth: item.endMonth,
+                        endYear: item.endYear,
+                        isCurrent: item.isCurrent,
+                        presentLabel,
+                      }),
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
+                  {item.description ? (
+                    <p className="mt-2 whitespace-pre-line">{item.description}</p>
+                  ) : null}
+                  {technologies ? (
+                    <p className="text-muted-foreground mt-1 text-sm">
+                      Tecnologías: {technologies}
+                    </p>
+                  ) : null}
                 </div>
-                {item.description ? (
-                  <p className="mt-2 whitespace-pre-line">{item.description}</p>
-                ) : null}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       ) : null}
 
-      {data.projects.length > 0 ? (
+      {projects.length > 0 ? (
         <section className="mt-8">
           <h2 className="font-heading text-sm tracking-[0.14em] uppercase">
             {labels.projects}
           </h2>
           <div className="mt-4 space-y-4">
-            {data.projects.map((item) => (
-              <div key={item.id}>
-                <p className="font-medium">{item.name}</p>
-                <p className="mt-1 whitespace-pre-line">
-                  {item.summary || item.description}
-                </p>
-              </div>
-            ))}
+            {projects.map((item) => {
+              const technologies = skillNames(item.skills);
+              const url = item.liveUrl || item.githubUrl;
+              const dates = formatProjectDateRange({
+                startMonth: item.startMonth,
+                startYear: item.startYear,
+                endMonth: item.endMonth,
+                endYear: item.endYear,
+              });
+
+              return (
+                <div key={item.id}>
+                  <p className="font-medium">{item.name}</p>
+                  {dates ? (
+                    <p className="text-muted-foreground mt-1 text-sm">{dates}</p>
+                  ) : null}
+                  {item.description ? (
+                    <p className="mt-1 whitespace-pre-line">{item.description}</p>
+                  ) : null}
+                  {technologies ? (
+                    <p className="text-muted-foreground mt-1 text-sm">
+                      Tecnologías: {technologies}
+                    </p>
+                  ) : null}
+                  {url ? (
+                    <a
+                      href={url}
+                      className="text-muted-foreground mt-1 block text-sm hover:underline"
+                    >
+                      {url}
+                    </a>
+                  ) : null}
+                </div>
+              );
+            })}
           </div>
         </section>
       ) : null}
