@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CvDownloadButton } from "@/components/shared/cv-download-button";
 import { Reveal } from "@/components/shared/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,14 +32,7 @@ export async function FinalCtaSection({
               >
                 Ver proyectos
               </Link>
-              <a
-                href="/cv/pdf?download=1"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                )}
-              >
-                Descargar CV
-              </a>
+              <CvDownloadButton variant="outline" size="lg" />
               {githubUrl ? (
                 <a
                   href={githubUrl}

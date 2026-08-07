@@ -73,9 +73,6 @@ export function ProjectCard({
         <OrganizationBadge organization={project.organization} size={36} />
 
         <Link href={href} className="block space-y-3">
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
-            {project.summary || project.description}
-          </p>
           {project.skills.length > 0 ? (
             <ul className="flex flex-wrap gap-1.5">
               {project.skills.slice(0, 4).map((skill) => (

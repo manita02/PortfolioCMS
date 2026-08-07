@@ -1,9 +1,10 @@
 "use client";
 
-import { Download, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { CvDownloadButton } from "@/components/shared/cv-download-button";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -81,16 +82,11 @@ export function SiteHeader({ brand }: { brand: string }) {
         </nav>
 
         <div className="flex items-center gap-1">
-          <a
-            href="/cv/pdf?download=1"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "hidden sm:inline-flex",
-            )}
-          >
-            <Download className="size-3.5" />
-            Descargar CV
-          </a>
+          <CvDownloadButton
+            variant="outline"
+            size="sm"
+            className="hidden sm:inline-flex"
+          />
           <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
@@ -126,17 +122,12 @@ export function SiteHeader({ brand }: { brand: string }) {
                   );
                 })}
               </nav>
-              <a
-                href="/cv/pdf?download=1"
+              <CvDownloadButton
+                variant="default"
+                size="lg"
+                className="mt-8 w-full"
                 onClick={() => setOpen(false)}
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "mt-8 w-full",
-                )}
-              >
-                <Download className="size-4" />
-                Descargar CV
-              </a>
+              />
             </SheetContent>
           </Sheet>
         </div>

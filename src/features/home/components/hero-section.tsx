@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { CvDownloadButton } from "@/components/shared/cv-download-button";
 import { buttonVariants } from "@/components/ui/button";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { getPublicStorageUrl } from "@/lib/storage-url";
@@ -89,14 +90,7 @@ export function HeroSection({
               >
                 Ver proyectos
               </Link>
-              <a
-                href="/cv/pdf?download=1"
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "lg" }),
-                )}
-              >
-                Descargar CV
-              </a>
+              <CvDownloadButton variant="outline" size="lg" />
             </div>
           </div>
 
