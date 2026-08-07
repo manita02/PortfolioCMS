@@ -13,7 +13,7 @@ export async function FinalCtaSection({
   return (
     <section
       id="cta"
-      className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24"
+      className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20"
     >
       <Reveal>
         <div className="from-muted/80 via-background to-accent/30 relative overflow-hidden rounded-[2rem] border border-border/60 bg-gradient-to-br px-6 py-12 sm:px-12 sm:py-16">
