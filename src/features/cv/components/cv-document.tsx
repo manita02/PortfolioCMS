@@ -114,6 +114,21 @@ export function CvDocument({
           <div className="mt-4 space-y-5">
             {data.experiences.map((item) => {
               const technologies = skillNames(item.skills);
+              const meta = [
+                item.typeName,
+                item.modalityName,
+                formatDateRange({
+                  startMonth: item.startMonth,
+                  startYear: item.startYear,
+                  endMonth: item.endMonth,
+                  endYear: item.endYear,
+                  isCurrent: item.isCurrent,
+                  presentLabel,
+                }),
+              ]
+                .filter(Boolean)
+                .join(" · ");
+
               return (
                 <div key={item.id}>
                   <p className="font-medium">
@@ -121,22 +136,11 @@ export function CvDocument({
                     {item.organization?.name
                       ? ` — ${item.organization.name}`
                       : ""}
-                  </p>
-                  <p className="text-muted-foreground mt-1 text-sm">
-                    {[
-                      item.typeName,
-                      item.modalityName,
-                      formatDateRange({
-                        startMonth: item.startMonth,
-                        startYear: item.startYear,
-                        endMonth: item.endMonth,
-                        endYear: item.endYear,
-                        isCurrent: item.isCurrent,
-                        presentLabel,
-                      }),
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
+                    {meta ? (
+                      <span className="text-muted-foreground text-sm font-normal">
+                        {` | ${meta}`}
+                      </span>
+                    ) : null}
                   </p>
                   {item.description ? (
                     <p className="mt-2 whitespace-pre-line">{item.description}</p>
@@ -161,6 +165,20 @@ export function CvDocument({
           <div className="mt-4 space-y-5">
             {educations.map((item) => {
               const technologies = skillNames(item.skills);
+              const meta = [
+                item.typeName,
+                formatDateRange({
+                  startMonth: item.startMonth,
+                  startYear: item.startYear,
+                  endMonth: item.endMonth,
+                  endYear: item.endYear,
+                  isCurrent: item.isCurrent,
+                  presentLabel,
+                }),
+              ]
+                .filter(Boolean)
+                .join(" · ");
+
               return (
                 <div key={item.id}>
                   <p className="font-medium">
@@ -168,21 +186,11 @@ export function CvDocument({
                     {item.organization?.name
                       ? ` — ${item.organization.name}`
                       : ""}
-                  </p>
-                  <p className="text-muted-foreground mt-1 text-sm">
-                    {[
-                      item.typeName,
-                      formatDateRange({
-                        startMonth: item.startMonth,
-                        startYear: item.startYear,
-                        endMonth: item.endMonth,
-                        endYear: item.endYear,
-                        isCurrent: item.isCurrent,
-                        presentLabel,
-                      }),
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
+                    {meta ? (
+                      <span className="text-muted-foreground text-sm font-normal">
+                        {` | ${meta}`}
+                      </span>
+                    ) : null}
                   </p>
                   {item.description ? (
                     <p className="mt-2 whitespace-pre-line">{item.description}</p>
@@ -217,25 +225,27 @@ export function CvDocument({
 
               return (
                 <div key={item.id}>
-                  <p className="font-medium">{item.name}</p>
-                  {dates ? (
-                    <p className="text-muted-foreground mt-1 text-sm">{dates}</p>
-                  ) : null}
+                  <p className="font-medium">
+                    {item.name}
+                    {dates ? (
+                      <span className="text-muted-foreground text-sm font-normal">
+                        {` | ${dates}`}
+                      </span>
+                    ) : null}
+                  </p>
                   {item.description ? (
                     <p className="mt-1 whitespace-pre-line">{item.description}</p>
                   ) : null}
-                  {technologies ? (
+                  {technologies || url ? (
                     <p className="text-muted-foreground mt-1 text-sm">
-                      Tecnologías: {technologies}
+                      {technologies ? `Tecnologías: ${technologies}` : null}
+                      {technologies && url ? " | " : null}
+                      {url ? (
+                        <a href={url} className="hover:underline">
+                          {url}
+                        </a>
+                      ) : null}
                     </p>
-                  ) : null}
-                  {url ? (
-                    <a
-                      href={url}
-                      className="text-muted-foreground mt-1 block text-sm hover:underline"
-                    >
-                      {url}
-                    </a>
                   ) : null}
                 </div>
               );

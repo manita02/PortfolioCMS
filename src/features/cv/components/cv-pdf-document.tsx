@@ -32,9 +32,16 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ddd",
     paddingBottom: 3,
   },
+  item: { marginBottom: 8 },
   itemTitle: { fontFamily: "Helvetica-Bold", marginBottom: 2 },
-  itemMeta: { fontSize: 9, color: "#555", marginBottom: 3 },
-  text: { marginBottom: 6 },
+  itemMeta: { fontSize: 9, color: "#555", marginBottom: 0 },
+  itemMetaInline: {
+    fontSize: 9,
+    fontFamily: "Helvetica",
+    fontWeight: "normal",
+    color: "#555",
+  },
+  text: { marginBottom: 2 },
   skillLine: { marginBottom: 3 },
 });
 
@@ -167,14 +174,16 @@ export function CvPdfDocument({
               const technologies = skillNames(item.skills);
 
               return (
-                <View key={item.id} wrap={false}>
+                <View key={item.id} style={styles.item} wrap={false}>
                   <Text style={styles.itemTitle}>
                     {item.title}
                     {item.organization?.name
                       ? ` — ${item.organization.name}`
                       : ""}
+                    {meta ? (
+                      <Text style={styles.itemMetaInline}>{` | ${meta}`}</Text>
+                    ) : null}
                   </Text>
-                  {meta ? <Text style={styles.itemMeta}>{meta}</Text> : null}
                   {item.description ? (
                     <Text style={styles.text}>{item.description}</Text>
                   ) : null}
@@ -204,14 +213,16 @@ export function CvPdfDocument({
               const technologies = skillNames(item.skills);
 
               return (
-                <View key={item.id} wrap={false}>
+                <View key={item.id} style={styles.item} wrap={false}>
                   <Text style={styles.itemTitle}>
                     {item.title}
                     {item.organization?.name
                       ? ` — ${item.organization.name}`
                       : ""}
+                    {meta ? (
+                      <Text style={styles.itemMetaInline}>{` | ${meta}`}</Text>
+                    ) : null}
                   </Text>
-                  {meta ? <Text style={styles.itemMeta}>{meta}</Text> : null}
                   {item.description ? (
                     <Text style={styles.text}>{item.description}</Text>
                   ) : null}
@@ -238,20 +249,27 @@ export function CvPdfDocument({
               );
               const technologies = skillNames(item.skills);
               const url = item.liveUrl || item.githubUrl;
+              const techLine = [
+                technologies ? `Tecnologías: ${technologies}` : "",
+                url,
+              ]
+                .filter(Boolean)
+                .join(" | ");
 
               return (
-                <View key={item.id} wrap={false}>
-                  <Text style={styles.itemTitle}>{item.name}</Text>
-                  {dates ? <Text style={styles.itemMeta}>{dates}</Text> : null}
+                <View key={item.id} style={styles.item} wrap={false}>
+                  <Text style={styles.itemTitle}>
+                    {item.name}
+                    {dates ? (
+                      <Text style={styles.itemMetaInline}>{` | ${dates}`}</Text>
+                    ) : null}
+                  </Text>
                   {item.description ? (
                     <Text style={styles.text}>{item.description}</Text>
                   ) : null}
-                  {technologies ? (
-                    <Text style={styles.itemMeta}>
-                      Tecnologías: {technologies}
-                    </Text>
+                  {techLine ? (
+                    <Text style={styles.itemMeta}>{techLine}</Text>
                   ) : null}
-                  {url ? <Text style={styles.itemMeta}>{url}</Text> : null}
                 </View>
               );
             })}
