@@ -1,3 +1,4 @@
+import { resolveAdminAccess } from "@/lib/auth/admin-policy";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export async function getSessionUser() {
@@ -11,9 +12,13 @@ export async function getSessionUser() {
 
 export async function assertAdmin() {
   const user = await getSessionUser();
-  const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase();
+  const reason = resolveAdminAccess({
+    hasUser: Boolean(user),
+    userEmail: user?.email,
+    adminEmail: process.env.ADMIN_EMAIL,
+  });
 
-  if (!user) {
+  if (reason === "unauthenticated") {
     return {
       ok: false as const,
       user: null,
@@ -21,7 +26,7 @@ export async function assertAdmin() {
     };
   }
 
-  if (!adminEmail || user.email?.toLowerCase() !== adminEmail) {
+  if (reason === "forbidden") {
     return {
       ok: false as const,
       user,
@@ -29,7 +34,7 @@ export async function assertAdmin() {
     };
   }
 
-  return { ok: true as const, user, reason: null };
+  return { ok: true as const, user: user!, reason: null };
 }
 
 export async function requireAdmin() {
