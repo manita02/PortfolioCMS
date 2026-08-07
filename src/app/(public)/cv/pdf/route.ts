@@ -30,6 +30,7 @@ export async function GET(request: Request) {
         ? `attachment; filename="${filename}"`
         : `inline; filename="${filename}"`,
       "Cache-Control": "no-store",
+      "X-Frame-Options": "SAMEORIGIN",
     },
   });
 }
