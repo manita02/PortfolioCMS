@@ -10,11 +10,11 @@ export async function uploadAdminFile(formData: FormData) {
   const folder = String(formData.get("folder") ?? "uploads");
 
   if (!(file instanceof File)) {
-    throw new Error("File is required");
+    throw new Error("El archivo es obligatorio");
   }
 
   if (!Object.values(storageBuckets).includes(bucket)) {
-    throw new Error("Invalid bucket");
+    throw new Error("Bucket no válido");
   }
 
   return uploadFile({ bucket, file, folder });

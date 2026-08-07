@@ -16,10 +16,9 @@ export async function upsertSocialLinkAction(input: SocialLinkInput) {
   const payload = {
     name: data.name,
     type_id: data.typeId,
-    icon_key: data.iconKey,
+    icon_image: data.iconImage ?? null,
     url: data.url,
     sort_order: data.sortOrder,
-    is_visible: data.isVisible,
   };
 
   if (data.id) {
