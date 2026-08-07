@@ -102,10 +102,9 @@ export interface SocialLink {
   name: string;
   typeId: string;
   typeName: string;
-  iconKey: string;
+  iconImage: string | null;
   url: string;
   sortOrder: number;
-  isVisible: boolean;
 }
 
 export interface CvData {
