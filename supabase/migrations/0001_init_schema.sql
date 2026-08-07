@@ -268,10 +268,9 @@ create table public.social_links (
   type_id uuid not null
     references public.social_link_types (id) on delete restrict
     default 'a6666666-6666-6666-6666-666666666001',
-  icon_key text not null default 'link',
+  icon_image text,
   url text not null,
   sort_order int not null default 0,
-  is_visible boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
