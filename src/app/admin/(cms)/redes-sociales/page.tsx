@@ -13,7 +13,7 @@ export default async function AdminSocialLinksPage() {
       items={items}
       types={types}
       title="Redes sociales"
-      description="Enlaces a redes y perfiles."
+      description="Gestiona los enlaces a redes y perfiles públicos."
     />
   );
 }

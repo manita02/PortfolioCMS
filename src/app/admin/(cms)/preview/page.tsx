@@ -32,7 +32,7 @@ export default async function AdminPreviewPage() {
     ]);
 
   const githubUrl =
-    socialLinks.find((l) => l.iconKey.toLowerCase() === "github")?.url ??
+    socialLinks.find((l) => l.name.toLowerCase().includes("github"))?.url ??
     socialLinks.find((l) => l.url.toLowerCase().includes("github.com"))?.url ??
     null;
 
