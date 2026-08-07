@@ -32,6 +32,40 @@ export function getSkills() {
   })();
 }
 
+/** Skills assigned to at least one project (for public project filters). */
+async function fetchSkillsUsedByProjects(): Promise<Skill[]> {
+  if (!isSupabaseConfigured()) return [];
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("skills")
+    .select(
+      `
+      *,
+      skill_types ( id, name, sort_order ),
+      project_skills!inner ( project_id )
+    `,
+    )
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error || !data) return [];
+
+  const unique = new Map<string, Skill>();
+  for (const row of data) {
+    const skill = mapSkill(row as Record<string, unknown>);
+    if (!unique.has(skill.id)) unique.set(skill.id, skill);
+  }
+  return Array.from(unique.values());
+}
+
+export function getSkillsUsedByProjects() {
+  return unstable_cache(
+    () => fetchSkillsUsedByProjects(),
+    ["skills-used-by-projects"],
+    { tags: [cacheTags.skills, cacheTags.projects] },
+  )();
+}
+
 export async function getSkillsRaw() {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
