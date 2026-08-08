@@ -23,7 +23,7 @@ export async function FinalCtaSection({
               ¿Trabajamos juntos?
             </h2>
             <p className="text-muted-foreground text-base leading-relaxed sm:text-lg">
-              Revisá mis proyectos o descargá el CV para conocer más detalles.
+              Estoy a disposición por cualquier consulta.
             </p>
             <div className="flex flex-wrap gap-3 pt-4">
               <Link
