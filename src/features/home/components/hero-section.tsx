@@ -33,7 +33,7 @@ export function HeroSection({
   const subtitle =
     person?.subtitle ||
     "Diseño y construyo productos digitales con foco en calidad.";
-  const techs = highlightSkills.slice(0, 6);
+  const techs = highlightSkills;
 
   return (
     <section id="hero" className="relative scroll-mt-20 overflow-hidden">

@@ -7,6 +7,7 @@ import { Reveal } from "@/components/shared/reveal";
 import { SectionHeader } from "@/components/shared/section-header";
 import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
+import { groupSkillsByType } from "@/features/skills/lib/skill-display";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { Skill } from "@/types/domain";
 
@@ -25,29 +26,7 @@ export function SkillsSection({
   skills: Skill[];
   emptyLabel: string;
 }) {
-  const byType = new Map<
-    string,
-    { typeId: string; typeName: string; typeSortOrder: number; items: Skill[] }
-  >();
-
-  for (const skill of skills) {
-    if (skill.typeId === skillTypeIds.hidden) continue;
-    const existing = byType.get(skill.typeId);
-    if (existing) {
-      existing.items.push(skill);
-    } else {
-      byType.set(skill.typeId, {
-        typeId: skill.typeId,
-        typeName: skill.typeName,
-        typeSortOrder: skill.typeSortOrder,
-        items: [skill],
-      });
-    }
-  }
-
-  const groups = [...byType.values()].sort(
-    (a, b) => a.typeSortOrder - b.typeSortOrder || a.typeName.localeCompare(b.typeName),
-  );
+  const groups = groupSkillsByType(skills, skillTypeIds.hidden);
 
   return (
     <section

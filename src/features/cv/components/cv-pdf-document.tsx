@@ -92,10 +92,18 @@ function groupSkillsByType(skills: Skill[]) {
     }
   }
 
-  return [...byType.values()].sort(
-    (a, b) =>
-      a.typeSortOrder - b.typeSortOrder || a.typeName.localeCompare(b.typeName),
-  );
+  return [...byType.values()]
+    .map((group) => ({
+      ...group,
+      names: [...group.names].sort((a, b) =>
+        a.localeCompare(b, "es", { sensitivity: "base" }),
+      ),
+    }))
+    .sort(
+      (a, b) =>
+        a.typeSortOrder - b.typeSortOrder ||
+        a.typeName.localeCompare(b.typeName, "es", { sensitivity: "base" }),
+    );
 }
 
 const exportableEducationTypeIds = new Set<string>([

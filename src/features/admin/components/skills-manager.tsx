@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
@@ -40,7 +41,7 @@ function emptyValues(defaultTypeId: string): SkillInput {
     name: "",
     typeId: defaultTypeId,
     iconPath: null,
-    sortOrder: 0,
+    destacada: false,
     label: "",
   };
 }
@@ -51,7 +52,7 @@ function toFormValues(item: SkillAdminRow): SkillInput {
     name: item.name,
     typeId: item.type_id,
     iconPath: item.icon_path ?? null,
-    sortOrder: item.sort_order,
+    destacada: item.destacada ?? false,
     label: item.label ?? "",
   };
 }
@@ -160,6 +161,11 @@ export function SkillsManager({
       },
     },
     {
+      key: "destacada",
+      header: "Destacada",
+      cell: (row) => (row.destacada ? "Sí" : "No"),
+    },
+    {
       key: "actions",
       header: "Acciones",
       cell: (row) => (
@@ -238,21 +244,16 @@ export function SkillsManager({
           />
           <FormField
             control={form.control}
-            name="sortOrder"
+            name="destacada"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Sort</FormLabel>
+              <FormItem className="flex items-center gap-2 space-y-0 self-end pb-2">
                 <FormControl>
-                  <Input
-                    type="number"
-                    value={field.value ?? 0}
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === "" ? 0 : Number(e.target.value),
-                      )
-                    }
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(v) => field.onChange(Boolean(v))}
                   />
                 </FormControl>
+                <FormLabel>Destacada</FormLabel>
                 <FormMessage />
               </FormItem>
             )}
