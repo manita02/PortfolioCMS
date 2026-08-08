@@ -24,15 +24,11 @@ export async function generateMetadata() {
     (person ? `${person.firstName} ${person.lastName}` : siteConfig.name);
   const description =
     person?.metaDescription || person?.subtitle || siteConfig.description;
-  const image = getPublicStorageUrl(
-    storageBuckets.person,
-    person?.bannerImagePath,
-  );
 
   return buildMetadata({
     title,
     description,
-    image,
+    image: "/og/portfolioCMS.png",
   });
 }
 
