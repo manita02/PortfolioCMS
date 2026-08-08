@@ -83,15 +83,12 @@ insert into public.education_types (id, name, sort_order) values
   ('a4444444-4444-4444-4444-444444444005', 'Otro', 5);
 
 insert into public.skill_types (id, name, sort_order) values
-  ('a5555555-5555-5555-5555-555555555001', 'Lenguaje', 1),
-  ('a5555555-5555-5555-5555-555555555002', 'Framework', 2),
-  ('a5555555-5555-5555-5555-555555555006', 'Base de datos', 3),
-  ('a5555555-5555-5555-5555-555555555003', 'Herramienta', 4),
+  ('a5555555-5555-5555-5555-555555555010', 'Backend & Lenguajes', 1),
+  ('a5555555-5555-5555-5555-555555555011', 'Frontend', 2),
+  ('a5555555-5555-5555-5555-555555555012', 'Herramientas & Prácticas', 3),
+  ('a5555555-5555-5555-5555-555555555006', 'Base de datos', 4),
   ('a5555555-5555-5555-5555-555555555008', 'Cloud / DevOps', 5),
-  ('a5555555-5555-5555-5555-555555555007', 'Metodología', 6),
-  ('a5555555-5555-5555-5555-555555555004', 'Soft skill', 7),
-  ('a5555555-5555-5555-5555-555555555009', 'Idioma', 8),
-  ('a5555555-5555-5555-5555-555555555005', 'Otro', 9);
+  ('a5555555-5555-5555-5555-555555555013', 'No visibles', 100);
 
 insert into public.social_link_types (id, name, sort_order) values
   ('a6666666-6666-6666-6666-666666666001', 'Profesional', 1),
@@ -156,7 +153,7 @@ create table public.skills (
   label text not null default '',
   type_id uuid not null
     references public.skill_types (id) on delete restrict
-    default 'a5555555-5555-5555-5555-555555555005',
+    default 'a5555555-5555-5555-5555-555555555012',
   icon_path text,
   sort_order int not null default 0,
   created_at timestamptz not null default now(),
