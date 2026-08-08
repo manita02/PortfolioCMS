@@ -47,7 +47,7 @@ export function mapSkill(row: Record<string, unknown>): Skill {
     typeName: type.name,
     typeSortOrder: type.sortOrder,
     iconPath: (row.icon_path as string) ?? null,
-    sortOrder: (row.sort_order as number) ?? 0,
+    destacada: Boolean(row.destacada),
     label: (row.label as string) || (row.name as string),
   };
 }

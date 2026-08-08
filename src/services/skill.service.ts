@@ -19,7 +19,6 @@ async function fetchSkills(): Promise<Skill[]> {
   const { data, error } = await supabase
     .from("skills")
     .select(skillSelect)
-    .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
 
   if (error || !data) return [];
@@ -28,6 +27,26 @@ async function fetchSkills(): Promise<Skill[]> {
 
 export function getSkills() {
   return unstable_cache(() => fetchSkills(), ["skills"], {
+    tags: [cacheTags.skills],
+  })();
+}
+
+/** Skills with destacada = true for the public Hero (name ASC). */
+async function fetchFeaturedSkills(): Promise<Skill[]> {
+  if (!isSupabaseConfigured()) return [];
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("skills")
+    .select(skillSelect)
+    .eq("destacada", true)
+    .order("name", { ascending: true });
+
+  if (error || !data) return [];
+  return data.map((row) => mapSkill(row as Record<string, unknown>));
+}
+
+export function getFeaturedSkills() {
+  return unstable_cache(() => fetchFeaturedSkills(), ["skills-featured"], {
     tags: [cacheTags.skills],
   })();
 }
@@ -45,7 +64,6 @@ async function fetchSkillsUsedByProjects(): Promise<Skill[]> {
       project_skills!inner ( project_id )
     `,
     )
-    .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
 
   if (error || !data) return [];
@@ -55,7 +73,9 @@ async function fetchSkillsUsedByProjects(): Promise<Skill[]> {
     const skill = mapSkill(row as Record<string, unknown>);
     if (!unique.has(skill.id)) unique.set(skill.id, skill);
   }
-  return Array.from(unique.values());
+  return Array.from(unique.values()).sort((a, b) =>
+    a.name.localeCompare(b.name, "es", { sensitivity: "base" }),
+  );
 }
 
 export function getSkillsUsedByProjects() {
@@ -72,6 +92,6 @@ export async function getSkillsRaw() {
   const { data } = await supabase
     .from("skills")
     .select(skillSelect)
-    .order("sort_order", { ascending: true });
+    .order("name", { ascending: true });
   return (data ?? []) as import("@/features/admin/types/rows").SkillAdminRow[];
 }
