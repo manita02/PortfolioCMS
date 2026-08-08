@@ -4,7 +4,7 @@ export type SkillAdminRow = {
   id: string;
   name: string;
   type_id: string;
-  sort_order: number;
+  destacada: boolean;
   icon_path?: string | null;
   label: string;
   skill_types?: { id?: string; name?: string; sort_order?: number } | null;

@@ -38,7 +38,8 @@ export interface Skill {
   typeName: string;
   typeSortOrder: number;
   iconPath: string | null;
-  sortOrder: number;
+  /** When true, the skill may appear in the public portfolio Hero. */
+  destacada: boolean;
   label: string;
 }
 
