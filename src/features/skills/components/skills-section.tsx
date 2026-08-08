@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, type ComponentType } from "react";
 import Image from "next/image";
 import { Boxes, Code2, Layers, Sparkles, Wrench } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -8,6 +9,7 @@ import { SectionHeader } from "@/components/shared/section-header";
 import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { groupSkillsByType } from "@/features/skills/lib/skill-display";
+import { cn } from "@/lib/utils";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { Skill } from "@/types/domain";
 
@@ -15,6 +17,48 @@ const fallbackIcons = [Code2, Layers, Wrench, Sparkles, Boxes] as const;
 
 function iconForGroup(index: number) {
   return fallbackIcons[index % fallbackIcons.length];
+}
+
+function SkillBadge({
+  skill,
+  FallbackIcon,
+}: {
+  skill: Skill;
+  FallbackIcon: ComponentType<{ className?: string }>;
+}) {
+  const [spinning, setSpinning] = useState(false);
+  const icon = getPublicStorageUrl(storageBuckets.icons, skill.iconPath);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setSpinning(true)}
+      className="group bg-card/40 hover:border-foreground/20 hover:bg-card flex h-full w-full items-center gap-3 rounded-2xl border border-border/60 px-3 py-3 text-left transition-all hover:-translate-y-0.5 hover:shadow-sm"
+    >
+      <div className="bg-muted relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl">
+        <div
+          className={cn(
+            "absolute inset-0 flex items-center justify-center",
+            spinning && "animate-[spin_0.55s_linear]",
+          )}
+          onAnimationEnd={() => setSpinning(false)}
+        >
+          {icon ? (
+            <Image
+              src={icon}
+              alt=""
+              fill
+              className="object-contain p-1.5"
+              sizes="36px"
+            />
+          ) : (
+            <FallbackIcon className="text-muted-foreground size-4" />
+          )}
+        </div>
+      </div>
+      <span className="text-sm font-medium leading-tight">{skill.label}</span>
+    </button>
+  );
 }
 
 export function SkillsSection({
@@ -57,34 +101,11 @@ export function SkillsSection({
                       </h3>
                     </div>
                     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                      {group.items.map((skill) => {
-                        const icon = getPublicStorageUrl(
-                          storageBuckets.icons,
-                          skill.iconPath,
-                        );
-                        return (
-                          <li key={skill.id}>
-                            <div className="group bg-card/40 hover:border-foreground/20 hover:bg-card flex h-full items-center gap-3 rounded-2xl border border-border/60 px-3 py-3 transition-all hover:-translate-y-0.5 hover:shadow-sm">
-                              <div className="bg-muted relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl">
-                                {icon ? (
-                                  <Image
-                                    src={icon}
-                                    alt=""
-                                    fill
-                                    className="object-contain p-1.5"
-                                    sizes="36px"
-                                  />
-                                ) : (
-                                  <Icon className="text-muted-foreground size-4" />
-                                )}
-                              </div>
-                              <span className="text-sm font-medium leading-tight">
-                                {skill.label}
-                              </span>
-                            </div>
-                          </li>
-                        );
-                      })}
+                      {group.items.map((skill) => (
+                        <li key={skill.id}>
+                          <SkillBadge skill={skill} FallbackIcon={Icon} />
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </Reveal>
