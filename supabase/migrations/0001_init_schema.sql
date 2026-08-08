@@ -1,32 +1,100 @@
 -- Portfolio personal — schema definitivo (solo Español).
 -- Singleton admin + singleton person. Sin multi-tenant ni tablas de traducción.
+-- Los tipos viven en tablas catálogo (id + name), no en enums.
 
--- Modalidad de trabajo (no tipo contractual)
-create type public.experience_type as enum (
-  'onsite',   -- Presencial
-  'hybrid',   -- Híbrido
-  'remote'    -- Remoto
+-- ---------------------------------------------------------------------------
+-- Catálogos (UUIDs fijos para defaults y seed)
+-- ---------------------------------------------------------------------------
+create table public.organization_types (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
 );
 
-create type public.education_type as enum (
-  'degree', 'course', 'bootcamp', 'certification_program', 'other'
+create table public.availability_statuses (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
 );
 
-create type public.skill_type as enum (
-  'language', 'framework', 'tool', 'soft', 'other'
+create table public.experience_types (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
 );
 
-create type public.organization_type as enum (
-  'company', 'university', 'school', 'community', 'other'
+create table public.experience_modalities (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
 );
 
-create type public.availability_status as enum (
-  'open', 'selective', 'unavailable'
+create table public.education_types (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
 );
 
-create type public.social_link_type as enum (
-  'professional', 'social', 'contact', 'other'
+create table public.skill_types (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
 );
+
+create table public.social_link_types (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  sort_order int not null default 0
+);
+
+insert into public.organization_types (id, name, sort_order) values
+  ('a1111111-1111-1111-1111-111111111001', 'Empresa', 1),
+  ('a1111111-1111-1111-1111-111111111002', 'Universidad', 2),
+  ('a1111111-1111-1111-1111-111111111003', 'Escuela', 3),
+  ('a1111111-1111-1111-1111-111111111004', 'Comunidad', 4),
+  ('a1111111-1111-1111-1111-111111111005', 'Otro', 5);
+
+insert into public.availability_statuses (id, name, sort_order) values
+  ('a2222222-2222-2222-2222-222222222001', 'Disponible', 1),
+  ('a2222222-2222-2222-2222-222222222002', 'Selectivo', 2),
+  ('a2222222-2222-2222-2222-222222222003', 'No disponible', 3);
+
+insert into public.experience_types (id, name, sort_order) values
+  ('a3333333-3333-3333-3333-333333333001', 'Jornada completa', 1),
+  ('a3333333-3333-3333-3333-333333333002', 'Jornada parcial', 2),
+  ('a3333333-3333-3333-3333-333333333003', 'Por cuenta propia', 3),
+  ('a3333333-3333-3333-3333-333333333004', 'Autónomo', 4),
+  ('a3333333-3333-3333-3333-333333333005', 'Contrato por servicio', 5),
+  ('a3333333-3333-3333-3333-333333333006', 'Prácticas', 6),
+  ('a3333333-3333-3333-3333-333333333007', 'Prácticas laborales', 7),
+  ('a3333333-3333-3333-3333-333333333008', 'Trabajo de temporada', 8);
+
+insert into public.experience_modalities (id, name, sort_order) values
+  ('a7777777-7777-7777-7777-777777777001', 'Presencial', 1),
+  ('a7777777-7777-7777-7777-777777777002', 'Híbrido', 2),
+  ('a7777777-7777-7777-7777-777777777003', 'Remoto', 3);
+
+insert into public.education_types (id, name, sort_order) values
+  ('a4444444-4444-4444-4444-444444444006', 'Formación académica', 0),
+  ('a4444444-4444-4444-4444-444444444001', 'Carrera', 1),
+  ('a4444444-4444-4444-4444-444444444002', 'Curso', 2),
+  ('a4444444-4444-4444-4444-444444444003', 'Bootcamp', 3),
+  ('a4444444-4444-4444-4444-444444444004', 'Programa de certificación', 4),
+  ('a4444444-4444-4444-4444-444444444005', 'Otro', 5);
+
+insert into public.skill_types (id, name, sort_order) values
+  ('a5555555-5555-5555-5555-555555555010', 'Backend & Lenguajes', 1),
+  ('a5555555-5555-5555-5555-555555555011', 'Frontend', 2),
+  ('a5555555-5555-5555-5555-555555555012', 'Herramientas & Prácticas', 3),
+  ('a5555555-5555-5555-5555-555555555006', 'Base de datos', 4),
+  ('a5555555-5555-5555-5555-555555555008', 'Cloud / DevOps', 5),
+  ('a5555555-5555-5555-5555-555555555013', 'No visibles', 100);
+
+insert into public.social_link_types (id, name, sort_order) values
+  ('a6666666-6666-6666-6666-666666666001', 'Profesional', 1),
+  ('a6666666-6666-6666-6666-666666666002', 'Social', 2),
+  ('a6666666-6666-6666-6666-666666666003', 'Contacto', 3),
+  ('a6666666-6666-6666-6666-666666666004', 'Otro', 4);
 
 -- ---------------------------------------------------------------------------
 -- Auth allowlist (único admin)
@@ -47,12 +115,12 @@ create table public.persons (
   email text,
   profile_image_path text,
   banner_image_path text,
-  cv_pdf_path text,
-  availability_status public.availability_status not null default 'open',
+  availability_status_id uuid not null
+    references public.availability_statuses (id) on delete restrict
+    default 'a2222222-2222-2222-2222-222222222001',
   professional_title text not null default '',
   subtitle text not null default '',
   about text not null default '',
-  availability_label text not null default '',
   meta_title text,
   meta_description text,
   created_at timestamptz not null default now(),
@@ -65,7 +133,9 @@ create table public.persons (
 create table public.organizations (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  type public.organization_type not null default 'company',
+  type_id uuid not null
+    references public.organization_types (id) on delete restrict
+    default 'a1111111-1111-1111-1111-111111111001',
   website_url text,
   logo_path text,
   location text,
@@ -81,7 +151,9 @@ create table public.skills (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
   label text not null default '',
-  type public.skill_type not null default 'other',
+  type_id uuid not null
+    references public.skill_types (id) on delete restrict
+    default 'a5555555-5555-5555-5555-555555555012',
   icon_path text,
   sort_order int not null default 0,
   created_at timestamptz not null default now(),
@@ -94,7 +166,12 @@ create table public.skills (
 create table public.experiences (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete restrict,
-  type public.experience_type not null default 'remote',
+  type_id uuid not null
+    references public.experience_types (id) on delete restrict
+    default 'a3333333-3333-3333-3333-333333333001',
+  modality_id uuid not null
+    references public.experience_modalities (id) on delete restrict
+    default 'a7777777-7777-7777-7777-777777777003',
   title text not null default '',
   description text not null default '',
   start_month smallint not null check (start_month between 1 and 12),
@@ -102,7 +179,6 @@ create table public.experiences (
   end_month smallint check (end_month between 1 and 12),
   end_year smallint check (end_year between 1950 and 2100),
   is_current boolean not null default false,
-  sort_order int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint experiences_current_end_null check (
@@ -123,7 +199,9 @@ create table public.experience_skills (
 create table public.educations (
   id uuid primary key default gen_random_uuid(),
   organization_id uuid not null references public.organizations (id) on delete restrict,
-  type public.education_type not null default 'degree',
+  type_id uuid not null
+    references public.education_types (id) on delete restrict
+    default 'a4444444-4444-4444-4444-444444444001',
   title text not null default '',
   description text not null default '',
   start_month smallint not null check (start_month between 1 and 12),
@@ -131,10 +209,8 @@ create table public.educations (
   end_month smallint check (end_month between 1 and 12),
   end_year smallint check (end_year between 1950 and 2100),
   is_current boolean not null default false,
-  institution_image_path text,
   diploma_image_path text,
   diploma_pdf_path text,
-  sort_order int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint educations_current_end_null check (
@@ -167,7 +243,6 @@ create table public.projects (
   github_url text,
   live_url text,
   is_featured boolean not null default false,
-  sort_order int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint projects_slug_format check (
@@ -182,35 +257,17 @@ create table public.project_skills (
 );
 
 -- ---------------------------------------------------------------------------
--- Certificates
--- ---------------------------------------------------------------------------
-create table public.certificates (
-  id uuid primary key default gen_random_uuid(),
-  organization_id uuid not null references public.organizations (id) on delete restrict,
-  name text not null default '',
-  description text not null default '',
-  issued_month smallint not null check (issued_month between 1 and 12),
-  issued_year smallint not null check (issued_year between 1950 and 2100),
-  image_path text,
-  pdf_path text,
-  credential_url text,
-  is_featured boolean not null default false,
-  sort_order int not null default 0,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
--- ---------------------------------------------------------------------------
 -- Social links
 -- ---------------------------------------------------------------------------
 create table public.social_links (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  type public.social_link_type not null default 'professional',
-  icon_key text not null default 'link',
+  type_id uuid not null
+    references public.social_link_types (id) on delete restrict
+    default 'a6666666-6666-6666-6666-666666666001',
+  icon_image text,
   url text not null,
   sort_order int not null default 0,
-  is_visible boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -258,8 +315,6 @@ for each row execute function public.set_updated_at();
 create trigger educations_updated_at before update on public.educations
 for each row execute function public.set_updated_at();
 create trigger projects_updated_at before update on public.projects
-for each row execute function public.set_updated_at();
-create trigger certificates_updated_at before update on public.certificates
 for each row execute function public.set_updated_at();
 create trigger social_links_updated_at before update on public.social_links
 for each row execute function public.set_updated_at();

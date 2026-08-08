@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test:security": "node --experimental-strip-types --test src/lib/auth/admin-policy.test.ts",
     "setup": "node scripts/setup-local.mjs"
   },
   "dependencies": {

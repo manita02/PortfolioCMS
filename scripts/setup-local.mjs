@@ -24,10 +24,10 @@ console.log(`
 ══════════════════════════════════════════════
 
 1) Completá .env.local con URL y anon key de Supabase
-2) Aplicá migraciones + seed (ver docs/LOCAL_SETUP.md)
+2) Aplicá migraciones + seed (ver README.md)
 3) Creá usuario admin y ejecutá supabase/setup_admin.sql
 4) npm run dev
 5) Abrí http://localhost:3000  y  http://localhost:3000/admin
 
-Guía completa: docs/LOCAL_SETUP.md
+Guía completa: README.md
 `);
