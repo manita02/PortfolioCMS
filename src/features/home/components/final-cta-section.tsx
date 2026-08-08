@@ -4,11 +4,7 @@ import { Reveal } from "@/components/shared/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export async function FinalCtaSection({
-  email,
-}: {
-  email?: string | null;
-}) {
+export async function FinalCtaSection() {
   return (
     <section
       id="cta"
@@ -31,16 +27,6 @@ export async function FinalCtaSection({
                 Ver proyectos
               </Link>
               <CvDownloadButton variant="outline" size="lg" />
-              {email ? (
-                <a
-                  href={`mailto:${email}`}
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "lg" }),
-                  )}
-                >
-                  Contactar
-                </a>
-              ) : null}
             </div>
           </div>
         </div>
