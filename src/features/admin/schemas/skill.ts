@@ -5,7 +5,7 @@ export const skillSchema = z.object({
   name: z.string().min(1, "Requerido"),
   typeId: z.string().uuid({ message: "Selecciona un tipo" }),
   iconPath: z.string().nullable().optional(),
-  sortOrder: z.coerce.number().int(),
+  destacada: z.boolean().default(false),
   label: z.string(),
 });
 

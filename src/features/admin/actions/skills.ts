@@ -17,7 +17,7 @@ export async function upsertSkillAction(input: SkillInput) {
     name: data.name,
     type_id: data.typeId,
     icon_path: data.iconPath ?? null,
-    sort_order: data.sortOrder,
+    destacada: data.destacada,
     label: data.label || data.name,
   };
 
@@ -48,4 +48,5 @@ export async function deleteSkillAction(id: string) {
   const { error } = await supabase.from("skills").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidateTag(cacheTags.skills);
+  revalidateTag(cacheTags.cv);
 }
