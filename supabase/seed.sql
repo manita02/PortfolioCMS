@@ -1,7 +1,7 @@
 -- Seed de ejemplo (solo Español).
 -- 1) Crear usuario Auth en Dashboard (email/password).
 -- 2) Insertar admin (ver setup_admin.sql).
--- Los catálogos ya se insertan en 0001 / 0006 (UUIDs fijos).
+-- Los catálogos ya se insertan en 0001 (UUIDs fijos).
 
 insert into public.persons (
   id, first_name, last_name, email, availability_status_id,
@@ -29,13 +29,13 @@ insert into public.organizations (id, name, type_id, website_url, location, desc
 on conflict do nothing;
 
 insert into public.skills (id, name, type_id, sort_order, label) values
-  ('44444444-4444-4444-4444-444444444001', 'TypeScript', 'a5555555-5555-5555-5555-555555555001', 1, 'TypeScript'),
-  ('44444444-4444-4444-4444-444444444002', 'React', 'a5555555-5555-5555-5555-555555555002', 2, 'React'),
-  ('44444444-4444-4444-4444-444444444003', 'Next.js', 'a5555555-5555-5555-5555-555555555002', 3, 'Next.js'),
+  ('44444444-4444-4444-4444-444444444001', 'TypeScript', 'a5555555-5555-5555-5555-555555555010', 1, 'TypeScript'),
+  ('44444444-4444-4444-4444-444444444002', 'React', 'a5555555-5555-5555-5555-555555555011', 2, 'React'),
+  ('44444444-4444-4444-4444-444444444003', 'Next.js', 'a5555555-5555-5555-5555-555555555011', 3, 'Next.js'),
   ('44444444-4444-4444-4444-444444444004', 'PostgreSQL', 'a5555555-5555-5555-5555-555555555006', 4, 'PostgreSQL'),
   ('44444444-4444-4444-4444-444444444005', 'Supabase', 'a5555555-5555-5555-5555-555555555008', 5, 'Supabase'),
-  ('44444444-4444-4444-4444-444444444006', 'Tailwind CSS', 'a5555555-5555-5555-5555-555555555002', 6, 'Tailwind CSS'),
-  ('44444444-4444-4444-4444-444444444007', 'Liderazgo', 'a5555555-5555-5555-5555-555555555004', 7, 'Liderazgo')
+  ('44444444-4444-4444-4444-444444444006', 'Tailwind CSS', 'a5555555-5555-5555-5555-555555555011', 6, 'Tailwind CSS'),
+  ('44444444-4444-4444-4444-444444444007', 'Liderazgo', 'a5555555-5555-5555-5555-555555555013', 7, 'Liderazgo')
 on conflict (name) do nothing;
 
 insert into public.experiences (
