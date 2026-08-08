@@ -5,10 +5,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export async function FinalCtaSection({
-  githubUrl,
   email,
 }: {
-  githubUrl?: string | null;
   email?: string | null;
 }) {
   return (
@@ -33,18 +31,7 @@ export async function FinalCtaSection({
                 Ver proyectos
               </Link>
               <CvDownloadButton variant="outline" size="lg" />
-              {githubUrl ? (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "lg" }),
-                  )}
-                >
-                  GitHub
-                </a>
-              ) : email ? (
+              {email ? (
                 <a
                   href={`mailto:${email}`}
                   className={cn(
