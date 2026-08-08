@@ -1,6 +1,10 @@
 # PortfolioCMS
 
 <p align="center">
+  <img src="assets/screenshots/portfolioCMS.png" alt="PortfolioCMS preview" width="720" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -244,11 +248,7 @@ También: `@react-pdf/renderer` (CV PDF), Base UI, Sonner (toasts), next-themes.
 
 ## Sitio web online
 
-Próximamente.
-
-<!-- Cuando esté publicado, reemplazar por el enlace definitivo:
-[Visitar sitio](https://tu-dominio.com)
--->
+[Visitar sitio](https://portfolio-cms-mocha.vercel.app)
 
 ---
 
