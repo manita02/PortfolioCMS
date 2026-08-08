@@ -248,7 +248,7 @@ También: `@react-pdf/renderer` (CV PDF), Base UI, Sonner (toasts), next-themes.
 
 ## Sitio web online
 
-[Visitar sitio](https://portfolio-cms-mocha.vercel.app)
+[Visitar sitio](https://portfolio-ana-lucia-juarez.vercel.app)
 
 ---
 
