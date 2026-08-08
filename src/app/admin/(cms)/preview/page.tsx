@@ -9,40 +9,39 @@ import { EducationSection } from "@/features/education/components/education-sect
 import { ExperienceSection } from "@/features/experiences/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
 import { SkillsSection } from "@/features/skills/components/skills-section";
-import { skillTypeIds } from "@/constants/catalog-ids";
 import { cn } from "@/lib/utils";
 import { getEducations } from "@/services/education.service";
 import { getExperiences } from "@/services/experience.service";
 import { getPerson } from "@/services/person.service";
 import { getProjects } from "@/services/project.service";
-import { getSkills } from "@/services/skill.service";
+import { getFeaturedSkills, getSkills } from "@/services/skill.service";
 import { getSocialLinks } from "@/services/social-link.service";
 
 export default async function AdminPreviewPage() {
   const portfolioUrl = siteConfig.getUrl();
 
-  const [person, skills, experiences, educations, projects, socialLinks] =
-    await Promise.all([
-      getPerson(),
-      getSkills(),
-      getExperiences(3),
-      getEducations(2),
-      getProjects({ featuredOnly: true, limit: 3 }),
-      getSocialLinks(),
-    ]);
+  const [
+    person,
+    skills,
+    highlightSkills,
+    experiences,
+    educations,
+    projects,
+    socialLinks,
+  ] = await Promise.all([
+    getPerson(),
+    getSkills(),
+    getFeaturedSkills(),
+    getExperiences(3),
+    getEducations(2),
+    getProjects({ featuredOnly: true, limit: 3 }),
+    getSocialLinks(),
+  ]);
 
   const githubUrl =
     socialLinks.find((l) => l.name.toLowerCase().includes("github"))?.url ??
     socialLinks.find((l) => l.url.toLowerCase().includes("github.com"))?.url ??
     null;
-
-  const highlightSkills = skills
-    .filter(
-      (s) =>
-        s.typeId === skillTypeIds.backendLanguages ||
-        s.typeId === skillTypeIds.frontend,
-    )
-    .slice(0, 6);
 
   return (
     <div className="space-y-6">

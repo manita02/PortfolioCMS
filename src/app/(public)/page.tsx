@@ -7,7 +7,6 @@ import { EducationSection } from "@/features/education/components/education-sect
 import { ExperienceSection } from "@/features/experiences/components/experience-section";
 import { ProjectsSection } from "@/features/projects/components/projects-section";
 import { SkillsSection } from "@/features/skills/components/skills-section";
-import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { buildMetadata } from "@/lib/seo";
 import { getPublicStorageUrl } from "@/lib/storage-url";
@@ -15,7 +14,7 @@ import { getEducations } from "@/services/education.service";
 import { getExperiences } from "@/services/experience.service";
 import { getPerson } from "@/services/person.service";
 import { getProjects } from "@/services/project.service";
-import { getSkills } from "@/services/skill.service";
+import { getFeaturedSkills, getSkills } from "@/services/skill.service";
 import { getSocialLinks } from "@/services/social-link.service";
 
 export async function generateMetadata() {
@@ -38,27 +37,27 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [person, skills, experiences, educations, projects, socialLinks] =
-    await Promise.all([
-      getPerson(),
-      getSkills(),
-      getExperiences(3),
-      getEducations(2),
-      getProjects({ featuredOnly: true, limit: 3 }),
-      getSocialLinks(),
-    ]);
+  const [
+    person,
+    skills,
+    highlightSkills,
+    experiences,
+    educations,
+    projects,
+    socialLinks,
+  ] = await Promise.all([
+    getPerson(),
+    getSkills(),
+    getFeaturedSkills(),
+    getExperiences(3),
+    getEducations(2),
+    getProjects({ featuredOnly: true, limit: 3 }),
+    getSocialLinks(),
+  ]);
 
   const fullName = person
     ? `${person.firstName} ${person.lastName}`
     : siteConfig.name;
-
-  const highlightSkills = skills
-    .filter(
-      (s) =>
-        s.typeId === skillTypeIds.backendLanguages ||
-        s.typeId === skillTypeIds.frontend,
-    )
-    .slice(0, 6);
 
   const githubUrl =
     socialLinks.find((l) => l.name.toLowerCase().includes("github"))?.url ??
