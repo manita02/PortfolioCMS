@@ -1,4 +1,4 @@
-import { educationTypeIds } from "@/constants/catalog-ids";
+import { educationTypeIds, skillTypeIds } from "@/constants/catalog-ids";
 import { formatDateRange, formatProjectDateRange } from "@/lib/dates";
 import type { CvData, Skill } from "@/types/domain";
 
@@ -13,6 +13,7 @@ function groupSkillsByType(skills: Skill[]) {
   >();
 
   for (const skill of skills) {
+    if (skill.typeId === skillTypeIds.hidden) continue;
     const name = skill.label || skill.name;
     if (!name) continue;
     const existing = byType.get(skill.typeId);

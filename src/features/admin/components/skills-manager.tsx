@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
 import {
   deleteSkillAction,
@@ -31,6 +32,7 @@ import { toAdminErrorMessage } from "@/features/admin/lib/errors";
 import { adminResolver } from "@/features/admin/lib/form-resolver";
 import { skillSchema, type SkillInput } from "@/features/admin/schemas/skill";
 import type { SkillAdminRow } from "@/features/admin/types/rows";
+import { cn } from "@/lib/utils";
 import type { CatalogItem } from "@/types/domain";
 
 function emptyValues(defaultTypeId: string): SkillInput {
@@ -144,7 +146,18 @@ export function SkillsManager({
     {
       key: "type",
       header: "Tipo",
-      cell: (row) => row.skill_types?.name ?? "—",
+      cell: (row) => {
+        const isHidden = row.type_id === skillTypeIds.hidden;
+        return (
+          <span
+            className={cn(
+              isHidden && "font-medium text-red-600 dark:text-red-400",
+            )}
+          >
+            {row.skill_types?.name ?? "—"}
+          </span>
+        );
+      },
     },
     {
       key: "actions",
@@ -203,6 +216,7 @@ export function SkillsManager({
                     items={types}
                     value={field.value}
                     onChange={field.onChange}
+                    dangerItemIds={[skillTypeIds.hidden]}
                   />
                 </FormControl>
                 <FormMessage />

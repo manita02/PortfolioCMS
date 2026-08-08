@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import type { CatalogItem } from "@/types/domain";
 
 export function CatalogSelect({
@@ -15,17 +16,22 @@ export function CatalogSelect({
   onChange,
   placeholder = "Seleccionar…",
   className,
+  dangerItemIds,
 }: {
   items: CatalogItem[];
   value: string;
   onChange: (id: string) => void;
   placeholder?: string;
   className?: string;
+  dangerItemIds?: readonly string[];
 }) {
+  const danger = new Set(dangerItemIds ?? []);
   const selectItems = items.map((item) => ({
     value: item.id,
     label: item.name,
+    danger: danger.has(item.id),
   }));
+  const selectedIsDanger = danger.has(value);
 
   return (
     <Select
@@ -35,12 +41,23 @@ export function CatalogSelect({
       }}
       items={selectItems}
     >
-      <SelectTrigger className={className ?? "w-full"}>
+      <SelectTrigger
+        className={cn(
+          className ?? "w-full",
+          selectedIsDanger && "text-red-600 dark:text-red-400",
+        )}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         {selectItems.map((item) => (
-          <SelectItem key={item.value} value={item.value}>
+          <SelectItem
+            key={item.value}
+            value={item.value}
+            className={
+              item.danger ? "text-red-600 dark:text-red-400" : undefined
+            }
+          >
             {item.label}
           </SelectItem>
         ))}

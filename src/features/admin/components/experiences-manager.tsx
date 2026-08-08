@@ -86,7 +86,7 @@ export function ExperiencesManager({
 }: {
   items: ExperienceAdminRow[];
   organizations: Organization[];
-  skills: { id: string; name: string }[];
+  skills: { id: string; name: string; typeId?: string }[];
   types: CatalogItem[];
   modalities: CatalogItem[];
   title: string;

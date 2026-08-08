@@ -5,6 +5,7 @@ import { Boxes, Code2, Layers, Sparkles, Wrench } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Reveal } from "@/components/shared/reveal";
 import { SectionHeader } from "@/components/shared/section-header";
+import { skillTypeIds } from "@/constants/catalog-ids";
 import { storageBuckets } from "@/constants/storage-buckets";
 import { getPublicStorageUrl } from "@/lib/storage-url";
 import type { Skill } from "@/types/domain";
@@ -30,6 +31,7 @@ export function SkillsSection({
   >();
 
   for (const skill of skills) {
+    if (skill.typeId === skillTypeIds.hidden) continue;
     const existing = byType.get(skill.typeId);
     if (existing) {
       existing.items.push(skill);

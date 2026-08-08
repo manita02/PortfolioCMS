@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import { educationTypeIds } from "@/constants/catalog-ids";
+import { educationTypeIds, skillTypeIds } from "@/constants/catalog-ids";
 import type { CvData, Skill } from "@/types/domain";
 
 const styles = StyleSheet.create({
@@ -77,6 +77,7 @@ function groupSkillsByType(skills: Skill[]) {
   >();
 
   for (const skill of skills) {
+    if (skill.typeId === skillTypeIds.hidden) continue;
     const name = skill.label || skill.name;
     if (!name) continue;
     const existing = byType.get(skill.typeId);

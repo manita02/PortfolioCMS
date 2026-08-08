@@ -70,7 +70,7 @@ export function ProjectsManager({
 }: {
   items: ProjectAdminRow[];
   organizations: Organization[];
-  skills: { id: string; name: string }[];
+  skills: { id: string; name: string; typeId?: string }[];
   title: string;
   description?: string;
 }) {

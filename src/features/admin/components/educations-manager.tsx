@@ -88,7 +88,7 @@ export function EducationsManager({
 }: {
   items: EducationAdminRow[];
   organizations: Organization[];
-  skills: { id: string; name: string }[];
+  skills: { id: string; name: string; typeId?: string }[];
   types: CatalogItem[];
   title: string;
   description?: string;
