@@ -91,7 +91,7 @@ export default async function AdminPreviewPage() {
           emptyLabel="Aún no hay contenido."
           summary
         />
-        <FinalCtaSection email={person?.email} />
+        <FinalCtaSection />
       </div>
     </div>
   );
