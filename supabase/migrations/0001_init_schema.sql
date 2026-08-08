@@ -155,6 +155,7 @@ create table public.skills (
     references public.skill_types (id) on delete restrict
     default 'a5555555-5555-5555-5555-555555555012',
   icon_path text,
+  destacada boolean not null default false,
   sort_order int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
