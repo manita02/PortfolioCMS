@@ -13,7 +13,7 @@ select
   'Nombre',
   'Apellido',
   'hola@example.com',
-  'a2222222-2222-2222-2222-222222222001', -- Disponible
+  'a2222222-2222-2222-2222-222222222001', -- Disponible para nuevos desafíos
   'Software Engineer',
   'Diseño y construyo productos digitales con foco en calidad.',
   'Profesional orientado a producto, con experiencia en frontend moderno y sistemas escalables.',

@@ -55,9 +55,8 @@ insert into public.organization_types (id, name, sort_order) values
   ('a1111111-1111-1111-1111-111111111005', 'Otro', 5);
 
 insert into public.availability_statuses (id, name, sort_order) values
-  ('a2222222-2222-2222-2222-222222222001', 'Disponible', 1),
-  ('a2222222-2222-2222-2222-222222222002', 'Selectivo', 2),
-  ('a2222222-2222-2222-2222-222222222003', 'No disponible', 3);
+  ('a2222222-2222-2222-2222-222222222001', 'Disponible para nuevos desafíos', 1),
+  ('a2222222-2222-2222-2222-222222222002', 'Disponible para contratos freelance', 2);
 
 insert into public.experience_types (id, name, sort_order) values
   ('a3333333-3333-3333-3333-333333333001', 'Jornada completa', 1),
