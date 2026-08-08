@@ -55,11 +55,6 @@ export default async function HomePage() {
     ? `${person.firstName} ${person.lastName}`
     : siteConfig.name;
 
-  const githubUrl =
-    socialLinks.find((l) => l.name.toLowerCase().includes("github"))?.url ??
-    socialLinks.find((l) => l.url.toLowerCase().includes("github.com"))?.url ??
-    null;
-
   return (
     <>
       <JsonLd
@@ -113,7 +108,7 @@ export default async function HomePage() {
         emptyLabel="Aún no hay contenido."
         summary
       />
-      <FinalCtaSection githubUrl={githubUrl} email={person?.email} />
+      <FinalCtaSection email={person?.email} />
     </>
   );
 }

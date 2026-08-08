@@ -38,11 +38,6 @@ export default async function AdminPreviewPage() {
     getSocialLinks(),
   ]);
 
-  const githubUrl =
-    socialLinks.find((l) => l.name.toLowerCase().includes("github"))?.url ??
-    socialLinks.find((l) => l.url.toLowerCase().includes("github.com"))?.url ??
-    null;
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -96,7 +91,7 @@ export default async function AdminPreviewPage() {
           emptyLabel="Aún no hay contenido."
           summary
         />
-        <FinalCtaSection githubUrl={githubUrl} email={person?.email} />
+        <FinalCtaSection email={person?.email} />
       </div>
     </div>
   );
