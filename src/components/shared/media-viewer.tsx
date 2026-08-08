@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useState, type ReactNode } from "react";
-import type { MediaKind } from "@/lib/media-type";
+import { useMobileViewport } from "@/hooks/use-mobile-viewport";
+import { detectMediaKind, type MediaKind } from "@/lib/media-type";
 import type { MediaViewerModalProps } from "@/components/shared/media-viewer-modal";
 
 const MediaViewerModal = dynamic(
@@ -29,8 +30,10 @@ type ViewerState = {
 /**
  * Hook reutilizable: monta el modal solo tras el primer uso (lazy).
  * Devuelve `openMedia`, `closeMedia` y el nodo `viewer` a renderizar.
+ * En móvil, los PDF se abren en una pestaña nueva (visor nativo).
  */
 export function useMediaViewer() {
+  const isMobile = useMobileViewport();
   const [state, setState] = useState<ViewerState>({
     open: false,
     mounted: false,
@@ -38,16 +41,26 @@ export function useMediaViewer() {
     type: "auto",
   });
 
-  const openMedia = useCallback((src: string, options?: OpenOptions) => {
-    if (!src) return;
-    setState({
-      open: true,
-      mounted: true,
-      src,
-      type: options?.type ?? "auto",
-      title: options?.title,
-    });
-  }, []);
+  const openMedia = useCallback(
+    (src: string, options?: OpenOptions) => {
+      if (!src) return;
+      const type = options?.type ?? "auto";
+
+      if (detectMediaKind(src, type) === "pdf" && isMobile) {
+        window.open(src, "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      setState({
+        open: true,
+        mounted: true,
+        src,
+        type,
+        title: options?.title,
+      });
+    },
+    [isMobile],
+  );
 
   const closeMedia = useCallback(() => {
     setState((prev) => ({ ...prev, open: false }));

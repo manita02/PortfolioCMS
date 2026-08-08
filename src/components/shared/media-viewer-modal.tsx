@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, FileText, XIcon } from "lucide-react";
+import { Download, XIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Dialog,
@@ -44,11 +44,13 @@ export function MediaViewerModal({
         showCloseButton={false}
         overlayClassName="bg-black/80 supports-backdrop-filter:backdrop-blur-sm data-open:duration-200 data-closed:duration-150"
         className={cn(
-          "gap-0 overflow-hidden bg-background p-0 text-foreground ring-0",
-          // Mobile: casi pantalla completa
-          "inset-0 top-0 left-0 h-dvh max-h-dvh w-full max-w-none translate-x-0 translate-y-0 rounded-none",
+          // Anula el Dialog base (`grid` + centrado) para un panel de altura fiable.
+          "flex flex-col gap-0 overflow-hidden bg-background p-0 text-foreground ring-0",
+          // Mobile: pantalla completa + safe areas (notch / home indicator)
+          "fixed inset-0 top-0 right-0 bottom-0 left-0 z-50 h-dvh max-h-dvh w-full max-w-none translate-x-0 translate-y-0 rounded-none",
+          "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
           // Tablet / desktop: modal centrado con márgenes
-          "sm:inset-auto sm:top-1/2 sm:left-1/2 sm:h-[min(90dvh,880px)] sm:max-h-[90dvh] sm:w-[min(96vw,1100px)] sm:max-w-[1100px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:ring-1 sm:ring-foreground/10",
+          "sm:inset-auto sm:top-1/2 sm:right-auto sm:bottom-auto sm:left-1/2 sm:h-[min(90dvh,880px)] sm:max-h-[90dvh] sm:w-[min(96vw,1100px)] sm:max-w-[1100px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:pt-0 sm:pb-0 sm:ring-1 sm:ring-foreground/10",
           "data-open:zoom-in-95 data-closed:zoom-out-95",
         )}
         aria-describedby={undefined}
@@ -59,8 +61,8 @@ export function MediaViewerModal({
           cerrar para salir.
         </DialogDescription>
 
-        <div className="flex h-full min-h-0 flex-col">
-          <header className="flex shrink-0 items-center gap-3 border-b border-border/60 px-3 py-2.5 sm:px-4">
+        <div className="flex min-h-0 flex-1 flex-col">
+          <header className="flex shrink-0 items-center gap-2 border-b border-border/60 px-3 py-2.5 sm:gap-3 sm:px-4">
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium tracking-tight">
                 {label}
@@ -78,16 +80,22 @@ export function MediaViewerModal({
                 rel="noopener noreferrer"
                 className={cn(
                   buttonVariants({ variant: "outline", size: "sm" }),
+                  "shrink-0",
                 )}
               >
                 <Download className="size-3.5" aria-hidden />
-                Descargar
+                <span className="max-sm:sr-only">Descargar</span>
               </a>
             ) : null}
 
             <DialogClose
               render={
-                <Button variant="ghost" size="icon-sm" aria-label="Cerrar" />
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="shrink-0"
+                  aria-label="Cerrar"
+                />
               }
             >
               <XIcon />
@@ -100,37 +108,30 @@ export function MediaViewerModal({
                 <motion.div
                   key={`${kind}:${src}`}
                   className="absolute inset-0"
-                  initial={
-                    reduce ? false : { opacity: 0, scale: 0.98 }
-                  }
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={reduce ? undefined : { opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  initial={reduce ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={reduce ? undefined : { opacity: 0 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {kind === "image" ? (
-                    <div className="flex size-full items-center justify-center overflow-auto p-3 sm:p-6">
+                    <div className="absolute inset-0 p-3 sm:p-6">
                       {/* eslint-disable-next-line @next/next/no-img-element -- visor a resolución nativa, sin recorte */}
                       <img
                         src={src}
                         alt={label}
-                        className="max-h-full max-w-full object-contain"
-                        loading="lazy"
+                        className="size-full object-contain"
+                        loading="eager"
                         decoding="async"
+                        draggable={false}
                       />
                     </div>
                   ) : (
-                    <div className="flex size-full flex-col">
+                    <div className="flex size-full min-h-0 flex-col">
                       <iframe
                         src={`${src}#view=FitH`}
                         title={label}
-                        className="size-full min-h-0 flex-1 border-0 bg-neutral-900"
+                        className="min-h-0 w-full flex-1 border-0 bg-neutral-900"
                       />
-                      <div className="text-muted-foreground flex items-center justify-center gap-2 border-t border-border/40 bg-background px-3 py-2 text-xs sm:hidden">
-                        <FileText className="size-3.5 shrink-0" aria-hidden />
-                        <span>
-                          Si el PDF no se muestra, usa Descargar para abrirlo.
-                        </span>
-                      </div>
                     </div>
                   )}
                 </motion.div>
