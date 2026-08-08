@@ -10,7 +10,11 @@ export default async function AdminProjectsPage() {
     getSkillsRaw(),
   ]);
 
-  const skills = skillsRaw.map((s) => ({ id: s.id, name: s.name }));
+  const skills = skillsRaw.map((s) => ({
+    id: s.id,
+    name: s.name,
+    typeId: s.type_id,
+  }));
 
   return (
     <ProjectsManager

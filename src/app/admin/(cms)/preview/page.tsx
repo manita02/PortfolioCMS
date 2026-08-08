@@ -39,8 +39,8 @@ export default async function AdminPreviewPage() {
   const highlightSkills = skills
     .filter(
       (s) =>
-        s.typeId === skillTypeIds.language ||
-        s.typeId === skillTypeIds.framework,
+        s.typeId === skillTypeIds.backendLanguages ||
+        s.typeId === skillTypeIds.frontend,
     )
     .slice(0, 6);
 
