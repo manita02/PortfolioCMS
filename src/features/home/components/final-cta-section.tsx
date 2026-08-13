@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { CvDownloadButton } from "@/components/shared/cv-download-button";
 import { Reveal } from "@/components/shared/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { Person } from "@/types/domain";
 
-export async function FinalCtaSection() {
+export async function FinalCtaSection({ person }: { person: Person | null }) {
   return (
     <section
       id="cta"
@@ -20,12 +20,14 @@ export async function FinalCtaSection() {
               Estoy a disposición por cualquier consulta.
             </p>
             <div className="flex flex-wrap gap-3 pt-4">
-              <Link
-                href="/proyectos"
-                className={cn(buttonVariants({ size: "lg" }))}
-              >
-                Ver proyectos
-              </Link>
+              {person?.email ? (
+                <a
+                  href={`mailto:${person.email}`}
+                  className={cn(buttonVariants({ size: "lg" }))}
+                >
+                  Contactar
+                </a>
+              ) : null}
               <CvDownloadButton variant="outline" size="lg" />
             </div>
           </div>
