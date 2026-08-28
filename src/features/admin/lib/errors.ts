@@ -22,6 +22,17 @@ export function toAdminErrorMessage(
     if (msg.includes("duplicate") || msg.includes("unique")) {
       return "Ya existe un registro con esos datos.";
     }
+    if (
+      msg.includes("foreign key") ||
+      msg.includes("restrict") ||
+      msg.includes("violates foreign key") ||
+      msg.includes("23503")
+    ) {
+      return "No se puede eliminar: hay habilidades usando este tipo.";
+    }
+    if (msg.includes("system type") || msg.includes("tipo de sistema")) {
+      return "No se puede eliminar el tipo de sistema.";
+    }
     if (msg.includes("network") || msg.includes("fetch")) {
       return "Error de conexión. Intenta de nuevo.";
     }

@@ -13,6 +13,7 @@ import {
   LogOut,
   Share2,
   Sparkles,
+  Tags,
   User,
 } from "lucide-react";
 import Link from "next/link";
@@ -29,6 +30,7 @@ const icons = {
   User,
   Building2,
   Sparkles,
+  Tags,
   Briefcase,
   GraduationCap,
   FolderKanban,

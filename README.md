@@ -127,6 +127,7 @@ Ejecutá **en este orden**, pegando el contenido completo de cada archivo (Run e
 2. `supabase/migrations/0002_rls_policies.sql`
 3. `supabase/migrations/0003_storage_buckets.sql`
 4. `supabase/migrations/0004_indexes.sql`
+5. `supabase/migrations/0005_skill_types_admin_write.sql`
 
 Si todo sale bien, no debería haber errores.
 
@@ -175,7 +176,7 @@ Misma URL: http://localhost:3000
 
 - Login seguro (solo el email admin autorizado)
 - Welcome Hub con acceso a cada módulo
-- CRUD de: Persona, Organizaciones, Habilidades, Experiencias, Educación, Proyectos, Redes sociales
+- CRUD de: Persona, Organizaciones, Habilidades, Tipos de habilidad, Experiencias, Educación, Proyectos, Redes sociales
 - Checkbox **Destacada** en habilidades (aparecen en el Hero)
 - Carga de medios a Supabase Storage
 - Preview del portfolio con los componentes reales
