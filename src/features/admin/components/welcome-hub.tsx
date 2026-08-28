@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Share2,
   Sparkles,
+  Tags,
   User,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -22,6 +23,7 @@ const icons = {
   User,
   Building2,
   Sparkles,
+  Tags,
   Briefcase,
   GraduationCap,
   FolderKanban,
@@ -33,6 +35,7 @@ const descriptions: Record<string, string> = {
   "/admin/persona": "Datos personales, bio y SEO.",
   "/admin/organizaciones": "Empresas e instituciones.",
   "/admin/habilidades": "Stack técnico y soft skills.",
+  "/admin/tipos-habilidad": "Categorías del stack técnico.",
   "/admin/experiencias": "Roles y trayectoria laboral.",
   "/admin/educacion": "Formación académica y cursos.",
   "/admin/proyectos": "Portfolio de proyectos.",
