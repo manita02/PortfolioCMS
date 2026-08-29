@@ -53,6 +53,7 @@ export async function upsertExperienceAction(input: ExperienceInput) {
   }
 
   revalidateTag(cacheTags.experiences);
+  revalidateTag(cacheTags.person);
   revalidateTag(cacheTags.cv);
 }
 
@@ -62,5 +63,6 @@ export async function deleteExperienceAction(id: string) {
   const { error } = await supabase.from("experiences").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidateTag(cacheTags.experiences);
+  revalidateTag(cacheTags.person);
   revalidateTag(cacheTags.cv);
 }
