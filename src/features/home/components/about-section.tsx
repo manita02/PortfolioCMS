@@ -27,8 +27,14 @@ function AvailabilityBadge({ person }: { person: Person }) {
           name={organization.name}
           size={32}
         />
-        <p className="min-w-0 text-sm font-medium break-words">
-          {currentRole.title} en {organization.name}
+        <p className="min-w-0 leading-snug break-words">
+          <span className="font-heading text-foreground text-[0.95rem] tracking-tight">
+            {currentRole.title}
+          </span>
+          <span className="text-muted-foreground"> en </span>
+          <span className="text-foreground font-semibold tracking-tight">
+            {organization.name}
+          </span>
         </p>
       </>
     );
@@ -37,8 +43,7 @@ function AvailabilityBadge({ person }: { person: Person }) {
       <div className="max-w-sm rounded-2xl border border-border/60 px-4 py-3">
         <p className="text-muted-foreground flex items-center gap-2 text-xs uppercase tracking-wide">
           <Sparkles className="size-3.5" aria-hidden />
-          Actualmente
-          <span className="bg-foreground/80 size-1.5 rounded-full" aria-hidden />
+          Actualmente...
         </p>
         {href ? (
           <a
