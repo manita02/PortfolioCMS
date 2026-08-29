@@ -105,6 +105,7 @@ export function PersonForm({
     sortOrder: 0,
   }));
   const hasExperiences = experienceItems.length > 0;
+  const availabilityDisabled = Boolean(currentlyWorking);
   const comboDisabled = !currentlyWorking || !hasExperiences;
 
   function onSubmit(values: PersonInput) {
@@ -161,7 +162,7 @@ export function PersonForm({
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="sm:col-span-2">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} value={field.value ?? ""} />
@@ -175,9 +176,16 @@ export function PersonForm({
             name="availabilityLabel"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Label del badge</FormLabel>
+                <FormLabel className={availabilityDisabled ? "opacity-50" : undefined}>
+                  Label disponibilidad
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Disponibilidad" {...field} />
+                  <Input
+                    placeholder={availabilityDisabled ? "" : "Disponibilidad"}
+                    {...field}
+                    value={availabilityDisabled ? "" : field.value}
+                    disabled={availabilityDisabled}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,12 +195,20 @@ export function PersonForm({
             control={form.control}
             name="availabilityText"
             render={({ field }) => (
-              <FormItem className="sm:col-span-2">
-                <FormLabel>Texto del badge</FormLabel>
+              <FormItem>
+                <FormLabel className={availabilityDisabled ? "opacity-50" : undefined}>
+                  Texto disponibilidad
+                </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Disponible para nuevos desafíos"
+                    placeholder={
+                      availabilityDisabled
+                        ? ""
+                        : "Disponible para nuevos desafíos"
+                    }
                     {...field}
+                    value={availabilityDisabled ? "" : field.value}
+                    disabled={availabilityDisabled}
                   />
                 </FormControl>
                 <FormMessage />
@@ -220,7 +236,9 @@ export function PersonForm({
             name="currentExperienceId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Puesto actual</FormLabel>
+                <FormLabel className={comboDisabled ? "opacity-50" : undefined}>
+                  Puesto actual
+                </FormLabel>
                 <FormControl>
                   <CatalogSelect
                     items={experienceItems}
