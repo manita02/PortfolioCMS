@@ -11,8 +11,15 @@ export interface Person {
   email: string | null;
   profileImagePath: string | null;
   bannerImagePath: string | null;
-  availabilityStatusId: string;
-  availabilityStatusName: string;
+  availabilityLabel: string;
+  availabilityText: string;
+  currentlyWorking: boolean;
+  currentExperienceId: string | null;
+  currentExperience: {
+    id: string;
+    title: string;
+    organization?: Organization;
+  } | null;
   professionalTitle: string;
   subtitle: string;
   about: string;

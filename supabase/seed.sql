@@ -4,7 +4,8 @@
 -- Los catálogos ya se insertan en 0001 (UUIDs fijos).
 
 insert into public.persons (
-  id, first_name, last_name, email, availability_status_id,
+  id, first_name, last_name, email,
+  availability_label, availability_text, currently_working, current_experience_id,
   professional_title, subtitle, about,
   meta_title, meta_description
 )
@@ -13,7 +14,10 @@ select
   'Nombre',
   'Apellido',
   'hola@example.com',
-  'a2222222-2222-2222-2222-222222222001', -- Disponible para nuevos desafíos
+  'Disponibilidad',
+  'Disponible para nuevos desafíos',
+  false,
+  null,
   'Software Engineer',
   'Diseño y construyo productos digitales con foco en calidad.',
   'Profesional orientado a producto, con experiencia en frontend moderno y sistemas escalables.',

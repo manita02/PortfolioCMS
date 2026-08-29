@@ -2,9 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -26,14 +27,16 @@ import {
   personSchema,
   type PersonInput,
 } from "@/features/admin/schemas/person";
-import type { CatalogItem } from "@/types/domain";
 
 type PersonRow = {
   id?: string;
   first_name?: string;
   last_name?: string;
   email?: string | null;
-  availability_status_id?: string;
+  availability_label?: string | null;
+  availability_text?: string | null;
+  currently_working?: boolean | null;
+  current_experience_id?: string | null;
   profile_image_path?: string | null;
   banner_image_path?: string | null;
   professional_title?: string | null;
@@ -43,16 +46,22 @@ type PersonRow = {
   meta_description?: string | null;
 } | null;
 
-function toDefaults(
-  person: PersonRow,
-  defaultStatusId: string,
-): PersonInput {
+type ExperienceOption = {
+  id: string;
+  title: string;
+  organizationName: string;
+};
+
+function toDefaults(person: PersonRow): PersonInput {
   return {
     firstName: person?.first_name ?? "",
     lastName: person?.last_name ?? "",
     email: person?.email ?? "",
-    availabilityStatusId:
-      person?.availability_status_id ?? defaultStatusId,
+    availabilityLabel: person?.availability_label?.trim() || "Disponibilidad",
+    availabilityText:
+      person?.availability_text?.trim() || "Disponible para nuevos desafíos",
+    currentlyWorking: Boolean(person?.currently_working),
+    currentExperienceId: person?.current_experience_id ?? "",
     profileImagePath: person?.profile_image_path ?? null,
     bannerImagePath: person?.banner_image_path ?? null,
     professionalTitle: person?.professional_title ?? "",
@@ -65,31 +74,52 @@ function toDefaults(
 
 export function PersonForm({
   person,
-  availabilityStatuses,
+  experiences,
   title,
   description,
 }: {
   person: PersonRow;
-  availabilityStatuses: CatalogItem[];
+  experiences: ExperienceOption[];
   title: string;
   description?: string;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const defaultStatusId = availabilityStatuses[0]?.id ?? "";
 
   const form = useForm<PersonInput>({
     resolver: adminResolver(personSchema),
-    defaultValues: toDefaults(person, defaultStatusId),
+    defaultValues: toDefaults(person),
     mode: "onChange",
   });
 
+  const currentlyWorking = useWatch({
+    control: form.control,
+    name: "currentlyWorking",
+  });
+
+  const experienceItems = experiences.map((item) => ({
+    id: item.id,
+    name: item.organizationName
+      ? `${item.title} · ${item.organizationName}`
+      : item.title,
+    sortOrder: 0,
+  }));
+  const hasExperiences = experienceItems.length > 0;
+  const comboDisabled = !currentlyWorking || !hasExperiences;
+
   function onSubmit(values: PersonInput) {
+    const persisted: PersonInput = {
+      ...values,
+      currentExperienceId: values.currentlyWorking
+        ? values.currentExperienceId
+        : "",
+    };
+
     startTransition(async () => {
       try {
-        await upsertPersonAction(values);
+        await upsertPersonAction(persisted);
         toast.success("Guardado correctamente");
-        form.reset(values);
+        form.reset(persisted);
         router.refresh();
       } catch (error) {
         toast.error(toAdminErrorMessage(error, "Error"));
@@ -142,15 +172,66 @@ export function PersonForm({
           />
           <FormField
             control={form.control}
-            name="availabilityStatusId"
+            name="availabilityLabel"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Disponibilidad</FormLabel>
+                <FormLabel>Label del badge</FormLabel>
+                <FormControl>
+                  <Input placeholder="Disponibilidad" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="availabilityText"
+            render={({ field }) => (
+              <FormItem className="sm:col-span-2">
+                <FormLabel>Texto del badge</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Disponible para nuevos desafíos"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="currentlyWorking"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2 space-y-0 self-end pb-2">
+                <FormControl>
+                  <Checkbox
+                    checked={Boolean(field.value)}
+                    onCheckedChange={(v) => field.onChange(Boolean(v))}
+                  />
+                </FormControl>
+                <FormLabel>Actualmente trabajando</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="currentExperienceId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Puesto actual</FormLabel>
                 <FormControl>
                   <CatalogSelect
-                    items={availabilityStatuses}
-                    value={field.value}
+                    items={experienceItems}
+                    value={field.value ?? ""}
                     onChange={field.onChange}
+                    disabled={comboDisabled}
+                    placeholder={
+                      hasExperiences
+                        ? "Seleccionar…"
+                        : "No hay experiencias cargadas"
+                    }
                   />
                 </FormControl>
                 <FormMessage />

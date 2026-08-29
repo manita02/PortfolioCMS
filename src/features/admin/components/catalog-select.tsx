@@ -17,6 +17,7 @@ export function CatalogSelect({
   placeholder = "Seleccionar…",
   className,
   dangerItemIds,
+  disabled = false,
 }: {
   items: CatalogItem[];
   value: string;
@@ -24,6 +25,7 @@ export function CatalogSelect({
   placeholder?: string;
   className?: string;
   dangerItemIds?: readonly string[];
+  disabled?: boolean;
 }) {
   const danger = new Set(dangerItemIds ?? []);
   const selectItems = items.map((item) => ({
@@ -40,6 +42,7 @@ export function CatalogSelect({
         if (next != null) onChange(next);
       }}
       items={selectItems}
+      disabled={disabled}
     >
       <SelectTrigger
         className={cn(

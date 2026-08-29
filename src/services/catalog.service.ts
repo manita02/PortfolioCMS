@@ -37,10 +37,6 @@ export function getOrganizationTypes() {
   return cachedCatalog("organization_types", "organization-types");
 }
 
-export function getAvailabilityStatuses() {
-  return cachedCatalog("availability_statuses", "availability-statuses");
-}
-
 export function getExperienceTypes() {
   return cachedCatalog("experience_types", "experience-types");
 }

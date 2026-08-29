@@ -5,15 +5,38 @@ import {
   createPublicClient,
   isSupabaseConfigured,
 } from "@/lib/supabase/server";
+import { mapOrganization } from "@/services/mappers";
 import type { Person } from "@/types/domain";
 
 const personSelect = `
   *,
-  availability_statuses ( id, name, sort_order )
+  current_experience:experiences!persons_current_experience_id_fkey (
+    id,
+    title,
+    organization_id,
+    organizations (
+      *,
+      organization_types ( id, name, sort_order )
+    )
+  )
 `;
 
+function mapCurrentExperience(
+  row: Record<string, unknown> | null | undefined,
+): Person["currentExperience"] {
+  if (!row?.id) return null;
+
+  return {
+    id: row.id as string,
+    title: (row.title as string) ?? "",
+    organization: mapOrganization(
+      row.organizations as Record<string, unknown>,
+    ),
+  };
+}
+
 function mapPerson(row: Record<string, unknown>): Person {
-  const status = row.availability_statuses as
+  const nested = (row.current_experience ?? row.experiences) as
     | Record<string, unknown>
     | null
     | undefined;
@@ -25,9 +48,11 @@ function mapPerson(row: Record<string, unknown>): Person {
     email: (row.email as string) ?? null,
     profileImagePath: (row.profile_image_path as string) ?? null,
     bannerImagePath: (row.banner_image_path as string) ?? null,
-    availabilityStatusId:
-      (row.availability_status_id as string) ?? (status?.id as string) ?? "",
-    availabilityStatusName: (status?.name as string) ?? "",
+    availabilityLabel: (row.availability_label as string) ?? "Disponibilidad",
+    availabilityText: (row.availability_text as string) ?? "",
+    currentlyWorking: Boolean(row.currently_working),
+    currentExperienceId: (row.current_experience_id as string) ?? null,
+    currentExperience: mapCurrentExperience(nested),
     professionalTitle: (row.professional_title as string) ?? "",
     subtitle: (row.subtitle as string) ?? "",
     about: (row.about as string) ?? "",
@@ -60,7 +85,7 @@ export async function getPersonRaw() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("persons")
-    .select(personSelect)
+    .select("*")
     .limit(1)
     .maybeSingle();
   return data;
