@@ -40,6 +40,7 @@ export async function upsertOrganizationAction(input: OrganizationInput) {
   }
 
   revalidateTag(cacheTags.organizations);
+  revalidateTag(cacheTags.person);
 }
 
 export async function deleteOrganizationAction(id: string) {
@@ -48,4 +49,5 @@ export async function deleteOrganizationAction(id: string) {
   const { error } = await supabase.from("organizations").delete().eq("id", id);
   if (error) throw new Error(error.message);
   revalidateTag(cacheTags.organizations);
+  revalidateTag(cacheTags.person);
 }
