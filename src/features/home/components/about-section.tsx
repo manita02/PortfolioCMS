@@ -1,10 +1,74 @@
 import { Sparkles } from "lucide-react";
+import { OrgLogo } from "@/components/shared/org-logo";
 import { Reveal } from "@/components/shared/reveal";
 import { SectionHeader } from "@/components/shared/section-header";
 import { SocialLinks } from "@/components/shared/social-links";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Person, SocialLink } from "@/types/domain";
+
+function AvailabilityBadge({ person }: { person: Person }) {
+  const currentRole =
+    person.currentlyWorking &&
+    person.currentExperience?.title &&
+    person.currentExperience.organization
+      ? person.currentExperience
+      : null;
+  const organization = currentRole?.organization;
+  const label = person.availabilityLabel.trim() || "Disponibilidad";
+  const text = person.availabilityText.trim();
+
+  if (currentRole && organization) {
+    const href = organization.websiteUrl?.trim() || null;
+    const body = (
+      <>
+        <OrgLogo
+          logoPath={organization.logoPath}
+          name={organization.name}
+          size={32}
+        />
+        <p className="min-w-0 text-sm font-medium break-words">
+          {currentRole.title} en {organization.name}
+        </p>
+      </>
+    );
+
+    return (
+      <div className="max-w-sm rounded-2xl border border-border/60 px-4 py-3">
+        <p className="text-muted-foreground flex items-center gap-2 text-xs uppercase tracking-wide">
+          <Sparkles className="size-3.5" aria-hidden />
+          Actualmente
+          <span className="bg-foreground/80 size-1.5 rounded-full" aria-hidden />
+        </p>
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${organization.name} (sitio web)`}
+            className="focus-visible:ring-ring mt-1 flex min-w-0 items-center gap-2.5 rounded-lg focus-visible:ring-2 focus-visible:outline-none"
+          >
+            {body}
+          </a>
+        ) : (
+          <div className="mt-1 flex min-w-0 items-center gap-2.5">{body}</div>
+        )}
+      </div>
+    );
+  }
+
+  if (!text) return null;
+
+  return (
+    <div className="max-w-sm rounded-2xl border border-border/60 px-4 py-3">
+      <p className="text-muted-foreground flex items-center gap-2 text-xs uppercase tracking-wide">
+        <Sparkles className="size-3.5" aria-hidden />
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-medium">{text}</p>
+    </div>
+  );
+}
 
 export async function AboutSection({
   title,
@@ -29,15 +93,7 @@ export async function AboutSection({
             {person.about}
           </p>
 
-          <div className="max-w-sm rounded-2xl border border-border/60 px-4 py-3">
-            <p className="text-muted-foreground flex items-center gap-2 text-xs uppercase tracking-wide">
-              <Sparkles className="size-3.5" aria-hidden />
-              Disponibilidad
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              {person.availabilityStatusName}
-            </p>
-          </div>
+          <AvailabilityBadge person={person} />
 
           <div className="flex flex-wrap items-center gap-4">
             <SocialLinks links={socialLinks} />
