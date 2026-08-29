@@ -20,11 +20,19 @@ export async function upsertPersonAction(input: PersonInput) {
     .limit(1)
     .maybeSingle();
 
+  const currentExperienceId =
+    data.currentlyWorking && data.currentExperienceId
+      ? data.currentExperienceId
+      : null;
+
   const payload = {
     first_name: data.firstName,
     last_name: data.lastName,
     email: data.email || null,
-    availability_status_id: data.availabilityStatusId,
+    availability_label: data.availabilityLabel,
+    availability_text: data.availabilityText,
+    currently_working: data.currentlyWorking,
+    current_experience_id: currentExperienceId,
     profile_image_path: data.profileImagePath ?? null,
     banner_image_path: data.bannerImagePath ?? null,
     professional_title: data.professionalTitle,
